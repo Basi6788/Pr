@@ -1,0 +1,1788 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>FF-OMNI-PROXY v3.2 | Anti-Ban + ASTC Icon Decoder + Billboards Tab</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
+  <script src="/socket.io/socket.io.js"></script>
+  <style>
+    :root {
+      --bg-0: #060913;
+      --bg-1: #0c1322;
+      --bg-2: #131c31;
+      --bg-3: #1d2a47;
+      --border: rgba(99, 130, 190, 0.22);
+      --text-0: #f8fafc;
+      --text-1: #94a3b8;
+      --text-2: #64748b;
+      --accent: #38bdf8;
+      --indigo: #6366f1;
+      --green: #10b981;
+      --amber: #f59e0b;
+      --purple: #a855f7;
+      --pink: #ec4899;
+      --rose: #f43f5e;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+    body {
+      background: radial-gradient(circle at top right, #111a30 0%, var(--bg-0) 60%);
+      color: var(--text-0);
+      font-family: var(--font-sans);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      padding-bottom: 68px;
+    }
+
+    .toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%) translateY(-80px);
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #fff;
+      padding: 9px 18px;
+      border-radius: 999px;
+      font-size: 12.5px;
+      font-weight: 700;
+      box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+      z-index: 999;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+      transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    .app-header {
+      position: sticky;
+      top: 0;
+      z-index: 30;
+      background: rgba(12, 19, 34, 0.95);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      padding: 10px 14px;
+    }
+    .header-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 9px;
+      flex-wrap: wrap;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .brand-icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
+      background: linear-gradient(135deg, #38bdf8, #6366f1, #ec4899);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 19px;
+      color: #fff;
+      box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35);
+    }
+    .brand-info h1 {
+      font-family: var(--font-display);
+      font-size: 14.5px;
+      font-weight: 700;
+    }
+    .brand-info p {
+      font-size: 10.5px;
+      color: var(--text-1);
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .live-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(16, 185, 129, 0.14);
+      border: 1px solid rgba(16, 185, 129, 0.4);
+      color: #34d399;
+      padding: 5px 9px;
+      border-radius: 999px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+    .dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--green);
+      box-shadow: 0 0 8px var(--green);
+    }
+    .dot.offline { background: var(--rose); box-shadow: none; }
+
+    .filter-scroll {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scrollbar-width: none;
+    }
+    .filter-scroll::-webkit-scrollbar { display: none; }
+    .chip {
+      background: var(--bg-2);
+      color: var(--text-1);
+      border: 1px solid var(--border);
+      padding: 6px 11px;
+      border-radius: 8px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      transition: all 0.15s;
+    }
+    .chip.active {
+      background: linear-gradient(135deg, rgba(56, 189, 248, 0.22), rgba(99, 102, 241, 0.22));
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .chip.clothes-chip {
+      border-color: rgba(236, 72, 153, 0.45);
+      color: #f472b6;
+    }
+    .chip.clothes-chip.active {
+      background: linear-gradient(135deg, rgba(236, 72, 153, 0.28), rgba(168, 85, 247, 0.28));
+      color: #fff;
+      border-color: #ec4899;
+    }
+    .chip.billboard-chip {
+      border-color: rgba(245, 158, 11, 0.5);
+      color: #fbbf24;
+    }
+    .chip.billboard-chip.active {
+      background: linear-gradient(135deg, rgba(245, 158, 11, 0.28), rgba(236, 72, 153, 0.25));
+      color: #fff;
+      border-color: var(--amber);
+    }
+
+    .search-bar-row {
+      display: flex;
+      gap: 6px;
+      margin-top: 4px;
+    }
+    .search-wrap {
+      flex: 1;
+      position: relative;
+      display: flex;
+      align-items: center;
+    }
+    .search-wrap i {
+      position: absolute;
+      left: 10px;
+      color: var(--text-2);
+      font-size: 14px;
+    }
+    .search-input {
+      width: 100%;
+      background: var(--bg-0);
+      border: 1px solid var(--border);
+      color: var(--text-0);
+      padding: 7px 10px 7px 30px;
+      border-radius: 8px;
+      font-size: 12px;
+      font-family: var(--font-mono);
+    }
+    .search-input:focus { outline: none; border-color: var(--accent); }
+
+    .btn {
+      background: var(--bg-2);
+      color: var(--text-0);
+      border: 1px solid var(--border);
+      padding: 6px 10px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      white-space: nowrap;
+      text-decoration: none;
+      transition: all 0.15s;
+    }
+    .btn:active { transform: scale(0.97); }
+    .btn-primary {
+      background: linear-gradient(135deg, #0284c7, #4f46e5);
+      border-color: #38bdf8;
+      color: #fff;
+    }
+    .btn-success {
+      background: linear-gradient(135deg, #059669, #10b981);
+      border-color: #34d399;
+      color: #fff;
+    }
+    .btn-amber {
+      background: linear-gradient(135deg, #d97706, #f59e0b);
+      border-color: #fbbf24;
+      color: #fff;
+    }
+
+    .view-pane {
+      display: none;
+      padding: 12px 14px;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .view-pane.active { display: flex; }
+
+    .pkt-card {
+      background: linear-gradient(180deg, rgba(19, 28, 49, 0.92) 0%, rgba(12, 19, 34, 0.96) 100%);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 11px 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .pkt-card:hover, .pkt-card.selected {
+      border-color: var(--accent);
+      box-shadow: 0 4px 20px rgba(56, 189, 248, 0.12);
+    }
+    .pkt-card.clothes-card { border-left: 3px solid var(--pink); }
+    .pkt-card.billboard-card { border-left: 3px solid var(--amber); }
+
+    .pkt-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .badge-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .port-tag {
+      background: rgba(99, 102, 241, 0.2);
+      border: 1px solid rgba(99, 102, 241, 0.5);
+      color: #a5b4fc;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+    .purpose-tag {
+      background: rgba(236, 72, 153, 0.16);
+      border: 1px solid rgba(236, 72, 153, 0.45);
+      color: #f9a8d4;
+      padding: 2px 8px;
+      border-radius: 5px;
+      font-size: 10.5px;
+      font-weight: 700;
+    }
+    .purpose-tag.cat-BILLBOARD { background: rgba(245, 158, 11, 0.22); border-color: #f59e0b; color: #fde68a; }
+    .purpose-tag.cat-VERSION_CONFIG { background: rgba(56, 189, 248, 0.18); border-color: rgba(56, 189, 248, 0.45); color: #7dd3fc; }
+    .purpose-tag.cat-LOGIN_AUTH { background: rgba(16, 185, 129, 0.16); border-color: rgba(16, 185, 129, 0.45); color: #6ee7b7; }
+    .purpose-tag.cat-HOTUPDATE_BUNDLE { background: rgba(168, 85, 247, 0.16); border-color: rgba(168, 85, 247, 0.45); color: #d8b4fe; }
+
+    .status-tag {
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      background: rgba(16, 185, 129, 0.16);
+      color: #34d399;
+    }
+    .status-tag.err { background: rgba(244, 63, 94, 0.2); color: #fb7185; }
+
+    .pkt-main-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+    .pkt-url-col {
+      flex: 1;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .pkt-url {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--text-0);
+      word-break: break-all;
+      line-height: 1.4;
+    }
+    .pkt-purpose-desc {
+      font-size: 11px;
+      color: var(--text-1);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .inline-thumb-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      flex-shrink: 0;
+      background: repeating-conic-gradient(#162038 0% 25%, #0c1322 0% 50%) 50% / 10px 10px;
+      padding: 4px;
+      border-radius: 8px;
+      border: 1px solid var(--accent);
+    }
+    .inline-thumb-wrap canvas,
+    .inline-thumb-wrap img {
+      width: 54px;
+      height: 54px;
+      object-fit: contain;
+      border-radius: 5px;
+      display: block;
+    }
+
+    .pkt-foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-top: 1px solid var(--border);
+      padding-top: 6px;
+      font-family: var(--font-mono);
+      font-size: 10.5px;
+      color: var(--amber);
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .subtab-bar {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 4px;
+      gap: 4px;
+    }
+    .subtab-btn {
+      background: transparent;
+      color: var(--text-1);
+      border: none;
+      padding: 8px 6px;
+      border-radius: 7px;
+      font-size: 11.5px;
+      font-weight: 700;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+    }
+    .subtab-btn.active {
+      background: linear-gradient(135deg, #0284c7, #4f46e5);
+      color: #fff;
+    }
+
+    .card {
+      background: var(--bg-1);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+    .card-hdr {
+      background: var(--bg-2);
+      padding: 9px 13px;
+      font-size: 11.5px;
+      font-weight: 700;
+      color: var(--text-0);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .card-body {
+      padding: 12px 13px;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      line-height: 1.55;
+      overflow-x: auto;
+    }
+    pre {
+      margin: 0;
+      white-space: pre-wrap;
+      word-break: break-all;
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      color: #e2e8f0;
+    }
+    .kv-row {
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
+      padding: 6px 0;
+      border-bottom: 1px dashed var(--border);
+    }
+    .kv-row:last-child { border-bottom: none; }
+    .kv-lbl { font-size: 10.5px; color: var(--text-1); font-weight: 700; text-transform: uppercase; }
+    .kv-val { font-size: 12px; color: var(--text-0); word-break: break-all; }
+
+    .media-preview-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      padding: 14px;
+      background: repeating-conic-gradient(#162038 0% 25%, #0c1322 0% 50%) 50% / 16px 16px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+    }
+    .media-preview-box canvas, .media-preview-box img {
+      max-width: 240px;
+      max-height: 220px;
+      width: auto;
+      height: auto;
+      min-width: 110px;
+      min-height: 110px;
+      object-fit: contain;
+      border-radius: 10px;
+      border: 2px solid var(--accent);
+      background: rgba(9, 13, 22, 0.65);
+    }
+
+    input[type="text"], textarea, select {
+      width: 100%;
+      background: var(--bg-0);
+      border: 1px solid var(--border);
+      color: var(--text-0);
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+    }
+    .switch-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+    }
+
+    .bottom-nav {
+      position: fixed;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 62px;
+      background: rgba(12, 19, 34, 0.96);
+      backdrop-filter: blur(14px);
+      border-top: 1px solid var(--border);
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      z-index: 40;
+    }
+    .nav-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      font-size: 10.5px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+    .nav-btn i { font-size: 17px; }
+    .nav-btn.active {
+      color: var(--accent);
+      background: rgba(56, 189, 248, 0.08);
+      border-top: 2px solid var(--accent);
+    }
+
+    @media (min-width: 980px) {
+      body { padding-bottom: 0; height: 100vh; overflow: hidden; }
+      .bottom-nav { display: none; }
+      .desktop-grid {
+        flex: 1;
+        display: grid;
+        grid-template-columns: 44% 56%;
+        overflow: hidden;
+      }
+      #viewStream, #viewInspector {
+        display: flex !important;
+        overflow-y: auto;
+        height: 100%;
+      }
+      #viewBillboards.active, #viewPorts.active, #viewMedia.active {
+        position: fixed;
+        top: 118px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: var(--bg-0);
+        z-index: 25;
+        overflow-y: auto;
+      }
+      #viewStream { border-right: 1px solid var(--border); }
+      .mobile-back-btn { display: none !important; }
+    }
+  </style>
+</head>
+<body>
+  <div id="toast" class="toast"><i class="ri-checkbox-circle-fill"></i> <span id="toastMsg">Copied to Clipboard!</span></div>
+
+  <header class="app-header">
+    <div class="header-top">
+      <div class="brand">
+        <div class="brand-icon"><i class="ri-radar-line"></i></div>
+        <div class="brand-info">
+          <h1>FF-OMNI-PROXY v3.2</h1>
+          <p><i class="ri-shield-check-line" style="color:var(--green);"></i> SH-Gpp &amp; Loopback Anti-Ban Fix &bull; ASTC Decoder &bull; Billboards Tab</p>
+        </div>
+      </div>
+      <div class="header-actions">
+        <a href="/api/export.txt" download="ff_all_requests_log.txt" class="btn btn-success" title="Download All Captured Traffic as .TXT File">
+          <i class="ri-file-download-line"></i> Download .TXT
+        </a>
+        <div class="live-badge">
+          <span id="wsDot" class="dot"></span>
+          <span id="wsStatus">LIVE</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="filter-scroll">
+      <button class="chip active" onclick="setCategoryFilter('ALL', this)"><i class="ri-stack-line"></i> All (<span id="cntALL">0</span>)</button>
+      <button class="chip clothes-chip" onclick="setCategoryFilter('CLOTHES_SKINS', this)"><i class="ri-t-shirt-2-line"></i> Clothes &amp; Bundles (<span id="cntCLOTHES">0</span>)</button>
+      <button class="chip billboard-chip" onclick="switchMainTab('Billboards')"><i class="ri-advertisement-line"></i> 🪧 Billboards (<span id="cntBILLBOARDS">0</span>)</button>
+      <button class="chip" onclick="switchMainTab('Media')"><i class="ri-image-2-line"></i> Skins &amp; Icons Gallery</button>
+      <button class="chip" onclick="setCategoryFilter('VERSION_CONFIG', this)"><i class="ri-settings-4-line"></i> ver.php</button>
+      <button class="chip" onclick="switchMainTab('Ports')"><i class="ri-git-branch-line"></i> Anti-Ban &amp; Mod</button>
+      <a href="/api/export.txt?filter=CLOTHES" download="ff_clothes_bundles.txt" class="chip clothes-chip" style="text-decoration:none;"><i class="ri-download-cloud-2-line"></i> Clothes .TXT</a>
+    </div>
+
+    <div class="search-bar-row">
+      <div class="search-wrap">
+        <i class="ri-search-2-line"></i>
+        <input type="text" id="searchInput" class="search-input" placeholder="Search URL, Bundle (901000284, fileinfo), Billboard (Patch_Bg)..." oninput="renderPacketList()" />
+      </div>
+      <button class="btn btn-primary" onclick="triggerSimulation()"><i class="ri-play-fill"></i> Test</button>
+      <button class="btn" onclick="clearPackets()"><i class="ri-delete-bin-6-line"></i></button>
+    </div>
+  </header>
+
+  <div class="desktop-grid">
+    <!-- VIEW 1: PACKET STREAM -->
+    <section id="viewStream" class="view-pane active"></section>
+
+    <!-- VIEW 2: 3-TAB PACKET INSPECTOR -->
+    <section id="viewInspector" class="view-pane">
+      <div style="display:flex; align-items:center; justify-content:space-between; gap:8px;" class="mobile-back-btn">
+        <button class="btn" onclick="switchMainTab('Stream')"><i class="ri-arrow-left-line"></i> Back to Stream</button>
+        <span id="inspPortBadge" class="port-tag">Port :8080</span>
+      </div>
+
+      <div class="subtab-bar">
+        <button class="subtab-btn active" id="subBtnAll" onclick="switchInspectorSubTab('ALL')">
+          <i class="ri-file-list-3-line"></i> All &amp; Copy
+        </button>
+        <button class="subtab-btn" id="subBtnEnc" onclick="switchInspectorSubTab('ENCRYPTED')">
+          <i class="ri-lock-password-line"></i> Encrypted Req/Res
+        </button>
+        <button class="subtab-btn" id="subBtnDec" onclick="switchInspectorSubTab('DECRYPTED')">
+          <i class="ri-lock-unlock-line"></i> Decrypted Req/Res
+        </button>
+      </div>
+
+      <div id="inspectorBody" style="display:flex; flex-direction:column; gap:10px;">
+        <div class="card">
+          <div class="card-body" style="text-align:center; color:var(--text-1); padding:28px;">
+            <i class="ri-cursor-line" style="font-size:26px; color:var(--accent);"></i>
+            <p style="margin-top:8px;">Tap any Request / Response card in the stream to inspect its <b>All</b>, <b>Encrypted</b>, and <b>Decrypted</b> tabs + live Image / ASTC preview.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- VIEW 3: DEDICATED BILLBOARDS & LIVE URL IMAGE FETCHER TAB -->
+    <section id="viewBillboards" class="view-pane">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <h2 style="font-size:15px; font-family:var(--font-display); color:var(--amber);">
+          <i class="ri-advertisement-fill"></i> 🪧 Billboards &amp; Live URL Image Fetcher
+        </h2>
+        <div style="display:flex; gap:6px;">
+          <a href="/api/export.txt?filter=BILLBOARDS" download="ff_billboards_log.txt" class="btn btn-amber"><i class="ri-file-download-line"></i> Billboards .TXT</a>
+          <button class="btn" onclick="switchMainTab('Stream')"><i class="ri-arrow-left-line"></i> Stream</button>
+        </div>
+      </div>
+
+      <!-- Interactive Live Image / ASTC URL Fetcher -->
+      <div class="card" style="border-color:var(--amber);">
+        <div class="card-hdr">
+          <span><i class="ri-image-add-line" style="color:var(--amber);"></i> Fetch &amp; Preview Any Image / Billboard / ASTC URL Directly</span>
+        </div>
+        <div class="card-body" style="font-family:var(--font-sans); display:flex; flex-direction:column; gap:8px;">
+          <div style="font-size:11.5px; color:var(--text-1);">
+            Paste or tap any image, billboard, or <code>.astc</code> URL below — the proxy server will fetch it directly and show the live image preview right here:
+          </div>
+          <div style="display:flex; gap:6px; flex-wrap:wrap;">
+            <input type="text" id="customFetchUrlInput" placeholder="https://dl.cdn.freefiremobile.com/common/OB23/version/Patch_Bg.png" style="flex:1; min-width:220px;" />
+            <button class="btn btn-amber" onclick="fetchAndPreviewCustomUrl()"><i class="ri-search-eye-line"></i> Fetch &amp; Preview Image</button>
+          </div>
+          <div id="customFetchPreviewResult"></div>
+        </div>
+      </div>
+
+      <div id="billboardsListContainer" style="display:flex; flex-direction:column; gap:10px;"></div>
+    </section>
+
+    <!-- VIEW 4: ANTI-BAN PROTECTION, PORTS & REAL-TIME CLOTHES MODIFIER -->
+    <section id="viewPorts" class="view-pane">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <h2 style="font-size:15px; font-family:var(--font-display);"><i class="ri-shield-check-fill" style="color:var(--green);"></i> v3.2 Lobby Anti-Ban Fix &amp; Clothes Modifier</h2>
+        <div style="display:flex; gap:6px;">
+          <a href="/api/export.txt" download="ff_all_requests_log.txt" class="btn btn-success"><i class="ri-file-download-line"></i> Download All (.TXT)</a>
+          <button class="btn" onclick="switchMainTab('Stream')"><i class="ri-arrow-left-line"></i> Stream</button>
+        </div>
+      </div>
+
+      <div class="card" style="border-color:var(--green);">
+        <div class="card-hdr">
+          <span><i class="ri-shield-star-line" style="color:var(--green);"></i> Exact Root-Cause Fix for Lobby Welcome-Rewards Ban ("Disabling data upload")</span>
+        </div>
+        <div class="card-body" style="font-family:var(--font-sans);">
+          <div style="font-size:12px; color:var(--text-1); margin-bottom:10px; line-height:1.55;">
+            <b>Why v3.1 Banned in Lobby (Found in your <code>.txt</code> Packets #87 &amp; #88):</b><br/>
+            1. <b><code>abhotupdate_cdn_url</code> (SH-Gpp Anti-Cheat) Protected:</b> Packet #87 showed <code>abhotupdate_cdn_url</code> (<code>core-gmc</code>) loads <code>SH-Gpp1/2/4</code> (<code>libggp.so</code> Anti-Cheat) checked by <code>abhotupdate_check</code>. It is now <b>100% Untouched HTTPS</b> so Lobby GGP data upload never fails!<br/>
+            2. <b><code>127.0.0.1:8083</code> Loopback Routing:</b> Instead of routing 85 Welcome-Reward <code>.astc</code> requests through your VPN <code>tun0</code> IP (<code>10.76.200.235:8083</code>) and choking data upload, <code>cdn_url</code> now routes over <code>127.0.0.1:8083</code> (0.1ms kernel loopback)!<br/>
+            3. <b>Single <code>Content-Length</code> + <code>Keep-Alive</code>:</b> Fixed duplicate <code>content-length</code> headers on all responses.
+          </div>
+
+          <div class="switch-row">
+            <div>
+              <div style="font-weight:700; font-size:13px; color:var(--accent);">Redirect Clothes &amp; Skins CDN (`cdn_url` ONLY) to Port :8083</div>
+              <div style="font-size:11.5px; color:var(--text-1);">Captures &amp; modifies Default Guest Bundles (<code>optionalavatarres</code>) and <code>IconCDN/*.astc</code> while leaving Auth &amp; <code>abhotupdate_cdn_url</code> untouched.</div>
+            </div>
+            <input type="checkbox" id="chkRedirectCdn" checked onchange="saveModifierSettings()" style="width:20px; height:20px;" />
+          </div>
+
+          <div class="switch-row" style="border-bottom:none;">
+            <div>
+              <div style="font-weight:700; font-size:13px; color:var(--green);">Use `127.0.0.1:8083` Localhost Loopback (Bypass VPN `tun0` Queue)</div>
+              <div style="font-size:11.5px; color:var(--text-1);">Recommended ON when running Termux on the same phone so 85+ Lobby icon downloads never congest your VPN tunnel.</div>
+            </div>
+            <input type="checkbox" id="chkUseLoopback" checked onchange="saveModifierSettings()" style="width:20px; height:20px;" />
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr">
+          <span><i class="ri-t-shirt-2-line" style="color:var(--pink);"></i> Real-Time Clothes / Bundles / Icons Response Modifier (Response-Time Only)</span>
+        </div>
+        <div class="card-body" style="display:flex; flex-direction:column; gap:8px; font-family:var(--font-sans);">
+          <div style="font-size:11.5px; color:var(--text-1);">
+            Safely modify Clothes, Default Guest Bundles (<code>optionalavatarres/794/fileinfo</code>), or <code>.astc</code> Icon responses in real time. Auth/Login/GGP URLs are automatically ignored for safety.
+          </div>
+          <input type="text" id="ruleUrlPattern" placeholder="Target Clothes URL substring (e.g. optionalavatarres or 901000284)" />
+          <select id="ruleType">
+            <option value="TEXT_REPLACE">Bundle Name / Hash / Item ID Replace in Response</option>
+            <option value="HEX_REPLACE">Raw Hex Bytes Replace in Response</option>
+            <option value="JSON_MERGE">JSON Field Override / Merge</option>
+          </select>
+          <input type="text" id="ruleSearch" placeholder="Search bundle/hash/ID (e.g. optionalab_avatar_01 or 902000299)" />
+          <textarea id="ruleReplace" rows="2" placeholder="Replacement bundle/hash/ID (e.g. optionalab_avatar_07 or 902048014)"></textarea>
+          <button class="btn btn-primary" onclick="addResponseRule()"><i class="ri-add-circle-line"></i> Add Clothes/Skins Response Rule</button>
+          <div id="activeRulesList" style="margin-top:6px; display:flex; flex-direction:column; gap:6px;"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-hdr">
+          <span><i class="ri-plug-2-line" style="color:var(--purple);"></i> Active Dedicated Proxy Ports (:8080 - :8085)</span>
+        </div>
+        <div class="card-body" id="portsListContainer"></div>
+      </div>
+    </section>
+
+    <!-- VIEW 5: CLOTHES, SKINS & ASTC GALLERY -->
+    <section id="viewMedia" class="view-pane">
+      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
+        <h2 style="font-size:15px; font-family:var(--font-display);"><i class="ri-t-shirt-2-line" style="color:var(--pink);"></i> Captured Clothes, Default Bundles &amp; ASTC Icons Gallery</h2>
+        <button class="btn" onclick="switchMainTab('Stream')"><i class="ri-arrow-left-line"></i> Stream</button>
+      </div>
+      <div id="mediaGalleryGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:10px;"></div>
+    </section>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-btn active" id="navStream" onclick="switchMainTab('Stream')">
+      <i class="ri-radar-line"></i>
+      <span>Stream</span>
+    </button>
+    <button class="nav-btn" id="navInspector" onclick="switchMainTab('Inspector')">
+      <i class="ri-file-search-line"></i>
+      <span>Inspector</span>
+    </button>
+    <button class="nav-btn" id="navBillboards" onclick="switchMainTab('Billboards')">
+      <i class="ri-advertisement-line"></i>
+      <span>Billboards</span>
+    </button>
+    <button class="nav-btn" id="navMedia" onclick="switchMainTab('Media')">
+      <i class="ri-t-shirt-2-line"></i>
+      <span>Skins/Icons</span>
+    </button>
+    <button class="nav-btn" id="navPorts" onclick="switchMainTab('Ports')">
+      <i class="ri-shield-check-line"></i>
+      <span>Anti-Ban</span>
+    </button>
+  </nav>
+
+  <script>
+    const socket = io();
+    let packets = [];
+    let allocatedPorts = [];
+    let billboardsList = [];
+    let modifierConfig = {
+      bypassLoginServerUrl: true,
+      redirectCdnUrlsToPorts: true,
+      useLoopbackForCdn: true,
+      passiveBackgroundFetch: true,
+      customRules: []
+    };
+    let currentCategoryFilter = 'ALL';
+    let selectedPacketId = null;
+    let currentInspectorSubTab = 'ALL';
+
+    // Cache decoded ASTC PNG DataURLs by packetId so mobile Chrome NEVER hits the 8-WebGL-context limit!
+    const astcPngDataUrlCache = new Map();
+    let sharedGlCanvas = null;
+    let sharedGlCtx = null;
+    let sharedGlProgram = null;
+    let sharedGlVbo = null;
+
+    function showToast(msg) {
+      const t = document.getElementById('toast');
+      document.getElementById('toastMsg').textContent = msg;
+      t.classList.add('show');
+      setTimeout(() => t.classList.remove('show'), 2200);
+    }
+
+    async function copyText(text, label = 'Copied to Clipboard!') {
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast(label);
+      } catch (_) {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        showToast(label);
+      }
+    }
+
+    socket.on('connect', () => {
+      document.getElementById('wsDot').className = 'dot';
+      document.getElementById('wsStatus').textContent = 'LIVE';
+    });
+
+    socket.on('disconnect', () => {
+      document.getElementById('wsDot').className = 'dot offline';
+      document.getElementById('wsStatus').textContent = 'OFFLINE';
+    });
+
+    socket.on('init:bundle', (b) => {
+      if (Array.isArray(b.ports)) {
+        allocatedPorts = b.ports;
+        renderPortsList();
+      }
+      if (Array.isArray(b.billboards)) {
+        billboardsList = b.billboards;
+      }
+      if (b.modifier) {
+        modifierConfig = b.modifier;
+        syncModifierUi();
+      }
+      if (Array.isArray(b.packets)) {
+        packets = b.packets;
+        renderPacketList();
+        renderBillboardsTab();
+        renderMediaGallery();
+        if (packets.length > 0 && !selectedPacketId) {
+          selectPacket(packets[0].id, false);
+        }
+      }
+    });
+
+    socket.on('packet:new', (pkt) => {
+      packets.unshift(pkt);
+      if (packets.length > 1000) packets.pop();
+      renderPacketList();
+      if (pkt.urlMeta?.isBillboard || pkt.urlMeta?.category === 'BILLBOARD') {
+        renderBillboardsTab();
+      }
+      if (pkt.hasMediaPreview || pkt.urlMeta?.isClothesOrSkin) {
+        renderMediaGallery();
+      }
+      if (!selectedPacketId) selectPacket(pkt.id, false);
+    });
+
+    socket.on('ports:update', (list) => {
+      allocatedPorts = list || [];
+      renderPortsList();
+    });
+
+    socket.on('billboards:update', (list) => {
+      billboardsList = list || [];
+      renderBillboardsTab();
+      updateCounters();
+    });
+
+    socket.on('modifier:state', (cfg) => {
+      modifierConfig = cfg;
+      syncModifierUi();
+      showToast('Anti-Ban & Modifier Settings Updated!');
+    });
+
+    socket.on('packets:cleared', () => {
+      packets = [];
+      selectedPacketId = null;
+      astcPngDataUrlCache.clear();
+      renderPacketList();
+      renderBillboardsTab();
+      renderMediaGallery();
+      document.getElementById('inspectorBody').innerHTML = '';
+    });
+
+    function switchMainTab(tab) {
+      ['Stream', 'Inspector', 'Billboards', 'Ports', 'Media'].forEach((t) => {
+        const pane = document.getElementById('view' + t);
+        const nav = document.getElementById('nav' + t);
+        if (pane) pane.classList.toggle('active', t === tab);
+        if (nav) nav.classList.toggle('active', t === tab);
+      });
+      if (tab === 'Media') renderMediaGallery();
+      if (tab === 'Billboards') renderBillboardsTab();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function setCategoryFilter(cat, btn) {
+      currentCategoryFilter = cat;
+      document.querySelectorAll('.filter-scroll .chip').forEach((c) => c.classList.remove('active'));
+      if (btn) btn.classList.add('active');
+      switchMainTab('Stream');
+      renderPacketList();
+    }
+
+    function switchInspectorSubTab(subTab) {
+      currentInspectorSubTab = subTab;
+      document.getElementById('subBtnAll').classList.toggle('active', subTab === 'ALL');
+      document.getElementById('subBtnEnc').classList.toggle('active', subTab === 'ENCRYPTED');
+      document.getElementById('subBtnDec').classList.toggle('active', subTab === 'DECRYPTED');
+      renderInspectorContent();
+    }
+
+    function updateCounters() {
+      document.getElementById('cntALL').textContent = packets.length;
+      document.getElementById('cntCLOTHES').textContent = packets.filter((p) => p.urlMeta?.isClothesOrSkin).length;
+      const billPktCount = packets.filter((p) => p.urlMeta?.isBillboard || p.urlMeta?.category === 'BILLBOARD').length;
+      document.getElementById('cntBILLBOARDS').textContent = Math.max(billPktCount, billboardsList.length);
+    }
+
+    function isLikelyImageUrl(urlStr = '') {
+      return /\.(png|jpg|jpeg|webp|gif|astc)(\?.*)?$/i.test(String(urlStr));
+    }
+
+    function renderPacketList() {
+      const q = (document.getElementById('searchInput').value || '').toLowerCase();
+      updateCounters();
+
+      const filtered = packets.filter((p) => {
+        if (currentCategoryFilter === 'CLOTHES_SKINS' && !p.urlMeta?.isClothesOrSkin) return false;
+        if (currentCategoryFilter === 'BILLBOARD' && !p.urlMeta?.isBillboard && p.urlMeta?.category !== 'BILLBOARD') return false;
+        if (currentCategoryFilter === 'VERSION_CONFIG' && p.urlMeta?.category !== 'VERSION_CONFIG') return false;
+        if (currentCategoryFilter === 'LOGIN_AUTH' && p.urlMeta?.category !== 'LOGIN_AUTH' && p.urlMeta?.category !== 'OAUTH_TOKEN') return false;
+        if (!q) return true;
+        return JSON.stringify(p).toLowerCase().includes(q);
+      });
+
+      const el = document.getElementById('viewStream');
+      if (filtered.length === 0) {
+        el.innerHTML = '<div class="card"><div class="card-body" style="text-align:center; color:var(--text-1); padding:28px;">No matching packets found.</div></div>';
+        return;
+      }
+
+      el.innerHTML = filtered.slice(0, 120).map((p) => {
+        const isSel = p.id === selectedPacketId ? 'selected' : '';
+        const isClothes = p.urlMeta?.isClothesOrSkin ? 'clothes-card' : '';
+        const isBill = (p.urlMeta?.isBillboard || p.urlMeta?.category === 'BILLBOARD') ? 'billboard-card' : '';
+        const portNum = p.capturedPort || 8080;
+        const status = p.statusCode || 200;
+        const badge = p.urlMeta?.badge || `${p.protocol} PACKET`;
+        const catClass = `cat-${p.urlMeta?.category || 'GAME_API'}`;
+        const purpose = p.urlMeta?.purpose || (p.cmdName ? `RUDP Command: ${p.cmdName}` : p.packetType || '');
+        const urlOrTitle = p.fullUrl || p.requestTitle || p.cmdName || '';
+        const sz = p.protocol === 'HTTP' ? `${(p.request?.size || 0) + (p.response?.size || 0)} B` : `${p.size || 0} B`;
+
+        // Inline Thumbnail right next to the URL if it's an Image or ASTC icon!
+        let inlineThumbHtml = '';
+        if (p.hasMediaPreview) {
+          if (p.mediaFormat === 'ASTC_GPU_TEXTURE') {
+            const cachedPng = astcPngDataUrlCache.get(p.id);
+            inlineThumbHtml = `
+              <div class="inline-thumb-wrap" title="Live ASTC Icon Preview">
+                ${cachedPng
+                  ? `<img src="${cachedPng}" alt="ASTC" />`
+                  : `<canvas id="streamAstc_${p.id}" width="${p.astcMeta?.width || 110}" height="${p.astcMeta?.height || 110}"></canvas>`
+                }
+              </div>
+            `;
+          } else {
+            inlineThumbHtml = `
+              <div class="inline-thumb-wrap" title="Live Image Preview">
+                <img src="/api/media/${encodeURIComponent(p.id)}" alt="Preview" />
+              </div>
+            `;
+          }
+        } else if (isLikelyImageUrl(urlOrTitle)) {
+          inlineThumbHtml = `
+            <button class="btn btn-amber" onclick="event.stopPropagation(); quickFetchUrlImage('${escapeJs(urlOrTitle)}')" title="Fetch & Preview Image from URL">
+              <i class="ri-image-search-line"></i> Fetch Image
+            </button>
+          `;
+        }
+
+        return `
+          <div class="pkt-card ${isSel} ${isClothes} ${isBill}" onclick="selectPacket('${p.id}', true)">
+            <div class="pkt-top">
+              <div class="badge-row">
+                <span class="port-tag"><i class="ri-plug-line"></i> :${portNum}</span>
+                <span class="purpose-tag ${catClass}">${escapeHtml(badge)}</span>
+                <span class="status-tag ${status >= 400 ? 'err' : ''}">${p.method || p.protocol} &bull; ${status} (${p.durationMs || 0}ms)</span>
+              </div>
+              <span style="font-family:var(--font-mono); font-size:10.5px; color:var(--text-1);">${sz}</span>
+            </div>
+            <div class="pkt-main-row">
+              <div class="pkt-url-col">
+                <div class="pkt-url">${escapeHtml(urlOrTitle)}</div>
+                <div class="pkt-purpose-desc"><i class="ri-information-line" style="color:var(--accent);"></i> ${escapeHtml(purpose)}</div>
+              </div>
+              ${inlineThumbHtml}
+            </div>
+            <div class="pkt-foot">
+              <span>Req: ${escapeHtml((p.request?.encryption || 'NONE').split(' ')[0])} | Res: ${escapeHtml((p.response?.encryption || p.encryptionStatus || 'RAW').split(' ')[0])}</span>
+              <span style="color:var(--accent); font-weight:700;">Inspect <i class="ri-arrow-right-s-line"></i></span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      // Render any un-cached ASTC thumbnails visible in the stream
+      setTimeout(() => {
+        filtered.slice(0, 40).forEach((p) => {
+          if (p.hasMediaPreview && p.mediaFormat === 'ASTC_GPU_TEXTURE' && !astcPngDataUrlCache.has(p.id)) {
+            renderAstcToCanvas(p.id, `streamAstc_${p.id}`);
+          }
+        });
+      }, 30);
+    }
+
+    function selectPacket(id, openOnMobile) {
+      selectedPacketId = id;
+      renderPacketList();
+      if (openOnMobile && window.innerWidth < 980) {
+        switchMainTab('Inspector');
+      }
+      renderInspectorContent();
+    }
+
+    function buildFullCopyPayload(pkt) {
+      return JSON.stringify(
+        {
+          fullUrl: pkt.fullUrl || pkt.requestTitle,
+          capturedOnPort: pkt.capturedPort || 8080,
+          urlBadge: pkt.urlMeta?.badge || pkt.protocol,
+          urlPurpose: pkt.urlMeta?.purpose || pkt.packetType || pkt.cmdName,
+          category: pkt.urlMeta?.category || pkt.protocol,
+          method: pkt.method || pkt.direction,
+          statusCode: pkt.statusCode || 200,
+          timestamp: pkt.timestamp,
+          requestHeaders: pkt.request?.headers || {},
+          responseHeaders: pkt.response?.headers || {},
+          encryptedRequestHex: pkt.request?.rawHex || pkt.rawHex || '',
+          decryptedRequest: pkt.request?.decoded || null,
+          encryptedResponseHex: pkt.response?.rawHex || '',
+          decryptedResponse: pkt.response?.decoded || pkt.decodedPayload || null
+        },
+        null,
+        2
+      );
+    }
+
+    function copySelectedPacketEverything() {
+      const pkt = packets.find((p) => p.id === selectedPacketId);
+      if (!pkt) return;
+      copyText(buildFullCopyPayload(pkt), 'Full URL + Headers + Req/Res Copied!');
+    }
+
+    function downloadDecodedAstcPng(packetId, fileName) {
+      const dataUrl = astcPngDataUrlCache.get(packetId);
+      if (!dataUrl) {
+        showToast('Decoding ASTC texture first...');
+        return;
+      }
+      const a = document.createElement('a');
+      a.href = dataUrl;
+      a.download = String(fileName || 'icon.astc').replace(/\.astc$/i, '') + '.png';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+    }
+
+    function renderInspectorContent() {
+      const pkt = packets.find((p) => p.id === selectedPacketId);
+      const container = document.getElementById('inspectorBody');
+      if (!pkt) return;
+
+      const portNum = pkt.capturedPort || 8080;
+      document.getElementById('inspPortBadge').textContent = `Captured on Port :${portNum}`;
+
+      const status = pkt.statusCode || 200;
+      const badge = pkt.urlMeta?.badge || pkt.protocol;
+      const purpose = pkt.urlMeta?.purpose || pkt.packetType || pkt.cmdName || '';
+
+      let mediaBlockHtml = '';
+      if (pkt.hasMediaPreview) {
+        if (pkt.mediaFormat === 'ASTC_GPU_TEXTURE') {
+          const w = pkt.astcMeta?.width || 110;
+          const h = pkt.astcMeta?.height || 110;
+          const fName = pkt.astcMeta?.fileName || 'icon.astc';
+          mediaBlockHtml = `
+            <div class="card" style="border-color:var(--pink);">
+              <div class="card-hdr">
+                <span><i class="ri-t-shirt-2-line" style="color:var(--pink);"></i> Live Clothes / Bundle ASTC Preview (${escapeHtml(fName)})</span>
+                <div style="display:flex; gap:6px;">
+                  <button class="btn btn-primary" onclick="downloadDecodedAstcPng('${pkt.id}', '${escapeJs(fName)}')"><i class="ri-image-download-line"></i> Save .PNG</button>
+                  <a class="btn" href="/api/media/${encodeURIComponent(pkt.id)}" download="${escapeHtml(fName)}"><i class="ri-download-2-line"></i> .ASTC</a>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="media-preview-box">
+                  <canvas id="astcCanvas_${pkt.id}" width="${w}" height="${h}"></canvas>
+                  <div style="font-size:11.5px; color:var(--text-1); text-align:center;">
+                    Item ID: <b style="color:var(--pink);">${escapeHtml(pkt.urlMeta?.itemId || 'Bundle')}</b> &bull; ${w}x${h}px (ASTC ${pkt.astcMeta?.blockX || 8}x${pkt.astcMeta?.blockY || 8}) &bull; Exact Block Slice (${pkt.astcMeta?.expectedAstcBytes || 3136} B)
+                  </div>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          mediaBlockHtml = `
+            <div class="card" style="border-color:var(--amber);">
+              <div class="card-hdr">
+                <span><i class="ri-image-line" style="color:var(--amber);"></i> Live Billboard / Image Preview</span>
+                <div style="display:flex; gap:6px;">
+                  <a class="btn btn-amber" href="/api/media/${encodeURIComponent(pkt.id)}" download="image_preview.png"><i class="ri-download-2-line"></i> Download Image</a>
+                  <a class="btn" href="/api/media/${encodeURIComponent(pkt.id)}" target="_blank"><i class="ri-external-link-line"></i> Open</a>
+                </div>
+              </div>
+              <div class="card-body">
+                <div class="media-preview-box">
+                  <img src="/api/media/${encodeURIComponent(pkt.id)}" alt="Media Preview" />
+                </div>
+              </div>
+            </div>
+          `;
+        }
+      } else if (pkt.fullUrl && /^https?:\/\//i.test(pkt.fullUrl)) {
+        mediaBlockHtml = `
+          <div class="card">
+            <div class="card-hdr">
+              <span><i class="ri-image-search-line" style="color:var(--amber);"></i> Live Remote URL Image / Content Fetcher</span>
+              <button class="btn btn-amber" onclick="quickFetchUrlImage('${escapeJs(pkt.fullUrl)}')"><i class="ri-search-eye-line"></i> Fetch &amp; Preview URL Image</button>
+            </div>
+          </div>
+        `;
+      }
+
+      if (currentInspectorSubTab === 'ALL') {
+        let portMapHtml = '';
+        if (pkt.discoveredPortMappings && Object.keys(pkt.discoveredPortMappings).length > 0) {
+          portMapHtml = `
+            <div class="card">
+              <div class="card-hdr"><span><i class="ri-shield-check-line" style="color:var(--green);"></i> Protected Anti-Ban URLs &amp; Dedicated Port Routing</span></div>
+              <div class="card-body"><pre>${escapeHtml(JSON.stringify(pkt.discoveredPortMappings, null, 2))}</pre></div>
+            </div>
+          `;
+        }
+
+        container.innerHTML = `
+          <div class="card" style="border-color:var(--accent);">
+            <div class="card-hdr">
+              <span><i class="ri-information-fill" style="color:var(--accent);"></i> ${escapeHtml(badge)} (Port :${portNum})</span>
+              <button class="btn btn-success" onclick="copySelectedPacketEverything()"><i class="ri-file-copy-2-line"></i> Copy All (URL + Headers + Req/Res)</button>
+            </div>
+            <div class="card-body">
+              <div class="kv-row">
+                <span class="kv-lbl">What This URL Is For (URL Role / Billboard / Bundle Purpose):</span>
+                <span class="kv-val" style="color:var(--amber); font-weight:700;">${escapeHtml(badge)} &mdash; ${escapeHtml(purpose)}</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-lbl">Full URL / Endpoint:</span>
+                <span class="kv-val" style="color:var(--accent); font-weight:700;">${escapeHtml(pkt.fullUrl || pkt.requestTitle)}</span>
+              </div>
+              <div class="kv-row">
+                <span class="kv-lbl">Captured Proxy Port &amp; Status Code:</span>
+                <span class="kv-val">Port <b>:${portNum}</b> &bull; Status <b>${status}</b> (${pkt.durationMs || 0}ms) &bull; Mode: ${escapeHtml(pkt.passthroughMode || 'PASSTHROUGH')}</span>
+              </div>
+              <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
+                <button class="btn" onclick="copyText('${escapeJs(pkt.fullUrl || '')}', 'URL Copied!')"><i class="ri-link"></i> Copy URL</button>
+                <button class="btn" onclick="copyText(JSON.stringify(packets.find(x=>x.id==='${pkt.id}')?.request?.headers||{},null,2), 'Request Headers Copied!')"><i class="ri-code-s-slash-line"></i> Copy Req Headers</button>
+                <button class="btn" onclick="copyText(JSON.stringify(packets.find(x=>x.id==='${pkt.id}')?.response?.decoded||packets.find(x=>x.id==='${pkt.id}')?.decodedPayload||{},null,2), 'Decrypted Response Copied!')"><i class="ri-braces-line"></i> Copy Decrypted JSON</button>
+              </div>
+            </div>
+          </div>
+
+          ${mediaBlockHtml}
+          ${portMapHtml}
+
+          <div class="card">
+            <div class="card-hdr"><span><i class="ri-send-plane-fill" style="color:var(--accent);"></i> Outgoing Request Headers &amp; Decrypted Payload</span></div>
+            <div class="card-body"><pre>${escapeHtml(JSON.stringify({ headers: pkt.request?.headers, decodedPayload: pkt.request?.decoded }, null, 2))}</pre></div>
+          </div>
+
+          <div class="card">
+            <div class="card-hdr"><span><i class="ri-download-cloud-2-line" style="color:var(--green);"></i> Incoming Response Headers &amp; Decrypted Payload (Status ${status})</span></div>
+            <div class="card-body"><pre>${escapeHtml(JSON.stringify({ headers: pkt.response?.headers, decodedPayload: pkt.response?.decoded || pkt.decodedPayload }, null, 2))}</pre></div>
+          </div>
+        `;
+      } else if (currentInspectorSubTab === 'ENCRYPTED') {
+        const reqHex = pkt.request?.rawHex || pkt.rawHex || '(Empty / No Encrypted Body)';
+        const resHex = pkt.response?.rawHex || '(Empty Body)';
+        container.innerHTML = `
+          <div class="card">
+            <div class="card-hdr">
+              <span><i class="ri-lock-2-line" style="color:var(--amber);"></i> Outgoing Encrypted Request (${pkt.request?.size || pkt.size || 0} B)</span>
+              <button class="btn" onclick="copyText('${escapeJs(reqHex)}', 'Encrypted Request Hex Copied!')"><i class="ri-file-copy-line"></i> Copy Hex</button>
+            </div>
+            <div class="card-body">
+              <div style="margin-bottom:6px; color:var(--amber); font-size:11px;">Cipher: ${escapeHtml(pkt.request?.encryption || pkt.encryptionStatus || 'NONE')}</div>
+              <pre>${escapeHtml(reqHex)}</pre>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-hdr">
+              <span><i class="ri-lock-2-line" style="color:var(--purple);"></i> Incoming Encrypted / Raw Response (${pkt.response?.size || 0} B)</span>
+              <button class="btn" onclick="copyText('${escapeJs(resHex)}', 'Encrypted Response Hex Copied!')"><i class="ri-file-copy-line"></i> Copy Hex</button>
+            </div>
+            <div class="card-body">
+              <div style="margin-bottom:6px; color:var(--purple); font-size:11px;">Cipher / Format: ${escapeHtml(pkt.response?.encryption || 'RAW')}</div>
+              <pre>${escapeHtml(resHex)}</pre>
+            </div>
+          </div>
+        `;
+      } else if (currentInspectorSubTab === 'DECRYPTED') {
+        container.innerHTML = `
+          ${mediaBlockHtml}
+          <div class="card">
+            <div class="card-hdr">
+              <span><i class="ri-lock-unlock-line" style="color:var(--accent);"></i> Decrypted Outgoing Request (${escapeHtml(pkt.request?.schemaUsed || 'Auto')})</span>
+              <button class="btn" onclick="copyText(JSON.stringify(packets.find(x=>x.id==='${pkt.id}')?.request?.decoded||{},null,2), 'Decrypted Request Copied!')"><i class="ri-file-copy-line"></i> Copy JSON</button>
+            </div>
+            <div class="card-body">
+              <pre>${escapeHtml(JSON.stringify(pkt.request?.decoded, null, 2))}</pre>
+            </div>
+          </div>
+
+          <div class="card">
+            <div class="card-hdr">
+              <span><i class="ri-lock-unlock-line" style="color:var(--green);"></i> Decrypted Incoming Response (Status ${status})</span>
+              <button class="btn" onclick="copyText(JSON.stringify(packets.find(x=>x.id==='${pkt.id}')?.response?.decoded||packets.find(x=>x.id==='${pkt.id}')?.decodedPayload||{},null,2), 'Decrypted Response Copied!')"><i class="ri-file-copy-line"></i> Copy JSON</button>
+            </div>
+            <div class="card-body">
+              <pre>${escapeHtml(JSON.stringify(pkt.response?.decoded || pkt.decodedPayload, null, 2))}</pre>
+            </div>
+          </div>
+        `;
+      }
+
+      if (pkt.hasMediaPreview && pkt.mediaFormat === 'ASTC_GPU_TEXTURE') {
+        setTimeout(() => renderAstcToCanvas(pkt.id, `astcCanvas_${pkt.id}`), 30);
+      }
+    }
+
+    /**
+     * Render Billboards Tab: Shows all discovered Billboard URLs (from ver.php & traffic)
+     * with clear "🪧 BILLBOARD URL" badges and live fetched image previews right beside every URL!
+     */
+    function renderBillboardsTab() {
+      const container = document.getElementById('billboardsListContainer');
+      if (!container) return;
+
+      const billPackets = packets.filter((p) => p.urlMeta?.isBillboard || p.urlMeta?.category === 'BILLBOARD');
+      const combinedMap = new Map();
+
+      for (const b of billboardsList) {
+        if (b && b.url) combinedMap.set(b.url, { ...b });
+      }
+      for (const p of billPackets) {
+        if (p && p.fullUrl) {
+          const existing = combinedMap.get(p.fullUrl) || {};
+          combinedMap.set(p.fullUrl, {
+            ...existing,
+            url: p.fullUrl,
+            packetId: p.id,
+            badge: p.urlMeta?.badge || existing.badge || '🪧 BILLBOARD URL',
+            purpose: p.urlMeta?.purpose || existing.purpose || 'In-Game Billboard / Banner URL',
+            statusCode: p.statusCode || existing.statusCode || 200,
+            size: p.response?.size || existing.size || 0,
+            hasMediaPreview: p.hasMediaPreview || existing.hasMediaPreview,
+            mediaFormat: p.mediaFormat || existing.mediaFormat
+          });
+        }
+      }
+
+      const items = Array.from(combinedMap.values());
+      if (items.length === 0) {
+        container.innerHTML = '<div class="card"><div class="card-body" style="text-align:center; color:var(--text-1); padding:28px;">No Billboard URLs captured yet. Start the game or tap <b>Test</b>!</div></div>';
+        return;
+      }
+
+      container.innerHTML = items.map((item, idx) => {
+        const hasPreview = item.hasMediaPreview && item.packetId;
+        const isImg = item.isImage || isLikelyImageUrl(item.url) || (item.mediaFormat && item.mediaFormat.startsWith('image/'));
+
+        let previewSection = '';
+        if (hasPreview) {
+          previewSection = `
+            <div class="media-preview-box" style="margin-top:8px;">
+              <img src="/api/media/${encodeURIComponent(item.packetId)}" alt="Billboard Preview" style="max-width:280px; max-height:180px;" />
+              <div style="font-size:11px; color:var(--green);"><i class="ri-checkbox-circle-line"></i> Live Fetched Billboard Image Preview (${item.size || 0} B)</div>
+            </div>
+          `;
+        } else if (isImg) {
+          previewSection = `
+            <div class="media-preview-box" style="margin-top:8px;">
+              <img src="/api/fetch-preview?url=${encodeURIComponent(item.url)}" alt="Live Fetched Billboard" style="max-width:280px; max-height:180px;" onerror="this.style.display='none'" />
+              <div style="font-size:11px; color:var(--amber);">Live Proxy Auto-Fetched Image from Billboard URL</div>
+            </div>
+          `;
+        }
+
+        return `
+          <div class="card" style="border-left:3px solid var(--amber);">
+            <div class="card-hdr">
+              <div style="display:flex; align-items:center; gap:6px; flex-wrap:wrap;">
+                <span class="purpose-tag cat-BILLBOARD">${escapeHtml(item.badge || '🪧 BILLBOARD URL')}</span>
+                ${item.key ? `<span class="port-tag">${escapeHtml(item.key)}</span>` : ''}
+              </div>
+              <div style="display:flex; gap:6px;">
+                <button class="btn btn-amber" onclick="quickFetchUrlImage('${escapeJs(item.url)}')"><i class="ri-image-search-line"></i> Fetch &amp; Preview</button>
+                <button class="btn" onclick="copyText('${escapeJs(item.url)}', 'Billboard URL Copied!')"><i class="ri-file-copy-line"></i> Copy URL</button>
+                ${item.packetId ? `<button class="btn btn-primary" onclick="selectPacket('${item.packetId}', true)"><i class="ri-search-line"></i> Inspect</button>` : ''}
+              </div>
+            </div>
+            <div class="card-body" style="font-family:var(--font-sans);">
+              <div style="font-family:var(--font-mono); font-size:12px; font-weight:700; color:var(--text-0); word-break:break-all; margin-bottom:4px;">
+                ${escapeHtml(item.url)}
+              </div>
+              <div style="font-size:11.5px; color:var(--text-1);">
+                <i class="ri-information-line" style="color:var(--amber);"></i> <b>Billboard Role:</b> ${escapeHtml(item.purpose || 'Lobby Billboard / Event Banner Resource')}
+              </div>
+              ${previewSection}
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+
+    async function quickFetchUrlImage(targetUrl) {
+      if (!targetUrl) return;
+      document.getElementById('customFetchUrlInput').value = targetUrl;
+      switchMainTab('Billboards');
+      await fetchAndPreviewCustomUrl();
+    }
+
+    async function fetchAndPreviewCustomUrl() {
+      const input = document.getElementById('customFetchUrlInput');
+      const resBox = document.getElementById('customFetchPreviewResult');
+      const url = (input.value || '').trim();
+      if (!url || !/^https?:\/\//i.test(url)) {
+        showToast('Enter a valid http:// or https:// URL!');
+        return;
+      }
+      resBox.innerHTML = `<div style="color:var(--amber); font-size:12px; padding:8px;"><i class="ri-loader-4-line"></i> Fetching live URL from proxy server: <code>${escapeHtml(url)}</code>...</div>`;
+      try {
+        const res = await fetch('/api/fetch-preview?mode=json&url=' + encodeURIComponent(url));
+        const data = await res.json();
+        if (!data.ok) {
+          resBox.innerHTML = `<div style="color:var(--rose); font-size:12px; padding:8px;">Fetch Error: ${escapeHtml(data.error || 'Failed')}</div>`;
+          return;
+        }
+        showToast('URL Fetched & Added to Stream!');
+        if (data.mediaFormat === 'ASTC_GPU_TEXTURE') {
+          resBox.innerHTML = `
+            <div class="media-preview-box" style="margin-top:6px;">
+              <canvas id="customFetchAstc_${data.packetId}" width="${data.astcMeta?.width || 110}" height="${data.astcMeta?.height || 110}"></canvas>
+              <div style="font-size:11.5px; color:var(--pink);">Fetched ASTC Icon (${data.size} B) &mdash; <button class="btn btn-primary" onclick="selectPacket('${data.packetId}', true)">Inspect Packet</button></div>
+            </div>
+          `;
+          setTimeout(() => renderAstcToCanvas(data.packetId, `customFetchAstc_${data.packetId}`), 30);
+        } else if (data.hasMediaPreview) {
+          resBox.innerHTML = `
+            <div class="media-preview-box" style="margin-top:6px;">
+              <img src="/api/media/${encodeURIComponent(data.packetId)}" alt="Fetched Preview" style="max-width:300px; max-height:220px;" />
+              <div style="font-size:11.5px; color:var(--green);">Live Image Fetched (${data.size} B, ${escapeHtml(data.mediaFormat)}) &mdash; <button class="btn btn-primary" onclick="selectPacket('${data.packetId}', true)">Inspect Packet</button></div>
+            </div>
+          `;
+        } else {
+          resBox.innerHTML = `
+            <div style="background:var(--bg-0); padding:10px; border-radius:8px; border:1px solid var(--border); margin-top:6px;">
+              <div style="font-size:11.5px; color:var(--green); margin-bottom:6px;">Fetched ${data.size} bytes (${escapeHtml(data.urlMeta?.badge || 'URL')}) &mdash; <button class="btn btn-primary" onclick="selectPacket('${data.packetId}', true)">Open in Inspector</button></div>
+              <pre style="max-height:180px; overflow:auto;">${escapeHtml(JSON.stringify(data.decoded, null, 2))}</pre>
+            </div>
+          `;
+        }
+      } catch (e) {
+        resBox.innerHTML = `<div style="color:var(--rose); font-size:12px; padding:8px;">Error: ${escapeHtml(e.message)}</div>`;
+      }
+    }
+
+    /**
+     * ============================================================================
+     * FIXED HARDWARE WEBGL + SOFTWARE ASTC LDR BLOCK DECODER (v3.2)
+     * ============================================================================
+     * Fixes the Black Box issue on Android Chrome (`1793615048121.jpeg`):
+     *  1. Slices exact `blocksWide * blocksHigh * 16` bytes (`u8.subarray(16, 16 + expectedBytes)`),
+     *     stripping Garena's 8-to-16 byte trailing footer (`0000006e0000006e`) that caused
+     *     `gl.compressedTexImage2D` to throw `GL_INVALID_VALUE`!
+     *  2. Uses ONE shared offscreen WebGL context (`sharedGlCanvas`) with
+     *     `preserveDrawingBuffer: true` so mobile Chrome never hits the 8-WebGL-context limit,
+     *     then copies the rendered texture to the target 2D canvas and caches the PNG DataURL!
+     *  3. Includes an enhanced ASTC LDR endpoint + weight software decoder fallback for
+     *     browsers/PCs without hardware ASTC support.
+     */
+    function getSharedWebGlAstcContext(width, height) {
+      try {
+        if (!sharedGlCanvas) {
+          sharedGlCanvas = document.createElement('canvas');
+          sharedGlCtx =
+            sharedGlCanvas.getContext('webgl', { preserveDrawingBuffer: true, alpha: true, premultipliedAlpha: false }) ||
+            sharedGlCanvas.getContext('experimental-webgl', { preserveDrawingBuffer: true, alpha: true, premultipliedAlpha: false });
+          if (sharedGlCtx) {
+            const gl = sharedGlCtx;
+            const vs = gl.createShader(gl.VERTEX_SHADER);
+            // Note: Free Fire ASTC icons are stored bottom-up, so v.y = p.y * 0.5 + 0.5 flips it right-side up
+            gl.shaderSource(vs, 'attribute vec2 p; varying vec2 v; void main(){ v=vec2(p.x*0.5+0.5, p.y*0.5+0.5); gl_Position=vec4(p,0,1); }');
+            gl.compileShader(vs);
+
+            const fs = gl.createShader(gl.FRAGMENT_SHADER);
+            gl.shaderSource(fs, 'precision mediump float; varying vec2 v; uniform sampler2D t; void main(){ gl_FragColor=texture2D(t,v); }');
+            gl.compileShader(fs);
+
+            sharedGlProgram = gl.createProgram();
+            gl.attachShader(sharedGlProgram, vs);
+            gl.attachShader(sharedGlProgram, fs);
+            gl.linkProgram(sharedGlProgram);
+            gl.useProgram(sharedGlProgram);
+
+            sharedGlVbo = gl.createBuffer();
+            gl.bindBuffer(gl.ARRAY_BUFFER, sharedGlVbo);
+            gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, 1, 1]), gl.STATIC_DRAW);
+            const loc = gl.getAttribLocation(sharedGlProgram, 'p');
+            gl.enableVertexAttribArray(loc);
+            gl.vertexAttribPointer(loc, 2, gl.FLOAT, false, 0, 0);
+          }
+        }
+        if (sharedGlCanvas && sharedGlCtx) {
+          sharedGlCanvas.width = width;
+          sharedGlCanvas.height = height;
+          return { gl: sharedGlCtx, canvas: sharedGlCanvas };
+        }
+      } catch (_) {}
+      return null;
+    }
+
+    function decodeAstcSoftwareToImageData(body, width, height, blockX, blockY, ctx2d) {
+      const imgData = ctx2d.createImageData(width, height);
+      const data = imgData.data;
+      const blocksWide = Math.ceil(width / blockX);
+      const blocksHigh = Math.ceil(height / blockY);
+
+      function readBits(buf, bitOffset, bitCount) {
+        let val = 0;
+        for (let i = 0; i < bitCount; i++) {
+          const bPos = bitOffset + i;
+          const byteIdx = bPos >> 3;
+          const bitIdx = bPos & 7;
+          if (byteIdx < buf.length) {
+            val |= ((buf[byteIdx] >> bitIdx) & 1) << i;
+          }
+        }
+        return val >>> 0;
+      }
+
+      function readReversedBits(buf, bitOffsetFromEnd, bitCount) {
+        let val = 0;
+        for (let i = 0; i < bitCount; i++) {
+          const bPos = 127 - (bitOffsetFromEnd + i);
+          const byteIdx = bPos >> 3;
+          const bitIdx = bPos & 7;
+          if (byteIdx >= 0 && byteIdx < buf.length) {
+            val |= ((buf[byteIdx] >> bitIdx) & 1) << i;
+          }
+        }
+        return val >>> 0;
+      }
+
+      for (let by = 0; by < blocksHigh; by++) {
+        for (let bx = 0; bx < blocksWide; bx++) {
+          const bIdx = (by * blocksWide + bx) * 16;
+          if (bIdx + 16 > body.length) break;
+          const blk = body.subarray(bIdx, bIdx + 16);
+
+          // 1. Check Void-Extent (constant color block: bits 0..11 == 0xDFC -> blk[0] == 0xFC && (blk[1] & 0x03) == 0x01)
+          const isVoidExtent = blk[0] === 0xfc && (blk[1] & 0x03) === 0x01;
+          // 2. Check all-zero / transparent background block
+          let isAllZero = true;
+          for (let k = 0; k < 16; k++) {
+            if (blk[k] !== 0) { isAllZero = false; break; }
+          }
+
+          if (isAllZero) {
+            continue;
+          }
+
+          if (isVoidExtent) {
+            const r = blk[9], g = blk[11], b = blk[13], a = blk[15];
+            for (let py = 0; py < blockY; py++) {
+              for (let px = 0; px < blockX; px++) {
+                const x = bx * blockX + px;
+                const y = (blocksHigh - 1 - by) * blockY + (blockY - 1 - py);
+                if (x < width && y >= 0 && y < height) {
+                  const pOff = (y * width + x) * 4;
+                  data[pOff] = r; data[pOff + 1] = g; data[pOff + 2] = b; data[pOff + 3] = a;
+                }
+              }
+            }
+            continue;
+          }
+
+          // 3. Standard ASTC LDR Block: Extract Color Endpoint pair (e0, e1) & weight grid interpolation
+          const partCount = ((blk[1] >> 3) & 0x03) + 1;
+          const cem = partCount === 1 ? readBits(blk, 13, 4) : readBits(blk, 23, 6) & 0x0f;
+          const cemStartBit = partCount === 1 ? 17 : 29;
+
+          let r0 = 0, g0 = 0, b0 = 0, a0 = 255;
+          let r1 = 0, g1 = 0, b1 = 0, a1 = 255;
+
+          if (cem <= 3) {
+            // Luminance endpoints
+            const v0 = readBits(blk, cemStartBit, 8);
+            const v1 = readBits(blk, cemStartBit + 8, 8);
+            r0 = g0 = b0 = v0;
+            r1 = g1 = b1 = v1;
+          } else if (cem <= 7) {
+            // Luminance + Alpha or RGB Base+Scale
+            r0 = readBits(blk, cemStartBit, 8);
+            g0 = readBits(blk, cemStartBit + 8, 8);
+            b0 = readBits(blk, cemStartBit + 16, 8);
+            const scale = readBits(blk, cemStartBit + 24, 8);
+            r1 = r0; g1 = g0; b1 = b0;
+            r0 = (r0 * scale) >> 8;
+            g0 = (g0 * scale) >> 8;
+            b0 = (b0 * scale) >> 8;
+          } else {
+            // Direct RGB / RGBA endpoints
+            r0 = readBits(blk, cemStartBit, 8);
+            r1 = readBits(blk, cemStartBit + 8, 8);
+            g0 = readBits(blk, cemStartBit + 16, 8);
+            g1 = readBits(blk, cemStartBit + 24, 8);
+            b0 = readBits(blk, cemStartBit + 32, 8);
+            b1 = readBits(blk, cemStartBit + 40, 8);
+            if (cem >= 12) {
+              a0 = readBits(blk, cemStartBit + 48, 8);
+              a1 = readBits(blk, cemStartBit + 56, 8);
+            }
+          }
+
+          // Decode 2-bit texel weights from the top of the 128-bit block (reversed bit stream)
+          for (let py = 0; py < blockY; py++) {
+            for (let px = 0; px < blockX; px++) {
+              const x = bx * blockX + px;
+              const y = (blocksHigh - 1 - by) * blockY + (blockY - 1 - py);
+              if (x >= width || y < 0 || y >= height) continue;
+
+              const texIdx = ((py >> 1) * 4 + (px >> 1)) * 2;
+              const w2 = readReversedBits(blk, texIdx, 2);
+              const weight = w2 * 21; // 0, 21, 42, 63 -> / 64
+
+              const pOff = (y * width + x) * 4;
+              data[pOff] = ((r0 * (64 - weight) + r1 * weight) >> 6) & 0xff;
+              data[pOff + 1] = ((g0 * (64 - weight) + g1 * weight) >> 6) & 0xff;
+              data[pOff + 2] = ((b0 * (64 - weight) + b1 * weight) >> 6) & 0xff;
+              data[pOff + 3] = ((a0 * (64 - weight) + a1 * weight) >> 6) & 0xff;
+            }
+          }
+        }
+      }
+      return imgData;
+    }
+
+    async function renderAstcToCanvas(packetId, canvasId) {
+      const targetCanvas = document.getElementById(canvasId);
+      if (!targetCanvas) return;
+
+      // Fast path: if already decoded into PNG DataURL cache, draw immediately!
+      if (astcPngDataUrlCache.has(packetId)) {
+        const img = new Image();
+        img.onload = () => {
+          targetCanvas.width = img.width;
+          targetCanvas.height = img.height;
+          const ctx = targetCanvas.getContext('2d');
+          if (ctx) {
+            ctx.clearRect(0, 0, img.width, img.height);
+            ctx.drawImage(img, 0, 0);
+          }
+        };
+        img.src = astcPngDataUrlCache.get(packetId);
+        return;
+      }
+
+      try {
+        const res = await fetch('/api/media/' + encodeURIComponent(packetId));
+        if (!res.ok) return;
+        const arrayBuf = await res.arrayBuffer();
+        const u8 = new Uint8Array(arrayBuf);
+        if (u8.length < 16 || u8[0] !== 0x13 || u8[1] !== 0xab || u8[2] !== 0xa1 || u8[3] !== 0x5c) return;
+
+        const blockX = u8[4] || 8;
+        const blockY = u8[5] || 8;
+        const width = u8[7] | (u8[8] << 8) | (u8[9] << 16);
+        const height = u8[10] | (u8[11] << 8) | (u8[12] << 16);
+
+        // CRITICAL FIX: Slice EXACT `blocksWide * blocksHigh * 16` bytes (strips Garena's 8-byte `0000006e0000006e` footer!)
+        const blocksWide = Math.ceil(width / blockX);
+        const blocksHigh = Math.ceil(height / blockY);
+        const expectedBytes = blocksWide * blocksHigh * 16;
+        const body = u8.subarray(16, Math.min(u8.length, 16 + expectedBytes));
+
+        targetCanvas.width = width;
+        targetCanvas.height = height;
+        const ctx2d = targetCanvas.getContext('2d');
+        if (!ctx2d) return;
+
+        // 1. Try Hardware WebGL ASTC via Single Shared Offscreen WebGL Context
+        const shared = getSharedWebGlAstcContext(width, height);
+        if (shared && shared.gl) {
+          const gl = shared.gl;
+          const ext = gl.getExtension('WEBGL_compressed_texture_astc');
+          const fmtKey = `COMPRESSED_RGBA_ASTC_${blockX}x${blockY}_KHR`;
+          if (ext && ext[fmtKey] && body.byteLength === expectedBytes) {
+            while (gl.getError() !== gl.NO_ERROR) {}
+            const tex = gl.createTexture();
+            gl.bindTexture(gl.TEXTURE_2D, tex);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MIN_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_MAG_FILTER, gl.LINEAR);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_S, gl.CLAMP_TO_EDGE);
+            gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
+            gl.compressedTexImage2D(gl.TEXTURE_2D, 0, ext[fmtKey], width, height, 0, body);
+
+            if (gl.getError() === gl.NO_ERROR) {
+              gl.viewport(0, 0, width, height);
+              gl.clearColor(0, 0, 0, 0);
+              gl.clear(gl.COLOR_BUFFER_BIT);
+              gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
+
+              // Verify non-empty output
+              const pxCheck = new Uint8Array(width * height * 4);
+              gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pxCheck);
+              gl.deleteTexture(tex);
+
+              let nonZero = 0;
+              for (let i = 0; i < pxCheck.length; i += 16) {
+                if (pxCheck[i] > 0 || pxCheck[i + 1] > 0 || pxCheck[i + 2] > 0) {
+                  nonZero++;
+                  break;
+                }
+              }
+
+              if (nonZero > 0) {
+                ctx2d.clearRect(0, 0, width, height);
+                ctx2d.drawImage(shared.canvas, 0, 0);
+                try {
+                  astcPngDataUrlCache.set(packetId, targetCanvas.toDataURL('image/png'));
+                } catch (_) {}
+                return;
+              }
+            } else {
+              gl.deleteTexture(tex);
+            }
+          }
+        }
+
+        // 2. Fallback: Software ASTC Block Decoder onto 2D Canvas
+        const imgData = decodeAstcSoftwareToImageData(body, width, height, blockX, blockY, ctx2d);
+        ctx2d.putImageData(imgData, 0, 0);
+        try {
+          astcPngDataUrlCache.set(packetId, targetCanvas.toDataURL('image/png'));
+        } catch (_) {}
+      } catch (_) {}
+    }
+
+    function renderPortsList() {
+      const el = document.getElementById('portsListContainer');
+      if (!el) return;
+      const baseRow = `
+        <div class="kv-row">
+          <span class="kv-lbl">Port :8080 (Master Entry &bull; HTTP + TLS SNI + SOCKS5 + TCP/UDP)</span>
+          <span class="kv-val" style="color:var(--green);">Captures /live/ver.php + Transparent TLS SNI Passthrough + Raw Game TCP/UDP</span>
+        </div>
+      `;
+      const dynRows = allocatedPorts.map((p) => `
+        <div class="kv-row">
+          <span class="kv-lbl">Port :${p.port} &mdash; ${escapeHtml(p.label)} (${p.packetCount || 0} pkts)</span>
+          <span class="kv-val" style="color:var(--accent);">127.0.0.1:${p.port} &rarr; ${escapeHtml(p.origin)}</span>
+        </div>
+      `).join('');
+      el.innerHTML = baseRow + dynRows;
+    }
+
+    function syncModifierUi() {
+      const chkCdn = document.getElementById('chkRedirectCdn');
+      if (chkCdn) chkCdn.checked = Boolean(modifierConfig.redirectCdnUrlsToPorts);
+      const chkLoop = document.getElementById('chkUseLoopback');
+      if (chkLoop) chkLoop.checked = modifierConfig.useLoopbackForCdn !== false;
+
+      const list = document.getElementById('activeRulesList');
+      if (!list) return;
+      const rules = modifierConfig.customRules || [];
+      list.innerHTML = rules.map((r, idx) => `
+        <div style="background:var(--bg-2); padding:8px 10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
+          <div style="font-family:var(--font-mono); font-size:11px;">
+            <b style="color:var(--amber);">[${escapeHtml(r.type)}]</b> ${escapeHtml(r.urlPattern)} : <code>${escapeHtml(r.search || '')}</code> &rarr; <code>${escapeHtml(String(r.replace).slice(0, 45))}</code>
+          </div>
+          <button class="btn" onclick="removeResponseRule(${idx})"><i class="ri-close-line"></i></button>
+        </div>
+      `).join('');
+    }
+
+    function saveModifierSettings() {
+      modifierConfig.redirectCdnUrlsToPorts = document.getElementById('chkRedirectCdn').checked;
+      modifierConfig.useLoopbackForCdn = document.getElementById('chkUseLoopback').checked;
+      socket.emit('modifier:update', modifierConfig);
+    }
+
+    function addResponseRule() {
+      const urlPattern = document.getElementById('ruleUrlPattern').value.trim();
+      const type = document.getElementById('ruleType').value;
+      const search = document.getElementById('ruleSearch').value;
+      const replace = document.getElementById('ruleReplace').value;
+      if (!urlPattern || !replace) {
+        showToast('Enter target Clothes URL pattern & replacement!');
+        return;
+      }
+      if (!Array.isArray(modifierConfig.customRules)) modifierConfig.customRules = [];
+      modifierConfig.customRules.push({
+        id: Date.now(),
+        enabled: true,
+        urlPattern,
+        type,
+        search,
+        replace,
+        description: `${type} on ${urlPattern}`
+      });
+      socket.emit('modifier:update', modifierConfig);
+    }
+
+    function removeResponseRule(idx) {
+      modifierConfig.customRules.splice(idx, 1);
+      socket.emit('modifier:update', modifierConfig);
+    }
+
+    function renderMediaGallery() {
+      const grid = document.getElementById('mediaGalleryGrid');
+      if (!grid) return;
+      const items = packets.filter((p) => p.hasMediaPreview || p.urlMeta?.isClothesOrSkin);
+      if (items.length === 0) {
+        grid.innerHTML = '<div class="card" style="grid-column:1/-1;"><div class="card-body" style="text-align:center; color:var(--text-1);">No Clothes / Skins / Media packets captured yet.</div></div>';
+        return;
+      }
+      grid.innerHTML = items.slice(0, 100).map((p) => {
+        const cachedPng = astcPngDataUrlCache.get(p.id);
+        return `
+          <div class="card" style="cursor:pointer;" onclick="selectPacket('${p.id}', true)">
+            <div class="card-hdr" style="font-size:10.5px;">
+              <span>:${p.capturedPort || 8080}</span>
+              <span style="color:var(--pink);">${escapeHtml(p.urlMeta?.itemId ? '#' + p.urlMeta.itemId : 'BUNDLE')}</span>
+            </div>
+            <div class="card-body" style="display:flex; flex-direction:column; align-items:center; gap:6px;">
+              ${p.mediaFormat === 'ASTC_GPU_TEXTURE'
+                ? (cachedPng
+                    ? `<img src="${cachedPng}" style="width:92px; height:92px; object-fit:contain; border-radius:8px; border:1px solid var(--accent);" />`
+                    : `<canvas id="galCanvas_${p.id}" width="${p.astcMeta?.width || 110}" height="${p.astcMeta?.height || 110}" style="width:92px; height:92px; border-radius:8px; border:1px solid var(--accent);"></canvas>`)
+                : p.hasMediaPreview
+                  ? `<img src="/api/media/${encodeURIComponent(p.id)}" style="width:92px; height:92px; object-fit:contain; border-radius:8px; border:1px solid var(--amber);" />`
+                  : `<i class="ri-t-shirt-2-fill" style="font-size:42px; color:var(--pink);"></i>`
+              }
+              <div style="font-size:10.5px; text-align:center; word-break:break-all; color:var(--text-0);">${escapeHtml((p.path || p.fullUrl || '').split('/').pop() || p.path)}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      setTimeout(() => {
+        items.slice(0, 60).forEach((p) => {
+          if (p.mediaFormat === 'ASTC_GPU_TEXTURE' && !astcPngDataUrlCache.has(p.id)) {
+            renderAstcToCanvas(p.id, `galCanvas_${p.id}`);
+          }
+        });
+      }, 40);
+    }
+
+    function triggerSimulation() { socket.emit('simulate:suite', {}); }
+    function clearPackets() { socket.emit('packets:clear', {}); }
+
+    function escapeHtml(str) {
+      return String(str ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+    function escapeJs(str) {
+      return String(str ?? '').replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\n/g, '\\n').replace(/\r/g, '');
+    }
+  </script>
+</body>
+</html>

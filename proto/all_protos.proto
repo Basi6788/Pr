@@ -1,0 +1,294 @@
+syntax = "proto3";
+package freefire.omniproxy;
+
+// ============================================================================
+// 1. MajorLogin & Authentication (thunderFF.proto / RbcFF.proto / FreeFire.proto / GenSpin.py)
+// ============================================================================
+
+message MajorLoginGameSecurity {
+  bytes raw_1 = 1;
+  uint32 f2 = 2;
+  uint32 f4 = 4;
+  string version = 5;
+  bytes raw_6 = 6;
+}
+
+message MajorLoginReq {
+  string event_time = 3;
+  string game_name = 4;
+  int32 platform_id = 5;
+  string client_version = 7;
+  string system_software = 8;
+  string system_hardware = 9;
+  string telecom_operator = 10;
+  string network_type = 11;
+  uint32 screen_width = 12;
+  uint32 screen_height = 13;
+  string screen_dpi = 14;
+  string processor_details = 15;
+  uint32 memory = 16;
+  string gpu_renderer = 17;
+  string gpu_version = 18;
+  string unique_device_id = 19;
+  string client_ip = 20;
+  string language = 21;
+  string open_id = 22;
+  string open_id_type = 23;
+  string device_type = 24;
+  string device_model = 25;
+  string country_code = 26;
+  string access_token = 29;
+  int32 platform_sdk_id = 30;
+  bytes game_security_data = 33;
+  string network_operator_a = 41;
+  string network_type_a = 42;
+  string client_using_version = 57;
+  int32 external_storage_total = 60;
+  int32 external_storage_available = 61;
+  int32 internal_storage_total = 62;
+  int32 internal_storage_available = 63;
+  int32 game_disk_storage_available = 64;
+  int32 game_disk_storage_total = 65;
+  int32 external_sdcard_avail_storage = 66;
+  int32 external_sdcard_total_storage = 67;
+  int32 field_70 = 70;
+  int32 login_by = 73;
+  string library_path = 74;
+  int32 reg_avatar = 76;
+  string library_token = 77;
+  int32 channel_type = 78;
+  int32 cpu_type = 79;
+  string cpu_architecture = 81;
+  string client_version_code = 83;
+  int32 field_85 = 85;
+  string graphics_api = 86;
+  uint32 supported_astc_bitset = 87;
+  int32 login_open_id_type = 88;
+  bytes analytics_detail = 89;
+  string field_90 = 90;
+  string field_91 = 91;
+  uint32 loading_time = 92;
+  string release_channel = 93;
+  string extra_info = 94;
+  uint32 android_engine_init_flag = 95;
+  string field_96 = 96;
+  int32 if_push = 97;
+  int32 is_vpn = 98;
+  string origin_platform_type = 99;
+  string primary_platform_type = 100;
+  MajorLoginGameSecurity game_security_info = 102;
+  uint32 field_104 = 104;
+  int32 field_105 = 105;
+  string field_106 = 106;
+  string field_107 = 107;
+}
+
+message BlacklistInfoRes {
+  int32 ban_reason = 1;
+  int32 expire_duration = 2;
+  int64 ban_time = 3;
+}
+
+message MajorLoginRes {
+  uint64 account_id = 1;
+  string lock_region = 2;
+  string noti_region = 3;
+  string ip_region = 4;
+  string token = 8;
+  uint32 ttl = 9;
+  string server_url = 10;
+  int32 emulator_score = 11;
+  BlacklistInfoRes blacklist = 12;
+  string ip_city = 16;
+  string ip_subdivision = 17;
+  uint32 kts = 21;
+  bytes aes_ak = 22;
+  bytes aes_aiv = 23;
+}
+
+// ============================================================================
+// 2. MajorRegister & ChooseNewbieChoice (GenXDivan.py)
+// ============================================================================
+
+message MajorRegisterReq {
+  string nickname = 1;
+  string access_token = 2;
+  string open_id = 3;
+  uint32 platform_id = 4;
+  uint32 flag_5 = 5;
+  uint32 flag_6 = 6;
+  string device_model = 7;
+  string system_software = 8;
+  string telecom_operator = 10;
+  uint32 flag_12 = 12;
+  string lang = 13;
+  bytes xored_open_id = 14;
+  string region = 15;
+  uint32 flag_16 = 16;
+  string client_version = 17;
+}
+
+message ChooseNewbieChoiceReq {
+  uint32 choice_id = 1;
+  uint32 step = 2;
+}
+
+// ============================================================================
+// 3. GetLoginData (thunderFF.proto / RbcFF.proto)
+// ============================================================================
+
+message GetLoginDataRes {
+  uint64 account_id = 1;
+  string region = 3;
+  string nickname = 4;
+  uint32 level = 6;
+  uint32 exp = 7;
+  int32 clan_id = 12;
+  string functional_addrs = 14;
+  int32 likes = 21;
+  string informational_addrs = 32;
+  bytes servers = 44;
+  string clan_name = 58;
+  string grtc = 62;
+}
+
+// ============================================================================
+// 4. Matchmaking & UDP Session Setup (thunderFF.proto / StartMatch.proto)
+// ============================================================================
+
+message StartMatch {
+  uint32 mode = 1;
+  uint32 region_id = 2;
+  uint32 sub_mode = 3;
+  uint32 map_id = 4;
+  uint32 team_size = 5;
+  string client_version = 7;
+  uint32 flag_9 = 9;
+  uint32 extra_flag = 13;
+}
+
+message StartUDPMatch {
+  uint64 account_id = 1;
+  string nickname = 2;
+  string match_token = 3;
+  uint32 sub_mode = 4;
+  string device_model = 5;
+  string gpu_renderer = 6;
+  uint32 memory = 7;
+  uint32 extra_flag = 9;
+  string ip_address = 12;
+  string client_version = 20;
+}
+
+message MatchFoundServerInfo {
+  uint64 block_val = 1;
+  string server_ip_port = 2;
+  bytes udp_key = 3;
+  string match_token = 4;
+  string match_code = 42;
+}
+
+message MatchFoundPacket {
+  uint64 account_id = 1;
+  MatchFoundServerInfo server_info = 5;
+  string match_code = 42;
+}
+
+// ============================================================================
+// 5. Profile, Likes & UID Generator (AccountPersonalShow.proto / like.proto)
+// ============================================================================
+
+message GetPlayerPersonalShowReq {
+  int64 uid = 1;
+  int32 need_gallery_info = 2;
+}
+
+message LikeProfileReq {
+  int64 uid = 1;
+  string region = 2;
+}
+
+message UidGeneratorReq {
+  int64 saturn_ = 1;
+  int32 garena = 2;
+}
+
+message PurchaseGachaReq {
+  uint32 gacha_id = 1;
+  uint32 draw_count = 2;
+  uint32 event_id = 3;
+  uint32 currency_type = 4;
+  uint32 f7 = 7;
+  uint32 f8 = 8;
+  uint32 f9 = 9;
+  uint32 f10 = 10;
+  uint32 f11 = 11;
+  uint32 f13 = 13;
+}
+
+message AccountInfoBasic {
+  uint64 account_id = 1;
+  uint32 account_type = 2;
+  string nickname = 3;
+  string external_id = 4;
+  string region = 5;
+  uint32 level = 6;
+  uint32 exp = 7;
+  uint32 external_type = 8;
+  string external_name = 9;
+  string external_icon = 10;
+  uint32 banner_id = 11;
+  uint32 head_pic = 12;
+  string clan_name = 13;
+  uint32 rank = 14;
+  uint32 ranking_points = 15;
+  uint32 role = 16;
+  bool has_elite_pass = 17;
+  uint32 badge_cnt = 18;
+  uint32 badge_id = 19;
+  uint32 season_id = 20;
+  uint32 liked = 21;
+  bool is_deleted = 22;
+  bool show_rank = 23;
+  int64 last_login_at = 24;
+  uint64 external_uid = 25;
+  int64 return_at = 26;
+  string championship_team_name = 27;
+  uint32 championship_team_member_num = 28;
+  uint64 championship_team_id = 29;
+  uint32 cs_rank = 30;
+  uint32 cs_ranking_points = 31;
+  repeated uint32 weapon_skin_shows = 32;
+  uint32 pin_id = 33;
+  bool is_cs_ranking_ban = 34;
+  uint32 max_rank = 35;
+  uint32 cs_max_rank = 36;
+  uint32 max_ranking_points = 37;
+  uint32 game_bag_show = 38;
+  uint32 peak_rank_pos = 39;
+  uint32 cs_peak_rank_pos = 40;
+  int64 create_at = 44;
+  uint32 veteran_leave_days_tag = 45;
+  repeated uint32 selected_item_slots = 46;
+  uint32 title = 48;
+  string release_version = 50;
+  bool show_br_rank = 52;
+  bool show_cs_rank = 53;
+  uint64 clan_id = 54;
+  uint32 clan_badge_id = 55;
+  string custom_clan_badge = 56;
+}
+
+message AccountPersonalShowInfo {
+  AccountInfoBasic basic_info = 1;
+  bytes avatar_profile = 2;
+  int32 ranking_leaderboard_pos = 3;
+  bytes news = 4;
+  bytes history_ep_info = 5;
+  bytes clan_basic_info = 6;
+  bytes captain_basic_info = 7;
+  bytes pet_info = 8;
+  bytes social_info = 9;
+  bytes diamond_cost_res = 10;
+  bytes credit_score_info = 11;
+}
