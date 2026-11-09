@@ -627,16 +627,12 @@ async function universalHttpHandler(req, res) {
     return;
   }
 
-  // 1. Serve Dashboard at `/ds`, `/ds/`, `/dashboard`, or on Port :3000 root `/`
-  const isPort3000Root = reqPath === '/' && String(reqHost).endsWith(`:${DASHBOARD_PORT}`);
-  const isBrowserRootVisit =
-    reqPath === '/' &&
-    String(req.headers['accept'] || '').includes('text/html') &&
-    !String(req.headers['user-agent'] || '').toLowerCase().includes('unity');
-
-  if (reqPath === '/ds' || reqPath === '/ds/' || reqPath === '/dashboard' || reqPath === '/index.html' || isPort3000Root || isBrowserRootVisit) {
-    const indexHtmlPath = path.join(__dirname, 'public', 'index.html');
-    const html = fs.readFileSync(indexHtmlPath, 'utf8');
+  // 1. Serve Dashboard STRICTLY at `/ds`, `/ds/`, or `/dashboard` ONLY (NEVER on `/`!)
+  if (reqPath === '/ds' || reqPath === '/ds/' || reqPath === '/dashboard') {
+    const viewsHtmlPath = path.join(__dirname, 'views', 'dashboard.html');
+    const fallbackHtmlPath = path.join(__dirname, 'public', 'index.html');
+    const targetHtmlPath = fs.existsSync(viewsHtmlPath) ? viewsHtmlPath : fallbackHtmlPath;
+    const html = fs.readFileSync(targetHtmlPath, 'utf8');
     res.writeHead(200, {
       'Content-Type': 'text/html; charset=utf-8',
       'Cache-Control': 'no-store'

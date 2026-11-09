@@ -9,6 +9,8 @@
 const KEYS = {
   // 0. Pakistan (PK) #1 Priority OB55 Master Config Template (Captured from Real PK Packet #120)
   PK_OB55_VER_TEMPLATE: {
+    code: 0,
+    is_server_open: true,
     is_firewall_open: false,
     cdn_url: 'https://dl.gmc.freefiremobile.com/live/ABHotUpdates/',
     backup_cdn_url: 'https://dl.gmc.freefiremobile.com/live/ABHotUpdates/',

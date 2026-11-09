@@ -104,7 +104,7 @@ const responseModConfig = {
   // Force Pakistan (`PK`) URLs (`dl.gmc`, `core-gmc`, `pkennbgiuab`, `sgnetwork`, `country_code: "PK"`) instead of Brazil (`BR`)
   forcePakistanCountryCode: true,
   // Sync `remote_version` to client's `?version=` parameter to prevent Error 400 Store Update popup
-  syncRemoteVersionToClient: true,
+  syncRemoteVersionToClient: false,
   disableHotupdateTracking: false,
   bypassLoginServerUrl: true,
   routeCdnOnSameHost: true,
@@ -304,7 +304,7 @@ function classifyUrlPurpose(fullUrlStr = '', pathname = '', contentType = '') {
     pLower.endsWith('.gif') ||
     cLower.startsWith('image/');
 
-  if (pLower.endsWith('ver.php')) {
+  if (pLower === '/' || pLower.endsWith('ver.php')) {
     return {
       category: 'VERSION_CONFIG',
       badge: '⚙️ PK VERSION & SERVER CONFIG',
@@ -827,7 +827,7 @@ function buildReadOnlyVerPhpMappings(rawBuf, headers = {}, clientHostHeader = ''
 function doesResponseNeedModification(finalUrl) {
   if (!responseModConfig.modifierEnabled) return false;
   const pLower = finalUrl.pathname.toLowerCase();
-  if (pLower.endsWith('ver.php')) {
+  if (pLower === '/' || pLower.endsWith('ver.php')) {
     return true;
   }
   for (const rule of responseModConfig.customRules) {
@@ -869,7 +869,7 @@ function processResponseAndAssignPaths({
   const discoveredPortMappings = {};
   const appliedMods = [];
 
-  if (pLower.endsWith('ver.php')) {
+  if (pLower === '/' || pLower.endsWith('ver.php')) {
     try {
       const decompressed = decompressBuffer(Buffer.from(resBuffer), resHeaders['content-encoding']);
       const rawText = decompressed.toString('utf8');
@@ -1025,9 +1025,32 @@ function processResponseAndAssignPaths({
           };
         }
 
-        let outText = JSON.stringify(modifiedData);
-        if (usesEscapedSlashes) {
-          outText = outText.replace(/\//g, '\\/');
+        let outText = rawText;
+        // Try surgical replacement on rawText first so byte formatting & key order stay 100% identical to upstream
+        let surgicalSuccess = true;
+        for (const [k, v] of Object.entries(modifiedData)) {
+          if (data[k] === v) continue;
+          if (typeof data[k] === 'string' && typeof v === 'string') {
+            const origEsc = usesEscapedSlashes ? data[k].replace(/\//g, '\\/') : data[k];
+            const newEsc = usesEscapedSlashes ? v.replace(/\//g, '\\/') : v;
+            const t1 = `"${k}":"${origEsc}"`;
+            const t2 = `"${k}": "${origEsc}"`;
+            if (outText.includes(t1)) {
+              outText = outText.replace(t1, `"${k}":"${newEsc}"`);
+            } else if (outText.includes(t2)) {
+              outText = outText.replace(t2, `"${k}": "${newEsc}"`);
+            } else {
+              surgicalSuccess = false;
+            }
+          } else {
+            surgicalSuccess = false;
+          }
+        }
+        if (!surgicalSuccess) {
+          outText = JSON.stringify(modifiedData);
+          if (usesEscapedSlashes) {
+            outText = outText.replace(/\//g, '\\/');
+          }
         }
         const newJsonBuf = Buffer.from(outText, 'utf8');
         const newWireBuf = recompressLikeOriginal(newJsonBuf, resHeaders['content-encoding']);
@@ -1188,7 +1211,7 @@ function buildPakistanPriorityCandidates(pathname, search, preferredOrigin = nul
   const pLower = pathname.toLowerCase();
 
   // 1. Version & Server Config (`/live/ver.php` or `/ver.php`) — Force Pakistan `region=PK&lang=en` query if enabled!
-  if (pLower === '/ver.php' || pLower.endsWith('/ver.php')) {
+  if (pLower === '/' || pLower === '/ver.php' || pLower.endsWith('/ver.php')) {
     let effectiveSearch = search || '';
     if (responseModConfig.forcePakistanCountryCode && effectiveSearch) {
       try {
@@ -1458,7 +1481,7 @@ function createHttpHandler({ fixedPort = 8080, onPacket }) {
           parsedUrl = new URL(targetUrlStr);
         } catch (e) {
           if (candIdx < candidates.length) return attemptUpstream(candidates[candIdx++], 6);
-          if (primaryUrl.pathname.toLowerCase().endsWith('ver.php')) return serveBuiltInPkVerFallback();
+          if (primaryUrl.pathname === '/' || primaryUrl.pathname.toLowerCase().endsWith('ver.php')) return serveBuiltInPkVerFallback();
           clientRes.writeHead(502, { 'Content-Type': 'application/json' });
           clientRes.end(JSON.stringify({ error: e.message }));
           return;
@@ -1564,7 +1587,7 @@ function createHttpHandler({ fixedPort = 8080, onPacket }) {
                   const wireHash = sha256Short(capturedBuf);
 
                   let discoveredPortMappings = {};
-                  if (parsedUrl.pathname.toLowerCase().endsWith('ver.php')) {
+                  if (parsedUrl.pathname === '/' || parsedUrl.pathname.toLowerCase().endsWith('ver.php')) {
                     discoveredPortMappings = buildReadOnlyVerPhpMappings(
                       capturedBuf,
                       proxyRes.headers,
@@ -1794,7 +1817,7 @@ function createHttpHandler({ fixedPort = 8080, onPacket }) {
           if (candIdx < candidates.length) {
             return attemptUpstream(candidates[candIdx++], 6);
           }
-          if (primaryUrl.pathname.toLowerCase().endsWith('ver.php')) {
+          if (primaryUrl.pathname === '/' || primaryUrl.pathname.toLowerCase().endsWith('ver.php')) {
             return serveBuiltInPkVerFallback();
           }
           if (!clientRes.headersSent) {
