@@ -1,15 +1,26 @@
 /**
  * ============================================================================
+<<<<<<< HEAD
  * FF-OMNI-PROXY v4.1: Zero-Latency Port 8080 Multiplexer
  * (HTTP + CONNECT + Transparent TLS SNI + SOCKS5 + Raw Game TCP)
  * ============================================================================
  *  - Zero loopback references anywhere.
  *  - Forwards all bytes FIRST and runs inspection asynchronously via `setImmediate`
  *    so the game client never experiences proxy lag or data-upload timeouts.
+=======
+ * FF-OMNI-PROXY v3.2: Stealth Port 8080 Multiplexer
+ * (HTTP + CONNECT + Transparent TLS SNI + SOCKS5 + Raw Game TCP)
+ * ============================================================================
+ * Anti-Ban "Disabling data upload" Protection on Port :8080:
+ *  - Passes exact encrypted bytes between Client and Server without modification.
+ *  - Supports HTTP/HTTPS proxy, CONNECT tunnels, Transparent TLS (0x16 0x03) SNI
+ *    routing, and SOCKS5 (0x05) so GGP / Castle / NetworkLog data uploads never fail!
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
  */
 
 const net = require('net');
 const http = require('http');
+<<<<<<< HEAD
 const os = require('os');
 const { parseTcpFrame, sessionState } = require('../crypto/cipherEngine');
 const { createHttpHandler, classifyUrlPurpose, responseModConfig } = require('./httpInterceptor');
@@ -31,6 +42,13 @@ function getActiveLanIps() {
   return ips;
 }
 
+=======
+const { parseTcpFrame, sessionState } = require('../crypto/cipherEngine');
+const { createHttpHandler, classifyUrlPurpose } = require('./httpInterceptor');
+
+const HTTP_FIRST_WORDS = ['GET ', 'POST', 'PUT ', 'DELE', 'HEAD', 'OPTI', 'PATC', 'CONN'];
+
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
 function extractTlsSni(buf) {
   try {
     if (!buf || buf.length < 43) return null;
@@ -68,12 +86,19 @@ function extractTlsSni(buf) {
   return null;
 }
 
+<<<<<<< HEAD
 function isSelfProxyTarget(hostStr = '', portNum = 8080, listenPort = 8080) {
   if (Number(portNum) !== Number(listenPort)) return false;
   const h = String(hostStr).trim().toLowerCase();
   if (!h) return true;
   const localIps = getActiveLanIps();
   return localIps.has(h);
+=======
+function isLocalLoopbackOrSelf(hostStr = '', portNum = 8080, listenPort = 8080) {
+  const h = String(hostStr).trim().toLowerCase();
+  if (Number(portNum) !== Number(listenPort)) return false;
+  return h === '127.0.0.1' || h === 'localhost' || h === '0.0.0.0' || h.startsWith('10.') || h.startsWith('192.168.');
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
 }
 
 function attachRawTcpFrameInspector({
@@ -88,6 +113,7 @@ function attachRawTcpFrameInspector({
     if (upstreamSocket && !upstreamSocket.destroyed && upstreamSocket.writable) {
       upstreamSocket.write(chunk);
     }
+<<<<<<< HEAD
     const cloned = Buffer.from(chunk);
     const activeMode = responseModConfig.modifierEnabled ? 'ON' : 'OFF';
     setImmediate(() => {
@@ -113,12 +139,32 @@ function attachRawTcpFrameInspector({
         if (onPacket) onPacket(evt, sessionState);
       } catch (_) {}
     });
+=======
+    const parsed = parseTcpFrame(Buffer.from(chunk), 'CLIENT->SERVER');
+    const evt = {
+      id: `TCP-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      protocol: 'TCP',
+      capturedPort: 8080,
+      direction: 'CLIENT -> SERVER',
+      statusCode: 200,
+      passthroughMode: 'EXACT_ENCRYPTED_WIRE_PASSTHROUGH',
+      requestTitle: `[TCP OUTGOING REQUEST] ${parsed.packetType || 'TCP_FRAME'} (${clientAddr} -> ${targetAddr})`,
+      responseTitle: `[TCP PASSTHROUGH] Status: 200 OK -> ${targetAddr}`,
+      timestamp: new Date().toISOString(),
+      source: clientAddr,
+      destination: targetAddr,
+      size: chunk.length,
+      ...parsed
+    };
+    if (onPacket) onPacket(evt, sessionState);
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   };
 
   const handleServerChunk = (chunk) => {
     if (clientSocket && !clientSocket.destroyed && clientSocket.writable) {
       clientSocket.write(chunk);
     }
+<<<<<<< HEAD
     const cloned = Buffer.from(chunk);
     const activeMode = responseModConfig.modifierEnabled ? 'ON' : 'OFF';
     setImmediate(() => {
@@ -144,6 +190,25 @@ function attachRawTcpFrameInspector({
         if (onPacket) onPacket(evt, sessionState);
       } catch (_) {}
     });
+=======
+    const parsed = parseTcpFrame(Buffer.from(chunk), 'SERVER->CLIENT');
+    const evt = {
+      id: `TCP-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      protocol: 'TCP',
+      capturedPort: 8080,
+      direction: 'SERVER -> CLIENT',
+      statusCode: 200,
+      passthroughMode: 'EXACT_ENCRYPTED_WIRE_PASSTHROUGH',
+      requestTitle: `[TCP STREAM] ${targetAddr} -> ${clientAddr}`,
+      responseTitle: `[TCP INCOMING RESPONSE] Status: 200 OK | ${parsed.packetType || 'TCP_FRAME'}`,
+      timestamp: new Date().toISOString(),
+      source: targetAddr,
+      destination: clientAddr,
+      size: chunk.length,
+      ...parsed
+    };
+    if (onPacket) onPacket(evt, sessionState);
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   };
 
   if (initialChunk && initialChunk.length > 0) {
@@ -156,7 +221,15 @@ function attachRawTcpFrameInspector({
   }
 }
 
+<<<<<<< HEAD
 function handleSocks5Connection(clientSocket, firstChunk, listenPort, onPacket) {
+=======
+/**
+ * Handle SOCKS5 Connections on Port :8080 (for Android VPN apps using SOCKS5 mode)
+ */
+function handleSocks5Connection(clientSocket, firstChunk, listenPort, onPacket) {
+  // Greeting: [0x05, nmethods, ...methods] -> reply [0x05, 0x00] (No Auth)
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   clientSocket.write(Buffer.from([0x05, 0x00]));
 
   clientSocket.once('data', (reqChunk) => {
@@ -164,16 +237,27 @@ function handleSocks5Connection(clientSocket, firstChunk, listenPort, onPacket) 
       clientSocket.destroy();
       return;
     }
+<<<<<<< HEAD
     const startTime = Date.now();
+=======
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     const atyp = reqChunk[3];
     let targetHost = '';
     let targetPort = 443;
     let offset = 4;
 
     if (atyp === 0x01 && reqChunk.length >= 10) {
+<<<<<<< HEAD
       targetHost = `${reqChunk[4]}.${reqChunk[5]}.${reqChunk[6]}.${reqChunk[7]}`;
       offset = 8;
     } else if (atyp === 0x03) {
+=======
+      // IPv4
+      targetHost = `${reqChunk[4]}.${reqChunk[5]}.${reqChunk[6]}.${reqChunk[7]}`;
+      offset = 8;
+    } else if (atyp === 0x03) {
+      // Domain name
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       const domainLen = reqChunk[4];
       if (reqChunk.length < 5 + domainLen + 2) {
         clientSocket.destroy();
@@ -187,12 +271,17 @@ function handleSocks5Connection(clientSocket, firstChunk, listenPort, onPacket) 
     }
 
     targetPort = reqChunk.readUInt16BE(offset);
+<<<<<<< HEAD
     if (isSelfProxyTarget(targetHost, targetPort, listenPort)) {
+=======
+    if (isLocalLoopbackOrSelf(targetHost, targetPort, listenPort)) {
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       clientSocket.destroy();
       return;
     }
 
     const upstream = net.connect(targetPort, targetHost, () => {
+<<<<<<< HEAD
       upstream.setNoDelay(true);
       clientSocket.setNoDelay(true);
       const reply = Buffer.from([0x05, 0x00, 0x00, 0x01, 0, 0, 0, 0, 0, 0]);
@@ -246,6 +335,13 @@ function handleSocks5Connection(clientSocket, firstChunk, listenPort, onPacket) 
           );
         }
       });
+=======
+      // SOCKS5 success reply
+      const reply = Buffer.from([0x05, 0x00, 0x00, 0x01, 0, 0, 0, 0, 0, 0]);
+      clientSocket.write(reply);
+      clientSocket.pipe(upstream);
+      upstream.pipe(clientSocket);
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     });
 
     upstream.on('error', () => clientSocket.destroy());
@@ -255,6 +351,7 @@ function handleSocks5Connection(clientSocket, firstChunk, listenPort, onPacket) 
 
 function createUnifiedPort8080Server({
   listenPort = 8080,
+<<<<<<< HEAD
   defaultTcpTargetHost = '',
   defaultTcpTargetPort = 39003,
   onUniversalHttpRequest = null,
@@ -264,6 +361,14 @@ function createUnifiedPort8080Server({
   const internalHttpServer = http.createServer(httpHandler);
   internalHttpServer.keepAliveTimeout = 30000;
   internalHttpServer.headersTimeout = 35000;
+=======
+  defaultTcpTargetHost = '127.0.0.1',
+  defaultTcpTargetPort = 39003,
+  onPacket
+}) {
+  const httpHandler = createHttpHandler({ fixedPort: listenPort, onPacket });
+  const internalHttpServer = http.createServer(httpHandler);
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
 
   internalHttpServer.on('connect', (req, clientSocket, head) => {
     const startTime = Date.now();
@@ -273,22 +378,31 @@ function createUnifiedPort8080Server({
     const clientAddr = `${clientSocket.remoteAddress || 'client'}:${clientSocket.remotePort || ''}`;
     const targetAddr = `${targetHost}:${targetPort}`;
 
+<<<<<<< HEAD
     if (!targetHost || isSelfProxyTarget(targetHost, targetPort, listenPort)) {
+=======
+    if (!targetHost || isLocalLoopbackOrSelf(targetHost, targetPort, listenPort)) {
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       clientSocket.destroy();
       return;
     }
 
+<<<<<<< HEAD
     clientSocket.pause();
 
     const serverSocket = net.connect(targetPort, targetHost, () => {
       serverSocket.setNoDelay(true);
       clientSocket.setNoDelay(true);
+=======
+    const serverSocket = net.connect(targetPort, targetHost, () => {
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       clientSocket.write('HTTP/1.1 200 Connection Established\r\n\r\n');
 
       let firstChunkInspected = false;
       let isRawGameTcp = false;
 
       const inspectChunk = (chunk, dir) => {
+<<<<<<< HEAD
         const cloned = Buffer.from(chunk);
         const activeMode = responseModConfig.modifierEnabled ? 'ON' : 'OFF';
         setImmediate(() => {
@@ -369,6 +483,80 @@ function createUnifiedPort8080Server({
             if (onPacket) onPacket(evt, sessionState);
           }
         });
+=======
+        if (!firstChunkInspected && dir === 'C->S') {
+          firstChunkInspected = true;
+          const sni = extractTlsSni(chunk);
+          if (chunk[0] === 0x16 && chunk[1] === 0x03) {
+            const fullTunnelUrl = `https://${sni || targetHost}:${targetPort}/`;
+            const evt = {
+              id: `HTTP-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+              protocol: 'HTTP',
+              capturedPort: listenPort,
+              direction: 'CONNECT TUNNEL',
+              timestamp: new Date().toISOString(),
+              durationMs: Date.now() - startTime,
+              method: 'CONNECT',
+              fullUrl: fullTunnelUrl,
+              host: sni || targetHost,
+              path: '/',
+              queryParams: {},
+              statusCode: 200,
+              urlMeta: classifyUrlPurpose(fullTunnelUrl, '/', ''),
+              passthroughMode: 'EXACT_TLS_PASSTHROUGH (Anti-Ban Safe)',
+              requestTitle: `CONNECT ${fullTunnelUrl} (TLS SNI: ${sni || targetHost})`,
+              responseTitle: `200 Connection Established <- ${targetAddr}`,
+              request: {
+                headers: req.headers,
+                size: chunk.length,
+                encryption: `TLS_PASSTHROUGH (SNI=${sni || targetHost})`,
+                rawHex: chunk.subarray(0, 64).toString('hex'),
+                decryptedHex: '',
+                decoded: {
+                  tunnel_target: targetAddr,
+                  tls_sni_hostname: sni || targetHost,
+                  client_hello_bytes: chunk.length
+                }
+              },
+              response: {
+                headers: { status: '200 Connection Established' },
+                size: 0,
+                encryption: 'TLS_TUNNEL_ESTABLISHED',
+                rawHex: '',
+                decryptedHex: '',
+                decoded: { status: '200 Connection Established', upstream: targetAddr }
+              }
+            };
+            if (onPacket) onPacket(evt, sessionState);
+          } else {
+            isRawGameTcp = true;
+          }
+        }
+
+        if (isRawGameTcp) {
+          const parsed = parseTcpFrame(Buffer.from(chunk), dir === 'C->S' ? 'CLIENT->SERVER' : 'SERVER->CLIENT');
+          const evt = {
+            id: `TCP-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+            protocol: 'TCP',
+            capturedPort: listenPort,
+            direction: dir === 'C->S' ? 'CLIENT -> SERVER' : 'SERVER -> CLIENT',
+            statusCode: 200,
+            passthroughMode: 'EXACT_ENCRYPTED_WIRE_PASSTHROUGH',
+            requestTitle: dir === 'C->S'
+              ? `[TCP REQUEST] ${parsed.packetType} (${clientAddr} -> ${targetAddr})`
+              : `[TCP STREAM] ${targetAddr} -> ${clientAddr}`,
+            responseTitle: dir === 'S->C'
+              ? `[TCP RESPONSE] Status: 200 OK | ${parsed.packetType} <- ${targetAddr}`
+              : `[TCP FORWARDED] Status: 200 OK -> ${targetAddr}`,
+            timestamp: new Date().toISOString(),
+            source: dir === 'C->S' ? clientAddr : targetAddr,
+            destination: dir === 'C->S' ? targetAddr : clientAddr,
+            size: chunk.length,
+            ...parsed
+          };
+          if (onPacket) onPacket(evt, sessionState);
+        }
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       };
 
       if (head && head.length > 0) {
@@ -376,6 +564,7 @@ function createUnifiedPort8080Server({
         inspectChunk(head, 'C->S');
       }
 
+<<<<<<< HEAD
       clientSocket.on('data', (chunk) => inspectChunk(chunk, 'C->S'));
       serverSocket.on('data', (chunk) => inspectChunk(chunk, 'S->C'));
 
@@ -383,6 +572,17 @@ function createUnifiedPort8080Server({
       clientSocket.pipe(serverSocket);
       serverSocket.pipe(clientSocket);
       clientSocket.resume();
+=======
+      clientSocket.on('data', (chunk) => {
+        if (!serverSocket.destroyed) serverSocket.write(chunk);
+        inspectChunk(chunk, 'C->S');
+      });
+
+      serverSocket.on('data', (chunk) => {
+        if (!clientSocket.destroyed) clientSocket.write(chunk);
+        inspectChunk(chunk, 'S->C');
+      });
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     });
 
     serverSocket.on('error', () => clientSocket.destroy());
@@ -390,7 +590,10 @@ function createUnifiedPort8080Server({
   });
 
   const muxServer = net.createServer((socket) => {
+<<<<<<< HEAD
     socket.setNoDelay(true);
+=======
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     socket.once('data', (firstChunk) => {
       if (!firstChunk || firstChunk.length === 0) return;
 
@@ -404,6 +607,7 @@ function createUnifiedPort8080Server({
       const prefixAscii = firstChunk.subarray(0, 4).toString('ascii').toUpperCase();
       const isHttp = HTTP_FIRST_WORDS.includes(prefixAscii);
       if (isHttp) {
+<<<<<<< HEAD
         socket.pause();
         socket.unshift(firstChunk);
         internalHttpServer.emit('connection', socket);
@@ -465,6 +669,59 @@ function createUnifiedPort8080Server({
               };
               if (onPacket) onPacket(evt, sessionState);
             });
+=======
+        internalHttpServer.emit('connection', socket);
+        socket.unshift(firstChunk);
+        return;
+      }
+
+      // 3. Check Transparent TLS ClientHello (0x16 0x03) — Extract SNI and forward directly to :443!
+      if (firstChunk[0] === 0x16 && firstChunk[1] === 0x03) {
+        const sni = extractTlsSni(firstChunk);
+        if (sni && !isLocalLoopbackOrSelf(sni, 443, listenPort)) {
+          const startTime = Date.now();
+          const tlsUpstream = net.connect(443, sni, () => {
+            tlsUpstream.write(firstChunk);
+            socket.pipe(tlsUpstream);
+            tlsUpstream.pipe(socket);
+
+            const fullTunnelUrl = `https://${sni}:443/`;
+            const evt = {
+              id: `HTTP-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+              protocol: 'HTTP',
+              capturedPort: listenPort,
+              direction: 'TRANSPARENT TLS SNI',
+              timestamp: new Date().toISOString(),
+              durationMs: Date.now() - startTime,
+              method: 'TLS_SNI',
+              fullUrl: fullTunnelUrl,
+              host: sni,
+              path: '/',
+              queryParams: {},
+              statusCode: 200,
+              urlMeta: classifyUrlPurpose(fullTunnelUrl, '/', ''),
+              passthroughMode: 'TRANSPARENT_TLS_SNI_PASSTHROUGH (Data-Upload Safe)',
+              requestTitle: `[TLS SNI] ${fullTunnelUrl}`,
+              responseTitle: `200 TLS Passthrough <- ${sni}:443`,
+              request: {
+                headers: { Host: sni },
+                size: firstChunk.length,
+                encryption: `TLS_CLIENT_HELLO (SNI=${sni})`,
+                rawHex: firstChunk.subarray(0, 64).toString('hex'),
+                decryptedHex: '',
+                decoded: { tls_sni_hostname: sni, target_port: 443, bytes: firstChunk.length }
+              },
+              response: {
+                headers: { status: 'TLS Stream Forwarded' },
+                size: 0,
+                encryption: 'TLS_PASSTHROUGH',
+                rawHex: '',
+                decryptedHex: '',
+                decoded: { status: 'Connected & Forwarded Untouched', sni }
+              }
+            };
+            if (onPacket) onPacket(evt, sessionState);
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           });
           tlsUpstream.on('error', () => socket.destroy());
           socket.on('error', () => tlsUpstream.destroy());
@@ -472,7 +729,11 @@ function createUnifiedPort8080Server({
         }
       }
 
+<<<<<<< HEAD
       // 4. Raw Game TCP Frame
+=======
+      // 4. Raw Game TCP Frame (only connect if a valid functionalAddr or external target exists)
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       let targetHost = defaultTcpTargetHost;
       let targetPort = defaultTcpTargetPort;
       if (sessionState.functionalAddr && sessionState.functionalAddr.includes(':')) {
@@ -482,17 +743,24 @@ function createUnifiedPort8080Server({
           targetPort = Number(p);
         }
       }
+<<<<<<< HEAD
       if (!targetHost) {
         socket.destroy();
         return;
       }
 
+=======
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       const clientAddr = `${socket.remoteAddress || 'client'}:${socket.remotePort || ''}`;
       const targetAddr = `${targetHost}:${targetPort}`;
 
       const upstreamSocket = new net.Socket();
+<<<<<<< HEAD
       upstreamSocket.setNoDelay(true);
       if (!isSelfProxyTarget(targetHost, targetPort, listenPort)) {
+=======
+      if (!isLocalLoopbackOrSelf(targetHost, targetPort, listenPort) && targetHost !== '127.0.0.1') {
+>>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         upstreamSocket.connect(targetPort, targetHost, () => {});
       }
       upstreamSocket.on('error', () => {});
