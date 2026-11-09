@@ -1,0 +1,20 @@
+{
+  "name": "ff-omni-proxy-pk",
+  "version": "6.0.0",
+  "description": "Pakistan (PK) #1 Priority Single-Port Path-Based (/px/...) Free Fire Proxy, AES-CBC / TEA-CBC / Protobuf Lab & Live ASTC/Billboard Dashboard (/ds) for Vercel & Termux (Zero Socket.IO, Zero Astutech Redirection)",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js --on",
+    "on": "node server.js --on",
+    "off": "node server.js --off",
+    "all-paths": "node server.js --on --all-paths",
+    "test": "node server.js --self-test"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "protobufjs": "^7.3.2"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

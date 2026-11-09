@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "functions": {
+    "api/index.js": {
+      "maxDuration": 60,
+      "memory": 1024,
+      "includeFiles": "{public/**,config/**,crypto/**,proto/**,proxy/**}"
+    }
+  },
+  "rewrites": [
+    { "source": "/ds", "destination": "/api/index.js" },
+    { "source": "/ds/(.*)", "destination": "/api/index.js" },
+    { "source": "/api/(.*)", "destination": "/api/index.js" },
+    { "source": "/px/(.*)", "destination": "/api/index.js" },
+    { "source": "/live/(.*)", "destination": "/api/index.js" },
+    { "source": "/common/(.*)", "destination": "/api/index.js" },
+    { "source": "/(.*)", "destination": "/api/index.js" }
+  ]
+}
