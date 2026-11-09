@@ -1,10 +1,9 @@
 /**
- * ============================================================================
-<<<<<<< HEAD
+ * ----------------------------------------------------------------------------
  * FF-OMNI-PROXY v6.0: Master Cryptographic Keys, Secrets & Regional URL Registry
  * (PAKISTAN `PK` SERVER #1 PRIORITY + SINGLE-PORT `/px/...` PATH ROUTING)
  * (Zero Astutech Redirection • 100% Vercel & Termux Ready • Zero Socket.IO)
- * ============================================================================
+ * ----------------------------------------------------------------------------
  */
 
 const KEYS = {
@@ -63,21 +62,6 @@ const KEYS = {
     vercfg_sign: '1.a0d863aac04d8b16'
   },
 
-=======
- * FF-OMNI-PROXY: Master Cryptographic Keys, Secrets, Tables & Endpoint Registry
- * ============================================================================
- * Extracted and consolidated from all 10 uploaded archives & scripts:
- *  - GenXDivan.py
- *  - GenSpin.py
- *  - GG.GLORY.zip (main.py, app.py, message_ids.py, RbcFF_pb2, RbcTeam_pb2, StartMatch_pb2, thunderFF_pb2)
- *  - LW UDP SOURCE.zip (Main.py, dashboard_server.py, message_ids.py, thunderFF_pb2)
- *  - Info-Api-Src.zip (app.py, AccountPersonalShow.proto, FreeFire.proto, sample.proto)
- *  - OB55_LIKE_LIMIT-CK(1).zip & UID-PASS-LIKE-API.zip (app.py, like.proto, like_count.proto, uid_generator.proto)
- *  - main.php (topup token & API config)
- */
-
-const KEYS = {
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   // 1. Primary Static AES-128-CBC Key & IV (used across HTTP APIs & default TCP payloads)
   AES_CBC: {
     KEY_STR: 'Yg&tc%DEuh6%Zc^8',
@@ -92,17 +76,12 @@ const KEYS = {
     BLOCK_SIZE: 16
   },
 
-<<<<<<< HEAD
   // 2. Garena OAuth / MSDK Credentials & HMAC-SHA256 Secret
-=======
-  // 2. Garena OAuth / MSDK Credentials & HMAC-SHA256 Secret (GenXDivan.py, GenSpin.py, GG.GLORY, LW UDP)
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   GARENA_OAUTH: {
     APP_ID: '100067',
     CLIENT_SECRET_HEX: '2ee44819e9b4598845141067b281621874d0d5d7af9d8f7e00c1e54715b7d1e3',
     CLIENT_SECRET_ASCII: Buffer.from('2ee44819e9b4598845141067b281621874d0d5d7af9d8f7e00c1e54715b7d1e3', 'utf8'),
     CLIENT_SECRET_RAW_BYTES: Buffer.from('2ee44819e9b4598845141067b281621874d0d5d7af9d8f7e00c1e54715b7d1e3', 'hex'),
-<<<<<<< HEAD
     MSDK_USER_AGENT: 'GarenaMSDK/4.0.42(NX809J ;Android 9;en;PK;app 1.132.16 2024010012;)',
     UNITY_USER_AGENT_2018: 'UnityPlayer/2018.4.12f1 (UnityWebRequest/1.0, libcurl/8.5.0-DEV)',
     UNITY_USER_AGENT_2022: 'UnityPlayer/2022.3.47f1 (UnityWebRequest/1.0, libcurl/8.5.0-DEV)',
@@ -113,35 +92,17 @@ const KEYS = {
   },
 
   // 3. MajorRegister OpenID XOR Key (32-byte cyclic XOR key)
-=======
-    MSDK_USER_AGENT: 'GarenaMSDK/4.0.42(NX809J ;Android 9;en;US;app 1.132.9 2024010012;)',
-    UNITY_USER_AGENT_2018: 'UnityPlayer/2018.4.12f1 (UnityWebRequest/1.0, libcurl/8.5.0-DEV)',
-    UNITY_USER_AGENT_2022: 'UnityPlayer/2022.3.47f1 (UnityWebRequest/1.0, libcurl/8.5.0-DEV)',
-    RELEASE_VERSION: 'OB55',
-    CLIENT_VERSION: '1.132.9'
-  },
-
-  // 3. MajorRegister OpenID XOR Key (32-byte cyclic XOR key from GenXDivan.py & GenSpin.py)
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   XOR_KEYS: {
     OPEN_ID_XOR_STR: '00020170000020170000020170000020',
     OPEN_ID_XOR_BYTES: Buffer.from([
       0x30, 0x30, 0x30, 0x32, 0x30, 0x31, 0x37, 0x30,
-<<<<<<< HEAD
       0x30, 0x30, 0x30, 0x30, 0x32, 0x31, 0x37, 0x30,
-=======
-      0x30, 0x30, 0x30, 0x30, 0x32, 0x30, 0x31, 0x37,
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       0x30, 0x30, 0x30, 0x30, 0x30, 0x32, 0x30, 0x31,
       0x37, 0x30, 0x30, 0x30, 0x30, 0x30, 0x32, 0x30
     ])
   },
 
-<<<<<<< HEAD
   // 4. UDP / RUDP Custom 16-Round TEA-CBC & OICQ Framing Constants
-=======
-  // 4. UDP / RUDP Custom 16-Round TEA-CBC & OICQ Framing Constants (GG.GLORY & LW UDP SOURCE)
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   UDP_TEA: {
     DELTA: 0x9E3779B9,
     ROUNDS: 16,
@@ -176,7 +137,6 @@ const KEYS = {
     ]
   },
 
-<<<<<<< HEAD
   // 5. TCP Framing Prefixes & Packet Types (PK / Global Priority)
   TCP_PREFIXES: {
     '7115': { name: 'OnLine_Functional_Auth (PK/Global)', type: 'STARTUP_ONLINE', region: 'PK/GLOBAL' },
@@ -192,33 +152,12 @@ const KEYS = {
     '0519': { name: 'Squad_Ready_Action (PK/Global)', type: 'ENCRYPTED_PROTO', schema: 'SquadTeamPacket' },
     '0315': { name: 'StartMatch_Request (PK/Global)', type: 'ENCRYPTED_PROTO', schema: 'StartMatch' },
     '0314': { name: 'StartMatch_Request (Other)', type: 'ENCRYPTED_PROTO', schema: 'StartMatch' },
-=======
-  // 5. TCP Framing Prefixes & Packet Types (GG.GLORY & LW UDP SOURCE)
-  TCP_PREFIXES: {
-    '7119': { name: 'OnLine_Functional_Auth (ID/BD)', type: 'STARTUP_ONLINE', region: 'ID/BD' },
-    '7114': { name: 'OnLine_Functional_Auth (IND)', type: 'STARTUP_ONLINE', region: 'IND' },
-    '7115': { name: 'OnLine_Functional_Auth (Global)', type: 'STARTUP_ONLINE', region: 'GLOBAL' },
-    '9219': { name: 'ChaT_Informational_Auth (ID/BD)', type: 'STARTUP_CHAT', region: 'ID/BD' },
-    '9214': { name: 'ChaT_Informational_Auth (IND)', type: 'STARTUP_CHAT', region: 'IND' },
-    '9215': { name: 'ChaT_Informational_Auth (Global)', type: 'STARTUP_CHAT', region: 'GLOBAL' },
-    '0219': { name: 'TCP_KeepAlive (ID/BD)', type: 'KEEPALIVE', region: 'ID/BD' },
-    '0214': { name: 'TCP_KeepAlive (IND)', type: 'KEEPALIVE', region: 'IND' },
-    '0215': { name: 'TCP_KeepAlive (Global)', type: 'KEEPALIVE', region: 'GLOBAL' },
-    '0515': { name: 'Squad_Team_Action', type: 'ENCRYPTED_PROTO', schema: 'SquadTeamPacket' },
-    '0519': { name: 'Squad_Ready_Action', type: 'ENCRYPTED_PROTO', schema: 'SquadTeamPacket' },
-    '0315': { name: 'StartMatch_Request (Global)', type: 'ENCRYPTED_PROTO', schema: 'StartMatch' },
-    '0314': { name: 'StartMatch_Request (IND)', type: 'ENCRYPTED_PROTO', schema: 'StartMatch' },
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     '0300': { name: 'MatchFound_UDP_Assignment', type: 'SERVER_MATCH_FOUND', schema: 'MatchFoundPacket' },
     '0600': { name: 'Social_Friend_Notification', type: 'SERVER_SOCIAL', schema: 'SocialNotificationPacket' },
     '1200': { name: 'Whisper_Chat_Message', type: 'SERVER_CHAT', schema: 'WhisperChatPacket' }
   },
 
-<<<<<<< HEAD
   // 6. Pre-Encrypted Gacha Payloads & Special Item Registry
-=======
-  // 6. Pre-Encrypted Gacha Payloads & Special Item Registry (GenSpin.py)
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   GEN_SPIN: {
     ENCRYPTED_PAYLOADS: {
       SPIN_1_HEX: '54DB598CD88299E12EF19C9D2FDC19479A2754B973F8D26AA0706C461A2875B0',
@@ -232,29 +171,20 @@ const KEYS = {
     }
   },
 
-<<<<<<< HEAD
   // 7. Complete Upstream Endpoints & Regional Server Registry (PAKISTAN `PK` #1 PRIORITY — ZERO ASTUTECH!)
   ENDPOINTS: {
     PRIMARY_UPSTREAM: 'https://version.ggwhitehawk.com',
     VERSION_LIVE: 'https://version.ggwhitehawk.com/live/ver.php',
-=======
-  // 7. Known Upstream Endpoints & Target Hosts across all 10 files
-  ENDPOINTS: {
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     OAUTH_GUEST_REGISTER: 'https://100067.connect.garena.com/api/v2/oauth/guest:register',
     OAUTH_TOKEN_GRANT: 'https://100067.connect.garena.com/oauth/guest/token/grant',
     OAUTH_TOKEN_GRANT_V2: 'https://100067.connect.garena.com/api/v2/oauth/guest/token:grant',
     OAUTH_TOKEN_INSPECT: 'https://100067.connect.garena.com/oauth/token/inspect',
-<<<<<<< HEAD
 
     // Pakistan (PK) #1 Priority Login & Game API Endpoints
-=======
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     MAJOR_REGISTER: 'https://loginbp.ppmainecoonghj.com/MajorRegister',
     MAJOR_LOGIN: 'https://loginbp.ppmainecoonghj.com/MajorLogin',
     CHOOSE_NEWBIE: 'https://loginbp.ppmainecoonghj.com/ChooseNewbieChoice',
     LOGIN_PING: 'https://loginbp.ppmainecoonghj.com/Ping',
-<<<<<<< HEAD
     GET_LOGIN_DATA_PK: 'https://clientbp.ppmainecoonghj.com/GetLoginData',
     GET_PLAYER_PERSONAL_SHOW: 'https://clientbp.ppmainecoonghj.com/GetPlayerPersonalShow',
     LIKE_PROFILE: 'https://clientbp.ppmainecoonghj.com/LikeProfile',
@@ -294,32 +224,6 @@ const KEYS = {
   },
 
   // 8. Top-up CSRF Token
-=======
-    GET_LOGIN_DATA_BP: 'https://clientbp.ppmainecoonghj.com/GetLoginData',
-    GET_LOGIN_DATA_IND: 'https://client.ind.freefiremobile.com/GetLoginData',
-    GET_PLAYER_PERSONAL_SHOW: 'https://clientbp.ppmainecoonghj.com/GetPlayerPersonalShow',
-    LIKE_PROFILE: 'https://clientbp.ppmainecoonghj.com/LikeProfile',
-    CONFIRM_FRIEND_REQ: 'https://clientbp.ppmainecoonghj.com/ConfirmFriendRequest',
-    PURCHASE_GACHA_IND: 'https://client.ind.freefiremobile.com/PurchaseGacha',
-    SEARCH_WORKSHOP: 'https://clientbp.ggpolarbear.com/SearchWorkshopCode',
-    VERSION_LIVE: 'https://version.ggwhitehawk.com/live/ver.php',
-    REGIONAL_SERVERS: {
-      IND: 'https://client.ind.freefiremobile.com',
-      BR_US_SAC_NA: 'https://client.us.freefiremobile.com',
-      EU_ME_CIS: 'https://client.ru.freefiremobile.com',
-      DEFAULT_BP: 'https://clientbp.ggpolarbear.com',
-      MAIN_BP: 'https://clientbp.ppmainecoonghj.com'
-    },
-    EXTERNAL_SERVICES: {
-      DIVAN_ACTIVATOR: 'https://divan-activator.vercel.app/bind',
-      FLASH_TOKEN: 'https://flash-token-v2.vercel.app/token',
-      LUNES_TOKEN: 'http://node54.lunes.host:3069/token',
-      FFBD_TOPUP: 'https://ffbdtopup-com.vercel.app/'
-    }
-  },
-
-  // 8. Top-up CSRF Token from main.php
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   MAIN_PHP: {
     TARGET_BASE_URL: 'https://ffbdtopup-com.vercel.app/',
     CSRF_TOKEN: 'c5f8e6d2b9c1047a3f1a4d5c9a0b4e7f2e0f6f8e9a3d5f2c4a8d9e7b1c2d3e4f'

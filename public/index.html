@@ -3,19 +3,12 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-<<<<<<< HEAD
-  <title>FF-OMNI-PROXY v6.0 (PK #1 + /px/ Paths) (Pakistan (PK) MITM + /px/ Paths) (/ds) | 100% Real Live Capture + --on / --off Compare</title>
-=======
   <title>FF-OMNI-PROXY v3.2 | Anti-Ban + ASTC Icon Decoder + Billboards Tab</title>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@600;700&display=swap" rel="stylesheet">
   <link href="https://cdn.jsdelivr.net/npm/remixicon@4.2.0/fonts/remixicon.css" rel="stylesheet">
-<<<<<<< HEAD
-=======
   <script src="/socket.io/socket.io.js"></script>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   <style>
     :root {
       --bg-0: #060913;
@@ -118,10 +111,6 @@
       display: flex;
       align-items: center;
       gap: 6px;
-<<<<<<< HEAD
-      flex-wrap: wrap;
-=======
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     }
     .live-badge {
       display: inline-flex;
@@ -303,29 +292,6 @@
       font-size: 10.5px;
       font-weight: 700;
     }
-<<<<<<< HEAD
-    .mod-tag-on {
-      background: rgba(16, 185, 129, 0.2);
-      border: 1px solid #10b981;
-      color: #6ee7b7;
-      padding: 2px 6px;
-      border-radius: 5px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 700;
-    }
-    .mod-tag-off {
-      background: rgba(245, 158, 11, 0.2);
-      border: 1px solid #f59e0b;
-      color: #fde68a;
-      padding: 2px 6px;
-      border-radius: 5px;
-      font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 700;
-    }
-=======
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     .purpose-tag {
       background: rgba(236, 72, 153, 0.16);
       border: 1px solid rgba(236, 72, 153, 0.45);
@@ -590,32 +556,13 @@
   </style>
 </head>
 <body>
-<<<<<<< HEAD
-  <div id="toast" class="toast"><i class="ri-checkbox-circle-fill"></i> <span id="toastMsg">Updated!</span></div>
-=======
   <div id="toast" class="toast"><i class="ri-checkbox-circle-fill"></i> <span id="toastMsg">Copied to Clipboard!</span></div>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
 
   <header class="app-header">
     <div class="header-top">
       <div class="brand">
         <div class="brand-icon"><i class="ri-radar-line"></i></div>
         <div class="brand-info">
-<<<<<<< HEAD
-          <h1>FF-OMNI-PROXY v6.0 (PK #1 + /px/ Paths) (Pakistan (PK) MITM + /px/ Paths) (/ds)</h1>
-          <p><i class="ri-shield-check-line" style="color:var(--green);"></i> 100% Real Live Traffic &bull; <span id="serverIpLabel">IP Detecting...</span></p>
-        </div>
-      </div>
-      <div class="header-actions">
-        <button id="btnMasterModeToggle" class="btn btn-success" onclick="toggleMasterModifierMode()" title="Switch between --on (Modify Active) and --off (Pure Normal Passthrough)">
-          <i class="ri-toggle-fill"></i> <span id="lblMasterMode">MODE: --on (MODIFY ON)</span>
-        </button>
-        <a href="/api/export.txt" download="ff_all_requests_log.txt" class="btn btn-primary" title="Download All Real Captured Traffic (.TXT)">
-          <i class="ri-file-download-line"></i> All .TXT
-        </a>
-        <a href="/api/export.txt?filter=COMPARE" download="ff_compare_on_vs_off.txt" class="btn btn-amber" title="Download Side-by-Side Comparison of --on vs --off Logs (.TXT)">
-          <i class="ri-scales-3-line"></i> Compare .TXT
-=======
           <h1>FF-OMNI-PROXY v3.2</h1>
           <p><i class="ri-shield-check-line" style="color:var(--green);"></i> SH-Gpp &amp; Loopback Anti-Ban Fix &bull; ASTC Decoder &bull; Billboards Tab</p>
         </div>
@@ -623,7 +570,6 @@
       <div class="header-actions">
         <a href="/api/export.txt" download="ff_all_requests_log.txt" class="btn btn-success" title="Download All Captured Traffic as .TXT File">
           <i class="ri-file-download-line"></i> Download .TXT
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         </a>
         <div class="live-badge">
           <span id="wsDot" class="dot"></span>
@@ -633,15 +579,6 @@
     </div>
 
     <div class="filter-scroll">
-<<<<<<< HEAD
-      <button class="chip active" onclick="setCategoryFilter('ALL', this)"><i class="ri-stack-line"></i> All Live (<span id="cntALL">0</span>)</button>
-      <button class="chip" onclick="setCategoryFilter('MOD_ON', this)"><i class="ri-flashlight-line" style="color:var(--green);"></i> --on (<span id="cntON">0</span>)</button>
-      <button class="chip" onclick="setCategoryFilter('MOD_OFF', this)"><i class="ri-shield-line" style="color:var(--amber);"></i> --off (<span id="cntOFF">0</span>)</button>
-      <button class="chip clothes-chip" onclick="setCategoryFilter('CLOTHES_SKINS', this)"><i class="ri-t-shirt-2-line"></i> Clothes &amp; Bundles (<span id="cntCLOTHES">0</span>)</button>
-      <button class="chip billboard-chip" onclick="switchMainTab('Billboards')"><i class="ri-advertisement-line"></i> 🪧 Billboards (<span id="cntBILLBOARDS">0</span>)</button>
-      <button class="chip" onclick="switchMainTab('Media')"><i class="ri-image-2-line"></i> Skins/Icons Gallery</button>
-      <button class="chip" onclick="switchMainTab('Ports')"><i class="ri-scales-3-line"></i> --on / --off Compare &amp; Mod</button>
-=======
       <button class="chip active" onclick="setCategoryFilter('ALL', this)"><i class="ri-stack-line"></i> All (<span id="cntALL">0</span>)</button>
       <button class="chip clothes-chip" onclick="setCategoryFilter('CLOTHES_SKINS', this)"><i class="ri-t-shirt-2-line"></i> Clothes &amp; Bundles (<span id="cntCLOTHES">0</span>)</button>
       <button class="chip billboard-chip" onclick="switchMainTab('Billboards')"><i class="ri-advertisement-line"></i> 🪧 Billboards (<span id="cntBILLBOARDS">0</span>)</button>
@@ -649,32 +586,20 @@
       <button class="chip" onclick="setCategoryFilter('VERSION_CONFIG', this)"><i class="ri-settings-4-line"></i> ver.php</button>
       <button class="chip" onclick="switchMainTab('Ports')"><i class="ri-git-branch-line"></i> Anti-Ban &amp; Mod</button>
       <a href="/api/export.txt?filter=CLOTHES" download="ff_clothes_bundles.txt" class="chip clothes-chip" style="text-decoration:none;"><i class="ri-download-cloud-2-line"></i> Clothes .TXT</a>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     </div>
 
     <div class="search-bar-row">
       <div class="search-wrap">
         <i class="ri-search-2-line"></i>
-<<<<<<< HEAD
-        <input type="text" id="searchInput" class="search-input" placeholder="Search Real Live URL, Bundle (901000284, fileinfo), ver.php, --on / --off..." oninput="renderPacketList()" />
-      </div>
-      <button class="btn btn-amber" onclick="switchMainTab('Ports'); loadComparisonReport();"><i class="ri-scales-3-line"></i> Diff</button>
-      <button class="btn" onclick="clearPackets()" title="Clear Live Stream"><i class="ri-delete-bin-6-line"></i></button>
-=======
         <input type="text" id="searchInput" class="search-input" placeholder="Search URL, Bundle (901000284, fileinfo), Billboard (Patch_Bg)..." oninput="renderPacketList()" />
       </div>
       <button class="btn btn-primary" onclick="triggerSimulation()"><i class="ri-play-fill"></i> Test</button>
       <button class="btn" onclick="clearPackets()"><i class="ri-delete-bin-6-line"></i></button>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     </div>
   </header>
 
   <div class="desktop-grid">
-<<<<<<< HEAD
-    <!-- VIEW 1: PACKET STREAM (100% REAL LIVE ONLY) -->
-=======
     <!-- VIEW 1: PACKET STREAM -->
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     <section id="viewStream" class="view-pane active"></section>
 
     <!-- VIEW 2: 3-TAB PACKET INSPECTOR -->
@@ -700,11 +625,7 @@
         <div class="card">
           <div class="card-body" style="text-align:center; color:var(--text-1); padding:28px;">
             <i class="ri-cursor-line" style="font-size:26px; color:var(--accent);"></i>
-<<<<<<< HEAD
-            <p style="margin-top:8px;">Waiting for real live game traffic... Tap any captured Request / Response card to inspect its <b>All</b>, <b>Encrypted</b>, and <b>Decrypted</b> tabs + live Image / ASTC preview.</p>
-=======
             <p style="margin-top:8px;">Tap any Request / Response card in the stream to inspect its <b>All</b>, <b>Encrypted</b>, and <b>Decrypted</b> tabs + live Image / ASTC preview.</p>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           </div>
         </div>
       </div>
@@ -722,10 +643,7 @@
         </div>
       </div>
 
-<<<<<<< HEAD
-=======
       <!-- Interactive Live Image / ASTC URL Fetcher -->
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       <div class="card" style="border-color:var(--amber);">
         <div class="card-hdr">
           <span><i class="ri-image-add-line" style="color:var(--amber);"></i> Fetch &amp; Preview Any Image / Billboard / ASTC URL Directly</span>
@@ -745,44 +663,16 @@
       <div id="billboardsListContainer" style="display:flex; flex-direction:column; gap:10px;"></div>
     </section>
 
-<<<<<<< HEAD
-    <!-- VIEW 4: --on vs --off COMPARE, MODIFIER & PROTOBUF LAB -->
-    <section id="viewPorts" class="view-pane">
-      <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-        <h2 style="font-size:15px; font-family:var(--font-display);"><i class="ri-scales-3-line" style="color:var(--green);"></i> `--on` vs `--off` Control, Side-by-Side Log Compare &amp; Clothes Modifier</h2>
-        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-          <a href="/api/export.txt?filter=ON" download="ff_log_MOD_ON.txt" class="btn btn-success"><i class="ri-file-download-line"></i> --on .TXT</a>
-          <a href="/api/export.txt?filter=OFF" download="ff_log_MOD_OFF.txt" class="btn btn-amber"><i class="ri-file-download-line"></i> --off .TXT</a>
-          <a href="/api/export.txt?filter=COMPARE" download="ff_compare_on_vs_off.txt" class="btn btn-primary"><i class="ri-scales-3-line"></i> Compare Report .TXT</a>
-=======
     <!-- VIEW 4: ANTI-BAN PROTECTION, PORTS & REAL-TIME CLOTHES MODIFIER -->
     <section id="viewPorts" class="view-pane">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
         <h2 style="font-size:15px; font-family:var(--font-display);"><i class="ri-shield-check-fill" style="color:var(--green);"></i> v3.2 Lobby Anti-Ban Fix &amp; Clothes Modifier</h2>
         <div style="display:flex; gap:6px;">
           <a href="/api/export.txt" download="ff_all_requests_log.txt" class="btn btn-success"><i class="ri-file-download-line"></i> Download All (.TXT)</a>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           <button class="btn" onclick="switchMainTab('Stream')"><i class="ri-arrow-left-line"></i> Stream</button>
         </div>
       </div>
 
-<<<<<<< HEAD
-      <!-- Master --on / --off Switch Card -->
-      <div class="card" style="border-color:var(--green);">
-        <div class="card-hdr">
-          <span><i class="ri-toggle-line" style="color:var(--green);"></i> `--on` vs `--off` Master Mode Switch (CLI: `node server.js --on` / `node server.js --off`)</span>
-        </div>
-        <div class="card-body" style="font-family:var(--font-sans);">
-          <div class="switch-row">
-            <div>
-              <div style="font-weight:700; font-size:13px; color:var(--green);">Master Modification Mode (`--on` = Active, `--off` = Pure Normal Passthrough)</div>
-              <div style="font-size:11.5px; color:var(--text-1);">
-                When <b>ON (`--on`)</b>: Surgically redirects <code>cdn_url</code> &amp; <code>backup_cdn_url</code> in <code>/live/ver.php</code> to <code>:8083</code> (preserving PHP <code>\/</code> format), sets <code>need_track_hotupdate: false</code>, captures all live <code>.astc</code> icons &amp; clothes bundles, and runs active modification rules.<br/>
-                When <b>OFF (`--off`)</b>: Stops <b>ALL</b> modifications (<code>0 bytes modified</code> in <code>/live/ver.php</code> and all responses) so the game runs 100% normal while full live logging continues!
-              </div>
-            </div>
-            <input type="checkbox" id="chkMasterModEnabled" checked onchange="saveModifierSettings()" style="width:22px; height:22px;" />
-=======
       <div class="card" style="border-color:var(--green);">
         <div class="card-hdr">
           <span><i class="ri-shield-star-line" style="color:var(--green);"></i> Exact Root-Cause Fix for Lobby Welcome-Rewards Ban ("Disabling data upload")</span>
@@ -793,95 +683,26 @@
             1. <b><code>abhotupdate_cdn_url</code> (SH-Gpp Anti-Cheat) Protected:</b> Packet #87 showed <code>abhotupdate_cdn_url</code> (<code>core-gmc</code>) loads <code>SH-Gpp1/2/4</code> (<code>libggp.so</code> Anti-Cheat) checked by <code>abhotupdate_check</code>. It is now <b>100% Untouched HTTPS</b> so Lobby GGP data upload never fails!<br/>
             2. <b><code>127.0.0.1:8083</code> Loopback Routing:</b> Instead of routing 85 Welcome-Reward <code>.astc</code> requests through your VPN <code>tun0</code> IP (<code>10.76.200.235:8083</code>) and choking data upload, <code>cdn_url</code> now routes over <code>127.0.0.1:8083</code> (0.1ms kernel loopback)!<br/>
             3. <b>Single <code>Content-Length</code> + <code>Keep-Alive</code>:</b> Fixed duplicate <code>content-length</code> headers on all responses.
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           </div>
 
           <div class="switch-row">
             <div>
-<<<<<<< HEAD
-              <div style="font-weight:700; font-size:13px; color:var(--accent);">Redirect `cdn_url` &amp; `backup_cdn_url` in `/live/ver.php` to Port :8083 (When `--on`)</div>
-              <div style="font-size:11.5px; color:var(--text-1);">Routes Clothes, Default Guest Bundles (<code>optionalavatarres</code>), and <code>IconCDN/*.astc</code> through <code>:8083</code> using your real IP while keeping <code>abhotupdate_cdn_url</code> (SH-Gpp) 100% Untouched HTTPS.</div>
-=======
               <div style="font-weight:700; font-size:13px; color:var(--accent);">Redirect Clothes &amp; Skins CDN (`cdn_url` ONLY) to Port :8083</div>
               <div style="font-size:11.5px; color:var(--text-1);">Captures &amp; modifies Default Guest Bundles (<code>optionalavatarres</code>) and <code>IconCDN/*.astc</code> while leaving Auth &amp; <code>abhotupdate_cdn_url</code> untouched.</div>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
             </div>
             <input type="checkbox" id="chkRedirectCdn" checked onchange="saveModifierSettings()" style="width:20px; height:20px;" />
           </div>
 
-<<<<<<< HEAD
-          <div class="switch-row">
-            <div>
-              <div style="font-weight:700; font-size:13px; color:var(--green);">🇵🇰 Force Pakistan Region (`"country_code": "PK"`) in `/live/ver.php` (Priority #1)</div>
-              <div style="font-size:11.5px; color:var(--text-1);">Replaces foreign VPN/IP country codes (like <code>"country_code": "BR"</code> which triggers the Brazilian 16 Violência screen &amp; Error 400) with <code>"PK"</code> while keeping exact byte length.</div>
-            </div>
-            <input type="checkbox" id="chkForcePakistanRegion" checked onchange="saveModifierSettings()" style="width:20px; height:20px;" />
-          </div>
-
-          <div class="switch-row">
-            <div>
-              <div style="font-weight:700; font-size:13px; color:var(--accent);">🔄 Sync `"remote_version"` to Client `?version=` in `/live/ver.php` (Fixes Store Update Error 400)</div>
-              <div style="font-size:11.5px; color:var(--text-1);">Matches <code>remote_version</code> (e.g. <code>2.133.18</code> &rarr; <code>2.133.15</code>) to the installed client APK version so the game never blocks login with "Please update the game in your region's official app store: 400".</div>
-            </div>
-            <input type="checkbox" id="chkSyncRemoteVer" checked onchange="saveModifierSettings()" style="width:20px; height:20px;" />
-          </div>
-
-          <div class="switch-row" style="border-bottom:none;">
-            <div>
-              <div style="font-weight:700; font-size:13px; color:var(--amber);">Set `"need_track_hotupdate": false` in `/live/ver.php` (Optional Telemetry Toggle)</div>
-              <div style="font-size:11.5px; color:var(--text-1);">Optional toggle to disable hotupdate URL tracking in <code>/live/ver.php</code>.</div>
-            </div>
-            <input type="checkbox" id="chkDisableTrackHotupdate" onchange="saveModifierSettings()" style="width:20px; height:20px;" />
-=======
           <div class="switch-row" style="border-bottom:none;">
             <div>
               <div style="font-weight:700; font-size:13px; color:var(--green);">Use `127.0.0.1:8083` Localhost Loopback (Bypass VPN `tun0` Queue)</div>
               <div style="font-size:11.5px; color:var(--text-1);">Recommended ON when running Termux on the same phone so 85+ Lobby icon downloads never congest your VPN tunnel.</div>
             </div>
             <input type="checkbox" id="chkUseLoopback" checked onchange="saveModifierSettings()" style="width:20px; height:20px;" />
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           </div>
         </div>
       </div>
 
-<<<<<<< HEAD
-      <!-- Side-by-Side --on vs --off Comparison Viewer -->
-      <div class="card" style="border-color:var(--amber);">
-        <div class="card-hdr">
-          <span><i class="ri-scales-3-line" style="color:var(--amber);"></i> Live Side-by-Side Comparison (`--on` vs `--off` Sessions)</span>
-          <div style="display:flex; gap:6px;">
-            <button class="btn btn-amber" onclick="loadComparisonReport()"><i class="ri-refresh-line"></i> Refresh Diff</button>
-            <a href="/api/export.txt?filter=COMPARE" download="ff_compare_on_vs_off.txt" class="btn btn-success"><i class="ri-file-download-line"></i> Download Full Compare .TXT</a>
-          </div>
-        </div>
-        <div class="card-body" id="compareReportContainer" style="font-family:var(--font-mono); font-size:11.5px;">
-          Tap <b>Refresh Diff</b> above to compare captured <code>--on</code> packets vs <code>--off</code> packets side-by-side.
-        </div>
-      </div>
-
-      <!-- Real-Time Clothes / Bundles / Protobuf Response Modifier -->
-      <div class="card">
-        <div class="card-hdr">
-          <span><i class="ri-t-shirt-2-line" style="color:var(--pink);"></i> Real-Time Clothes / Bundles / Protobuf Response Modifier (Active in `--on` Mode)</span>
-        </div>
-        <div class="card-body" style="display:flex; flex-direction:column; gap:8px; font-family:var(--font-sans);">
-          <div style="font-size:11.5px; color:var(--text-1);">
-            Only responses matching your target URL pattern are buffered and modified when <code>--on</code> is active; when <code>--off</code> is active, all rules are automatically paused!
-          </div>
-          <input type="text" id="ruleUrlPattern" placeholder="Target URL substring (e.g. optionalavatarres, GetPlayerPersonalShow, or 901000284)" />
-          <select id="ruleType">
-            <option value="TEXT_REPLACE">Bundle Name / Hash / Item ID Text Replace</option>
-            <option value="PROTOBUF_OVERRIDE">Protobuf Schema Field Override (protos-main: AvatarProfile / GetPlayerPersonalShow)</option>
-            <option value="HEX_REPLACE">Raw Hex Bytes Replace in Response</option>
-            <option value="JSON_MERGE">JSON Field Override / Merge</option>
-          </select>
-          <input type="text" id="ruleSearch" placeholder="Search string/hex (or Protobuf Schema Name e.g. GetPlayerPersonalShow)" />
-          <textarea id="ruleReplace" rows="2" placeholder='Replacement text/hex OR Protobuf JSON override e.g. {"3":{"3":[203000001,204000001,205000001]}}'></textarea>
-          <div style="display:flex; gap:6px; flex-wrap:wrap;">
-            <button class="btn btn-primary" onclick="addResponseRule()"><i class="ri-add-circle-line"></i> Add Clothes/Skins Rule</button>
-            <button class="btn btn-amber" onclick="addPresetClothesRule()"><i class="ri-magic-line"></i> Preset: Override AvatarProfile.clothes (#3)</button>
-          </div>
-=======
       <div class="card">
         <div class="card-hdr">
           <span><i class="ri-t-shirt-2-line" style="color:var(--pink);"></i> Real-Time Clothes / Bundles / Icons Response Modifier (Response-Time Only)</span>
@@ -899,45 +720,13 @@
           <input type="text" id="ruleSearch" placeholder="Search bundle/hash/ID (e.g. optionalab_avatar_01 or 902000299)" />
           <textarea id="ruleReplace" rows="2" placeholder="Replacement bundle/hash/ID (e.g. optionalab_avatar_07 or 902048014)"></textarea>
           <button class="btn btn-primary" onclick="addResponseRule()"><i class="ri-add-circle-line"></i> Add Clothes/Skins Response Rule</button>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           <div id="activeRulesList" style="margin-top:6px; display:flex; flex-direction:column; gap:6px;"></div>
         </div>
       </div>
 
-<<<<<<< HEAD
-      <!-- Integrated protos-main.zip Protobuf Decode / Encode / JWT Lab -->
-      <div class="card" style="border-color:var(--purple);">
-        <div class="card-hdr">
-          <span><i class="ri-code-box-line" style="color:var(--purple);"></i> Protobuf Lab (Integrated <code>protos-main.zip</code>: Decode / Encode / JWT Generator)</span>
-        </div>
-        <div class="card-body" style="display:flex; flex-direction:column; gap:8px; font-family:var(--font-sans);">
-          <div style="display:flex; gap:6px; flex-wrap:wrap;">
-            <select id="protoLabSchema" style="flex:1; min-width:180px;">
-              <option value="GetPlayerPersonalShow">GetPlayerPersonalShow (account_show_pb2)</option>
-              <option value="AvatarProfile">AvatarProfile (clothes field #3)</option>
-              <option value="AccountInfoBasic">AccountInfoBasic (weapon_skin_shows #32)</option>
-              <option value="LoginReq">LoginReq (freefire_pb2)</option>
-              <option value="LoginRes">LoginRes (tp_url #14, ano_url #16)</option>
-              <option value="PlatformRegisterReq">PlatformRegisterReq (register_req.proto)</option>
-              <option value="JwtGenerator">JwtGenerator (core_pb2)</option>
-            </select>
-            <button class="btn btn-primary" onclick="runProtoDecodeLab()"><i class="ri-lock-unlock-line"></i> Decode (/api/decode)</button>
-            <button class="btn btn-success" onclick="runProtoEncodeLab()"><i class="ri-lock-line"></i> Encode (/api/encode)</button>
-            <button class="btn btn-amber" onclick="runJwtGeneratorLab()"><i class="ri-key-2-line"></i> Generate JWT (/api/generate-jwt)</button>
-          </div>
-          <textarea id="protoLabInput" rows="3" placeholder='Paste Encrypted/Raw Hex to Decode OR JSON to Encode (e.g. {"avatar_id":102000001,"skin_color":1,"clothes":[203000001,204000001,205000001]})'></textarea>
-          <pre id="protoLabOutput" style="background:var(--bg-0); padding:10px; border-radius:8px; border:1px solid var(--border); max-height:220px; overflow:auto;">Ready. Select a schema above and click Decode, Encode, or Generate JWT.</pre>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-hdr">
-          <span><i class="ri-plug-2-line" style="color:var(--purple);"></i> Active MITM Path Routes (/px/...) &amp; Redirect Targets (Zero Extra Ports)</span>
-=======
       <div class="card">
         <div class="card-hdr">
           <span><i class="ri-plug-2-line" style="color:var(--purple);"></i> Active Dedicated Proxy Ports (:8080 - :8085)</span>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         </div>
         <div class="card-body" id="portsListContainer"></div>
       </div>
@@ -946,11 +735,7 @@
     <!-- VIEW 5: CLOTHES, SKINS & ASTC GALLERY -->
     <section id="viewMedia" class="view-pane">
       <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px;">
-<<<<<<< HEAD
-        <h2 style="font-size:15px; font-family:var(--font-display);"><i class="ri-t-shirt-2-line" style="color:var(--pink);"></i> Captured Real Live Clothes, Default Bundles &amp; ASTC Icons Gallery</h2>
-=======
         <h2 style="font-size:15px; font-family:var(--font-display);"><i class="ri-t-shirt-2-line" style="color:var(--pink);"></i> Captured Clothes, Default Bundles &amp; ASTC Icons Gallery</h2>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         <button class="btn" onclick="switchMainTab('Stream')"><i class="ri-arrow-left-line"></i> Stream</button>
       </div>
       <div id="mediaGalleryGrid" style="display:grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap:10px;"></div>
@@ -960,11 +745,7 @@
   <nav class="bottom-nav">
     <button class="nav-btn active" id="navStream" onclick="switchMainTab('Stream')">
       <i class="ri-radar-line"></i>
-<<<<<<< HEAD
-      <span>Live Stream</span>
-=======
       <span>Stream</span>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     </button>
     <button class="nav-btn" id="navInspector" onclick="switchMainTab('Inspector')">
       <i class="ri-file-search-line"></i>
@@ -979,30 +760,12 @@
       <span>Skins/Icons</span>
     </button>
     <button class="nav-btn" id="navPorts" onclick="switchMainTab('Ports')">
-<<<<<<< HEAD
-      <i class="ri-scales-3-line"></i>
-      <span>--on / --off</span>
-=======
       <i class="ri-shield-check-line"></i>
       <span>Anti-Ban</span>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     </button>
   </nav>
 
   <script>
-<<<<<<< HEAD
-    let packets = [];
-    let allocatedPorts = [];
-    let billboardsList = [];
-    let detectedServerIp = window.location.hostname || '';
-    let sessionCounts = { onPacketsCount: 0, offPacketsCount: 0 };
-    let modifierConfig = {
-      modifierEnabled: true,
-      bypassLoginServerUrl: true,
-      redirectCdnUrlsToPorts: true,
-      disableHotupdateTracking: true,
-      routeCdnOnSameHost: false,
-=======
     const socket = io();
     let packets = [];
     let allocatedPorts = [];
@@ -1012,19 +775,13 @@
       redirectCdnUrlsToPorts: true,
       useLoopbackForCdn: true,
       passiveBackgroundFetch: true,
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       customRules: []
     };
     let currentCategoryFilter = 'ALL';
     let selectedPacketId = null;
     let currentInspectorSubTab = 'ALL';
-<<<<<<< HEAD
-    let lastKnownTopPacketId = null;
-
-=======
 
     // Cache decoded ASTC PNG DataURLs by packetId so mobile Chrome NEVER hits the 8-WebGL-context limit!
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     const astcPngDataUrlCache = new Map();
     let sharedGlCanvas = null;
     let sharedGlCtx = null;
@@ -1053,62 +810,6 @@
       }
     }
 
-<<<<<<< HEAD
-    async function pollServerState() {
-      try {
-        const res = await fetch('/api/poll', { cache: 'no-store' });
-        if (!res.ok) throw new Error('HTTP ' + res.status);
-        const b = await res.json();
-
-        document.getElementById('wsDot').className = 'dot';
-        document.getElementById('wsStatus').textContent = b.session?.isVercel ? 'VERCEL LIVE' : 'TERMUX LIVE';
-
-        if (b.session?.serverIp) {
-          detectedServerIp = b.session.serverIp;
-          const ipLbl = document.getElementById('serverIpLabel');
-          if (ipLbl) ipLbl.textContent = `${detectedServerIp}:${b.session.proxyPort || 8080}`;
-        }
-        if (b.session) {
-          sessionCounts.onPacketsCount = b.session.onPacketsCount || 0;
-          sessionCounts.offPacketsCount = b.session.offPacketsCount || 0;
-        }
-
-        if (Array.isArray(b.ports)) {
-          allocatedPorts = b.ports;
-          renderPortsList();
-        }
-        if (Array.isArray(b.billboards)) {
-          billboardsList = b.billboards;
-        }
-        if (b.modifier) {
-          modifierConfig = b.modifier;
-          syncModifierUi();
-        }
-        if (Array.isArray(b.packets)) {
-          const newTopId = b.packets[0]?.id || null;
-          const changed = newTopId !== lastKnownTopPacketId || b.packets.length !== packets.length;
-          packets = b.packets;
-          if (changed) {
-            lastKnownTopPacketId = newTopId;
-            renderPacketList();
-            renderBillboardsTab();
-            renderMediaGallery();
-            if (packets.length > 0 && !selectedPacketId) {
-              selectPacket(packets[0].id, false);
-            }
-          } else {
-            updateCounters();
-          }
-        }
-      } catch (_) {
-        document.getElementById('wsDot').className = 'dot offline';
-        document.getElementById('wsStatus').textContent = 'RECONNECTING';
-      }
-    }
-
-    pollServerState();
-    setInterval(pollServerState, 850);
-=======
     socket.on('connect', () => {
       document.getElementById('wsDot').className = 'dot';
       document.getElementById('wsStatus').textContent = 'LIVE';
@@ -1181,7 +882,6 @@
       renderMediaGallery();
       document.getElementById('inspectorBody').innerHTML = '';
     });
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
 
     function switchMainTab(tab) {
       ['Stream', 'Inspector', 'Billboards', 'Ports', 'Media'].forEach((t) => {
@@ -1192,10 +892,6 @@
       });
       if (tab === 'Media') renderMediaGallery();
       if (tab === 'Billboards') renderBillboardsTab();
-<<<<<<< HEAD
-      if (tab === 'Ports') loadComparisonReport();
-=======
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
@@ -1217,11 +913,6 @@
 
     function updateCounters() {
       document.getElementById('cntALL').textContent = packets.length;
-<<<<<<< HEAD
-      document.getElementById('cntON').textContent = sessionCounts.onPacketsCount || packets.filter((p) => p.modifierMode === 'ON').length;
-      document.getElementById('cntOFF').textContent = sessionCounts.offPacketsCount || packets.filter((p) => p.modifierMode === 'OFF').length;
-=======
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       document.getElementById('cntCLOTHES').textContent = packets.filter((p) => p.urlMeta?.isClothesOrSkin).length;
       const billPktCount = packets.filter((p) => p.urlMeta?.isBillboard || p.urlMeta?.category === 'BILLBOARD').length;
       document.getElementById('cntBILLBOARDS').textContent = Math.max(billPktCount, billboardsList.length);
@@ -1236,34 +927,17 @@
       updateCounters();
 
       const filtered = packets.filter((p) => {
-<<<<<<< HEAD
-        if (currentCategoryFilter === 'MOD_ON' && p.modifierMode !== 'ON') return false;
-        if (currentCategoryFilter === 'MOD_OFF' && p.modifierMode !== 'OFF') return false;
-        if (currentCategoryFilter === 'CLOTHES_SKINS' && !p.urlMeta?.isClothesOrSkin) return false;
-        if (currentCategoryFilter === 'BILLBOARD' && !p.urlMeta?.isBillboard && p.urlMeta?.category !== 'BILLBOARD') return false;
-        if (currentCategoryFilter === 'VERSION_CONFIG' && p.urlMeta?.category !== 'VERSION_CONFIG') return false;
-=======
         if (currentCategoryFilter === 'CLOTHES_SKINS' && !p.urlMeta?.isClothesOrSkin) return false;
         if (currentCategoryFilter === 'BILLBOARD' && !p.urlMeta?.isBillboard && p.urlMeta?.category !== 'BILLBOARD') return false;
         if (currentCategoryFilter === 'VERSION_CONFIG' && p.urlMeta?.category !== 'VERSION_CONFIG') return false;
         if (currentCategoryFilter === 'LOGIN_AUTH' && p.urlMeta?.category !== 'LOGIN_AUTH' && p.urlMeta?.category !== 'OAUTH_TOKEN') return false;
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         if (!q) return true;
         return JSON.stringify(p).toLowerCase().includes(q);
       });
 
       const el = document.getElementById('viewStream');
       if (filtered.length === 0) {
-<<<<<<< HEAD
-        const modeTxt = modifierConfig.modifierEnabled ? '--on (MODIFY ON)' : '--off (NORMAL - MODIFY OFF)';
-        el.innerHTML = `<div class="card"><div class="card-body" style="text-align:center; color:var(--text-1); padding:28px;">
-          <b>0 Fake Packets — Ready for 100% Real Live Game Traffic!</b><br/>
-          Current Mode: <b style="color:var(--green);">${modeTxt}</b><br/>
-          Open Free Fire now — every real request &amp; response will appear here in real time.
-        </div></div>`;
-=======
         el.innerHTML = '<div class="card"><div class="card-body" style="text-align:center; color:var(--text-1); padding:28px;">No matching packets found.</div></div>';
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         return;
       }
 
@@ -1273,24 +947,13 @@
         const isBill = (p.urlMeta?.isBillboard || p.urlMeta?.category === 'BILLBOARD') ? 'billboard-card' : '';
         const portNum = p.capturedPort || 8080;
         const status = p.statusCode || 200;
-<<<<<<< HEAD
-        const modMode = p.modifierMode || 'ON';
-        const modClass = modMode === 'OFF' ? 'mod-tag-off' : 'mod-tag-on';
-        const modText = modMode === 'OFF' ? '--off NORMAL' : (p.wasModified ? '--on MODIFIED' : '--on STREAM');
-=======
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         const badge = p.urlMeta?.badge || `${p.protocol} PACKET`;
         const catClass = `cat-${p.urlMeta?.category || 'GAME_API'}`;
         const purpose = p.urlMeta?.purpose || (p.cmdName ? `RUDP Command: ${p.cmdName}` : p.packetType || '');
         const urlOrTitle = p.fullUrl || p.requestTitle || p.cmdName || '';
-<<<<<<< HEAD
-        const sz = p.protocol === 'HTTP' ? `${p.sentWireSize ?? (p.response?.size || 0)} B` : `${p.size || 0} B`;
-
-=======
         const sz = p.protocol === 'HTTP' ? `${(p.request?.size || 0) + (p.response?.size || 0)} B` : `${p.size || 0} B`;
 
         // Inline Thumbnail right next to the URL if it's an Image or ASTC icon!
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         let inlineThumbHtml = '';
         if (p.hasMediaPreview) {
           if (p.mediaFormat === 'ASTC_GPU_TEXTURE') {
@@ -1323,10 +986,6 @@
             <div class="pkt-top">
               <div class="badge-row">
                 <span class="port-tag"><i class="ri-plug-line"></i> :${portNum}</span>
-<<<<<<< HEAD
-                <span class="${modClass}">${modText}</span>
-=======
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
                 <span class="purpose-tag ${catClass}">${escapeHtml(badge)}</span>
                 <span class="status-tag ${status >= 400 ? 'err' : ''}">${p.method || p.protocol} &bull; ${status} (${p.durationMs || 0}ms)</span>
               </div>
@@ -1340,21 +999,14 @@
               ${inlineThumbHtml}
             </div>
             <div class="pkt-foot">
-<<<<<<< HEAD
-              <span>SHA256: ${escapeHtml(p.sentWireSha256 || 'RAW')} | ${p.wasModified ? 'Modified: ' + escapeHtml((p.appliedMods || []).join(', ')) : 'Untouched Original Bytes'}</span>
-=======
               <span>Req: ${escapeHtml((p.request?.encryption || 'NONE').split(' ')[0])} | Res: ${escapeHtml((p.response?.encryption || p.encryptionStatus || 'RAW').split(' ')[0])}</span>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
               <span style="color:var(--accent); font-weight:700;">Inspect <i class="ri-arrow-right-s-line"></i></span>
             </div>
           </div>
         `;
       }).join('');
 
-<<<<<<< HEAD
-=======
       // Render any un-cached ASTC thumbnails visible in the stream
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       setTimeout(() => {
         filtered.slice(0, 40).forEach((p) => {
           if (p.hasMediaPreview && p.mediaFormat === 'ASTC_GPU_TEXTURE' && !astcPngDataUrlCache.has(p.id)) {
@@ -1378,21 +1030,9 @@
         {
           fullUrl: pkt.fullUrl || pkt.requestTitle,
           capturedOnPort: pkt.capturedPort || 8080,
-<<<<<<< HEAD
-          modifierMode: pkt.modifierMode || 'ON',
-          wasModified: Boolean(pkt.wasModified),
-          appliedMods: pkt.appliedMods || [],
-          originalSize: pkt.originalSize,
-          sentWireSize: pkt.sentWireSize,
-          originalSha256: pkt.originalSha256,
-          sentWireSha256: pkt.sentWireSha256,
-          urlBadge: pkt.urlMeta?.badge || pkt.protocol,
-          urlPurpose: pkt.urlMeta?.purpose || pkt.packetType || pkt.cmdName,
-=======
           urlBadge: pkt.urlMeta?.badge || pkt.protocol,
           urlPurpose: pkt.urlMeta?.purpose || pkt.packetType || pkt.cmdName,
           category: pkt.urlMeta?.category || pkt.protocol,
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           method: pkt.method || pkt.direction,
           statusCode: pkt.statusCode || 200,
           timestamp: pkt.timestamp,
@@ -1434,11 +1074,7 @@
       if (!pkt) return;
 
       const portNum = pkt.capturedPort || 8080;
-<<<<<<< HEAD
-      document.getElementById('inspPortBadge').textContent = `Captured on Port :${portNum} (--${(pkt.modifierMode || 'on').toLowerCase()})`;
-=======
       document.getElementById('inspPortBadge').textContent = `Captured on Port :${portNum}`;
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
 
       const status = pkt.statusCode || 200;
       const badge = pkt.urlMeta?.badge || pkt.protocol;
@@ -1463,11 +1099,7 @@
                 <div class="media-preview-box">
                   <canvas id="astcCanvas_${pkt.id}" width="${w}" height="${h}"></canvas>
                   <div style="font-size:11.5px; color:var(--text-1); text-align:center;">
-<<<<<<< HEAD
-                    Item ID: <b style="color:var(--pink);">${escapeHtml(pkt.urlMeta?.itemId || 'Bundle')}</b> &bull; ${w}x${h}px (ASTC ${pkt.astcMeta?.blockX || 8}x${pkt.astcMeta?.blockY || 8})
-=======
                     Item ID: <b style="color:var(--pink);">${escapeHtml(pkt.urlMeta?.itemId || 'Bundle')}</b> &bull; ${w}x${h}px (ASTC ${pkt.astcMeta?.blockX || 8}x${pkt.astcMeta?.blockY || 8}) &bull; Exact Block Slice (${pkt.astcMeta?.expectedAstcBytes || 3136} B)
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
                   </div>
                 </div>
               </div>
@@ -1507,11 +1139,7 @@
         if (pkt.discoveredPortMappings && Object.keys(pkt.discoveredPortMappings).length > 0) {
           portMapHtml = `
             <div class="card">
-<<<<<<< HEAD
-              <div class="card-hdr"><span><i class="ri-shield-check-line" style="color:var(--green);"></i> ver.php URL Routing Status (--${(pkt.modifierMode || 'on').toLowerCase()})</span></div>
-=======
               <div class="card-hdr"><span><i class="ri-shield-check-line" style="color:var(--green);"></i> Protected Anti-Ban URLs &amp; Dedicated Port Routing</span></div>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
               <div class="card-body"><pre>${escapeHtml(JSON.stringify(pkt.discoveredPortMappings, null, 2))}</pre></div>
             </div>
           `;
@@ -1520,38 +1148,21 @@
         container.innerHTML = `
           <div class="card" style="border-color:var(--accent);">
             <div class="card-hdr">
-<<<<<<< HEAD
-              <span><i class="ri-information-fill" style="color:var(--accent);"></i> ${escapeHtml(badge)} (Port :${portNum} &bull; Mode: --${escapeHtml((pkt.modifierMode || 'ON').toLowerCase())})</span>
-=======
               <span><i class="ri-information-fill" style="color:var(--accent);"></i> ${escapeHtml(badge)} (Port :${portNum})</span>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
               <button class="btn btn-success" onclick="copySelectedPacketEverything()"><i class="ri-file-copy-2-line"></i> Copy All (URL + Headers + Req/Res)</button>
             </div>
             <div class="card-body">
               <div class="kv-row">
-<<<<<<< HEAD
-=======
                 <span class="kv-lbl">What This URL Is For (URL Role / Billboard / Bundle Purpose):</span>
                 <span class="kv-val" style="color:var(--amber); font-weight:700;">${escapeHtml(badge)} &mdash; ${escapeHtml(purpose)}</span>
               </div>
               <div class="kv-row">
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
                 <span class="kv-lbl">Full URL / Endpoint:</span>
                 <span class="kv-val" style="color:var(--accent); font-weight:700;">${escapeHtml(pkt.fullUrl || pkt.requestTitle)}</span>
               </div>
               <div class="kv-row">
-<<<<<<< HEAD
-                <span class="kv-lbl">Modification &amp; SHA-256 Verification:</span>
-                <span class="kv-val" style="color:${pkt.wasModified ? 'var(--amber)' : 'var(--green)'};">
-                  Mode: <b>--${escapeHtml((pkt.modifierMode || 'ON').toLowerCase())}</b> &bull;
-                  Modified: <b>${pkt.wasModified ? 'YES (' + escapeHtml((pkt.appliedMods || []).join(', ')) + ')' : 'NO (100% Untouched Original Bytes)'}</b><br/>
-                  Original: ${pkt.originalSize ?? 0} B (SHA256: <code>${escapeHtml(pkt.originalSha256 || 'N/A')}</code>) &rarr;
-                  Sent Wire: ${pkt.sentWireSize ?? 0} B (SHA256: <code>${escapeHtml(pkt.sentWireSha256 || 'N/A')}</code>)
-                </span>
-=======
                 <span class="kv-lbl">Captured Proxy Port &amp; Status Code:</span>
                 <span class="kv-val">Port <b>:${portNum}</b> &bull; Status <b>${status}</b> (${pkt.durationMs || 0}ms) &bull; Mode: ${escapeHtml(pkt.passthroughMode || 'PASSTHROUGH')}</span>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
               </div>
               <div style="display:flex; gap:6px; flex-wrap:wrap; margin-top:8px;">
                 <button class="btn" onclick="copyText('${escapeJs(pkt.fullUrl || '')}', 'URL Copied!')"><i class="ri-link"></i> Copy URL</button>
@@ -1583,14 +1194,10 @@
               <span><i class="ri-lock-2-line" style="color:var(--amber);"></i> Outgoing Encrypted Request (${pkt.request?.size || pkt.size || 0} B)</span>
               <button class="btn" onclick="copyText('${escapeJs(reqHex)}', 'Encrypted Request Hex Copied!')"><i class="ri-file-copy-line"></i> Copy Hex</button>
             </div>
-<<<<<<< HEAD
-            <div class="card-body"><pre>${escapeHtml(reqHex)}</pre></div>
-=======
             <div class="card-body">
               <div style="margin-bottom:6px; color:var(--amber); font-size:11px;">Cipher: ${escapeHtml(pkt.request?.encryption || pkt.encryptionStatus || 'NONE')}</div>
               <pre>${escapeHtml(reqHex)}</pre>
             </div>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           </div>
 
           <div class="card">
@@ -1598,14 +1205,10 @@
               <span><i class="ri-lock-2-line" style="color:var(--purple);"></i> Incoming Encrypted / Raw Response (${pkt.response?.size || 0} B)</span>
               <button class="btn" onclick="copyText('${escapeJs(resHex)}', 'Encrypted Response Hex Copied!')"><i class="ri-file-copy-line"></i> Copy Hex</button>
             </div>
-<<<<<<< HEAD
-            <div class="card-body"><pre>${escapeHtml(resHex)}</pre></div>
-=======
             <div class="card-body">
               <div style="margin-bottom:6px; color:var(--purple); font-size:11px;">Cipher / Format: ${escapeHtml(pkt.response?.encryption || 'RAW')}</div>
               <pre>${escapeHtml(resHex)}</pre>
             </div>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           </div>
         `;
       } else if (currentInspectorSubTab === 'DECRYPTED') {
@@ -1613,19 +1216,12 @@
           ${mediaBlockHtml}
           <div class="card">
             <div class="card-hdr">
-<<<<<<< HEAD
-              <span><i class="ri-lock-unlock-line" style="color:var(--accent);"></i> Decrypted Outgoing Request</span>
-              <button class="btn" onclick="copyText(JSON.stringify(packets.find(x=>x.id==='${pkt.id}')?.request?.decoded||{},null,2), 'Decrypted Request Copied!')"><i class="ri-file-copy-line"></i> Copy JSON</button>
-            </div>
-            <div class="card-body"><pre>${escapeHtml(JSON.stringify(pkt.request?.decoded, null, 2))}</pre></div>
-=======
               <span><i class="ri-lock-unlock-line" style="color:var(--accent);"></i> Decrypted Outgoing Request (${escapeHtml(pkt.request?.schemaUsed || 'Auto')})</span>
               <button class="btn" onclick="copyText(JSON.stringify(packets.find(x=>x.id==='${pkt.id}')?.request?.decoded||{},null,2), 'Decrypted Request Copied!')"><i class="ri-file-copy-line"></i> Copy JSON</button>
             </div>
             <div class="card-body">
               <pre>${escapeHtml(JSON.stringify(pkt.request?.decoded, null, 2))}</pre>
             </div>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           </div>
 
           <div class="card">
@@ -1633,13 +1229,9 @@
               <span><i class="ri-lock-unlock-line" style="color:var(--green);"></i> Decrypted Incoming Response (Status ${status})</span>
               <button class="btn" onclick="copyText(JSON.stringify(packets.find(x=>x.id==='${pkt.id}')?.response?.decoded||packets.find(x=>x.id==='${pkt.id}')?.decodedPayload||{},null,2), 'Decrypted Response Copied!')"><i class="ri-file-copy-line"></i> Copy JSON</button>
             </div>
-<<<<<<< HEAD
-            <div class="card-body"><pre>${escapeHtml(JSON.stringify(pkt.response?.decoded || pkt.decodedPayload, null, 2))}</pre></div>
-=======
             <div class="card-body">
               <pre>${escapeHtml(JSON.stringify(pkt.response?.decoded || pkt.decodedPayload, null, 2))}</pre>
             </div>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           </div>
         `;
       }
@@ -1649,58 +1241,10 @@
       }
     }
 
-<<<<<<< HEAD
-    async function loadComparisonReport() {
-      const box = document.getElementById('compareReportContainer');
-      if (!box) return;
-      box.innerHTML = '<span style="color:var(--amber);">Loading side-by-side comparison of --on vs --off logs...</span>';
-      try {
-        const res = await fetch('/api/compare', { cache: 'no-store' });
-        const data = await res.json();
-        if (!data.rows || data.rows.length === 0) {
-          box.innerHTML = `No packets captured yet. Run with <code>node server.js --on</code> and <code>node server.js --off</code> (or toggle the <b>MODE</b> button in the top bar) to compare both logs!`;
-          return;
-        }
-        const rowsHtml = data.rows.slice(0, 60).map((r, i) => {
-          const isDiff = r.hashDiff.startsWith('MODIFIED') || r.statusDiff.startsWith('DIFF') || r.detailNotes.length > 0;
-          return `
-            <div style="padding:8px 10px; border-bottom:1px solid var(--border); background:${isDiff ? 'rgba(245,158,11,0.08)' : 'transparent'};">
-              <div style="font-weight:700; color:${isDiff ? 'var(--amber)' : 'var(--green)'};">
-                [#${i + 1}] ${escapeHtml(r.endpoint)}
-              </div>
-              <div style="font-size:11px; color:var(--text-1); margin-top:3px;">
-                In <b>--on</b>: ${r.inOn ? 'YES' : 'NO'} (${r.onDurationMs ?? '-'}ms) &bull;
-                In <b>--off</b>: ${r.inOff ? 'YES' : 'NO'} (${r.offDurationMs ?? '-'}ms) &bull;
-                Size: <b>${escapeHtml(r.sizeDiff)}</b> &bull;
-                SHA256: <b>${escapeHtml(r.hashDiff)}</b>
-              </div>
-              ${r.detailNotes.length > 0
-                ? `<div style="color:var(--pink); font-size:11px; margin-top:4px;">&rarr; ${escapeHtml(r.detailNotes.join(' | '))}</div>`
-                : ''}
-            </div>
-          `;
-        }).join('');
-        box.innerHTML = `
-          <div style="margin-bottom:8px; color:var(--text-0);">
-            <b>Captured in <code>--on</code>:</b> ${data.onCount} pkts &bull;
-            <b>Captured in <code>--off</code>:</b> ${data.offCount} pkts &bull;
-            <b>Unique Endpoints Compared:</b> ${data.rows.length}
-          </div>
-          <div style="max-height:280px; overflow:auto; border:1px solid var(--border); border-radius:8px;">
-            ${rowsHtml}
-          </div>
-        `;
-      } catch (e) {
-        box.innerHTML = 'Error loading comparison: ' + escapeHtml(e.message);
-      }
-    }
-
-=======
     /**
      * Render Billboards Tab: Shows all discovered Billboard URLs (from ver.php & traffic)
      * with clear "🪧 BILLBOARD URL" badges and live fetched image previews right beside every URL!
      */
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     function renderBillboardsTab() {
       const container = document.getElementById('billboardsListContainer');
       if (!container) return;
@@ -1730,19 +1274,11 @@
 
       const items = Array.from(combinedMap.values());
       if (items.length === 0) {
-<<<<<<< HEAD
-        container.innerHTML = '<div class="card"><div class="card-body" style="text-align:center; color:var(--text-1); padding:28px;">No Billboard URLs captured yet. Open the game so <code>/live/ver.php</code> is captured!</div></div>';
-        return;
-      }
-
-      container.innerHTML = items.map((item) => {
-=======
         container.innerHTML = '<div class="card"><div class="card-body" style="text-align:center; color:var(--text-1); padding:28px;">No Billboard URLs captured yet. Start the game or tap <b>Test</b>!</div></div>';
         return;
       }
 
       container.innerHTML = items.map((item, idx) => {
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         const hasPreview = item.hasMediaPreview && item.packetId;
         const isImg = item.isImage || isLikelyImageUrl(item.url) || (item.mediaFormat && item.mediaFormat.startsWith('image/'));
 
@@ -1813,21 +1349,12 @@
           resBox.innerHTML = `<div style="color:var(--rose); font-size:12px; padding:8px;">Fetch Error: ${escapeHtml(data.error || 'Failed')}</div>`;
           return;
         }
-<<<<<<< HEAD
-        showToast('URL Fetched!');
-        await pollServerState();
-=======
         showToast('URL Fetched & Added to Stream!');
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         if (data.mediaFormat === 'ASTC_GPU_TEXTURE') {
           resBox.innerHTML = `
             <div class="media-preview-box" style="margin-top:6px;">
               <canvas id="customFetchAstc_${data.packetId}" width="${data.astcMeta?.width || 110}" height="${data.astcMeta?.height || 110}"></canvas>
-<<<<<<< HEAD
-              <div style="font-size:11.5px; color:var(--pink);">Fetched ASTC Icon (${data.size} B)</div>
-=======
               <div style="font-size:11.5px; color:var(--pink);">Fetched ASTC Icon (${data.size} B) &mdash; <button class="btn btn-primary" onclick="selectPacket('${data.packetId}', true)">Inspect Packet</button></div>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
             </div>
           `;
           setTimeout(() => renderAstcToCanvas(data.packetId, `customFetchAstc_${data.packetId}`), 30);
@@ -1835,20 +1362,13 @@
           resBox.innerHTML = `
             <div class="media-preview-box" style="margin-top:6px;">
               <img src="/api/media/${encodeURIComponent(data.packetId)}" alt="Fetched Preview" style="max-width:300px; max-height:220px;" />
-<<<<<<< HEAD
-              <div style="font-size:11.5px; color:var(--green);">Live Image Fetched (${data.size} B, ${escapeHtml(data.mediaFormat)})</div>
-=======
               <div style="font-size:11.5px; color:var(--green);">Live Image Fetched (${data.size} B, ${escapeHtml(data.mediaFormat)}) &mdash; <button class="btn btn-primary" onclick="selectPacket('${data.packetId}', true)">Inspect Packet</button></div>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
             </div>
           `;
         } else {
           resBox.innerHTML = `
             <div style="background:var(--bg-0); padding:10px; border-radius:8px; border:1px solid var(--border); margin-top:6px;">
-<<<<<<< HEAD
-=======
               <div style="font-size:11.5px; color:var(--green); margin-bottom:6px;">Fetched ${data.size} bytes (${escapeHtml(data.urlMeta?.badge || 'URL')}) &mdash; <button class="btn btn-primary" onclick="selectPacket('${data.packetId}', true)">Open in Inspector</button></div>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
               <pre style="max-height:180px; overflow:auto;">${escapeHtml(JSON.stringify(data.decoded, null, 2))}</pre>
             </div>
           `;
@@ -1858,8 +1378,6 @@
       }
     }
 
-<<<<<<< HEAD
-=======
     /**
      * ============================================================================
      * FIXED HARDWARE WEBGL + SOFTWARE ASTC LDR BLOCK DECODER (v3.2)
@@ -1874,7 +1392,6 @@
      *  3. Includes an enhanced ASTC LDR endpoint + weight software decoder fallback for
      *     browsers/PCs without hardware ASTC support.
      */
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     function getSharedWebGlAstcContext(width, height) {
       try {
         if (!sharedGlCanvas) {
@@ -1885,10 +1402,7 @@
           if (sharedGlCtx) {
             const gl = sharedGlCtx;
             const vs = gl.createShader(gl.VERTEX_SHADER);
-<<<<<<< HEAD
-=======
             // Note: Free Fire ASTC icons are stored bottom-up, so v.y = p.y * 0.5 + 0.5 flips it right-side up
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
             gl.shaderSource(vs, 'attribute vec2 p; varying vec2 v; void main(){ v=vec2(p.x*0.5+0.5, p.y*0.5+0.5); gl_Position=vec4(p,0,1); }');
             gl.compileShader(vs);
 
@@ -1957,25 +1471,17 @@
           if (bIdx + 16 > body.length) break;
           const blk = body.subarray(bIdx, bIdx + 16);
 
-<<<<<<< HEAD
-          const isVoidExtent = blk[0] === 0xfc && (blk[1] & 0x03) === 0x01;
-=======
           // 1. Check Void-Extent (constant color block: bits 0..11 == 0xDFC -> blk[0] == 0xFC && (blk[1] & 0x03) == 0x01)
           const isVoidExtent = blk[0] === 0xfc && (blk[1] & 0x03) === 0x01;
           // 2. Check all-zero / transparent background block
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           let isAllZero = true;
           for (let k = 0; k < 16; k++) {
             if (blk[k] !== 0) { isAllZero = false; break; }
           }
-<<<<<<< HEAD
-          if (isAllZero) continue;
-=======
 
           if (isAllZero) {
             continue;
           }
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
 
           if (isVoidExtent) {
             const r = blk[9], g = blk[11], b = blk[13], a = blk[15];
@@ -1992,10 +1498,7 @@
             continue;
           }
 
-<<<<<<< HEAD
-=======
           // 3. Standard ASTC LDR Block: Extract Color Endpoint pair (e0, e1) & weight grid interpolation
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           const partCount = ((blk[1] >> 3) & 0x03) + 1;
           const cem = partCount === 1 ? readBits(blk, 13, 4) : readBits(blk, 23, 6) & 0x0f;
           const cemStartBit = partCount === 1 ? 17 : 29;
@@ -2004,19 +1507,13 @@
           let r1 = 0, g1 = 0, b1 = 0, a1 = 255;
 
           if (cem <= 3) {
-<<<<<<< HEAD
-=======
             // Luminance endpoints
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
             const v0 = readBits(blk, cemStartBit, 8);
             const v1 = readBits(blk, cemStartBit + 8, 8);
             r0 = g0 = b0 = v0;
             r1 = g1 = b1 = v1;
           } else if (cem <= 7) {
-<<<<<<< HEAD
-=======
             // Luminance + Alpha or RGB Base+Scale
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
             r0 = readBits(blk, cemStartBit, 8);
             g0 = readBits(blk, cemStartBit + 8, 8);
             b0 = readBits(blk, cemStartBit + 16, 8);
@@ -2026,10 +1523,7 @@
             g0 = (g0 * scale) >> 8;
             b0 = (b0 * scale) >> 8;
           } else {
-<<<<<<< HEAD
-=======
             // Direct RGB / RGBA endpoints
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
             r0 = readBits(blk, cemStartBit, 8);
             r1 = readBits(blk, cemStartBit + 8, 8);
             g0 = readBits(blk, cemStartBit + 16, 8);
@@ -2042,10 +1536,7 @@
             }
           }
 
-<<<<<<< HEAD
-=======
           // Decode 2-bit texel weights from the top of the 128-bit block (reversed bit stream)
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           for (let py = 0; py < blockY; py++) {
             for (let px = 0; px < blockX; px++) {
               const x = bx * blockX + px;
@@ -2054,11 +1545,7 @@
 
               const texIdx = ((py >> 1) * 4 + (px >> 1)) * 2;
               const w2 = readReversedBits(blk, texIdx, 2);
-<<<<<<< HEAD
-              const weight = w2 * 21;
-=======
               const weight = w2 * 21; // 0, 21, 42, 63 -> / 64
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
 
               const pOff = (y * width + x) * 4;
               data[pOff] = ((r0 * (64 - weight) + r1 * weight) >> 6) & 0xff;
@@ -2076,10 +1563,7 @@
       const targetCanvas = document.getElementById(canvasId);
       if (!targetCanvas) return;
 
-<<<<<<< HEAD
-=======
       // Fast path: if already decoded into PNG DataURL cache, draw immediately!
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       if (astcPngDataUrlCache.has(packetId)) {
         const img = new Image();
         img.onload = () => {
@@ -2107,10 +1591,7 @@
         const width = u8[7] | (u8[8] << 8) | (u8[9] << 16);
         const height = u8[10] | (u8[11] << 8) | (u8[12] << 16);
 
-<<<<<<< HEAD
-=======
         // CRITICAL FIX: Slice EXACT `blocksWide * blocksHigh * 16` bytes (strips Garena's 8-byte `0000006e0000006e` footer!)
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         const blocksWide = Math.ceil(width / blockX);
         const blocksHigh = Math.ceil(height / blockY);
         const expectedBytes = blocksWide * blocksHigh * 16;
@@ -2121,10 +1602,7 @@
         const ctx2d = targetCanvas.getContext('2d');
         if (!ctx2d) return;
 
-<<<<<<< HEAD
-=======
         // 1. Try Hardware WebGL ASTC via Single Shared Offscreen WebGL Context
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         const shared = getSharedWebGlAstcContext(width, height);
         if (shared && shared.gl) {
           const gl = shared.gl;
@@ -2146,10 +1624,7 @@
               gl.clear(gl.COLOR_BUFFER_BIT);
               gl.drawArrays(gl.TRIANGLE_STRIP, 0, 4);
 
-<<<<<<< HEAD
-=======
               // Verify non-empty output
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
               const pxCheck = new Uint8Array(width * height * 4);
               gl.readPixels(0, 0, width, height, gl.RGBA, gl.UNSIGNED_BYTE, pxCheck);
               gl.deleteTexture(tex);
@@ -2176,10 +1651,7 @@
           }
         }
 
-<<<<<<< HEAD
-=======
         // 2. Fallback: Software ASTC Block Decoder onto 2D Canvas
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         const imgData = decodeAstcSoftwareToImageData(body, width, height, blockX, blockY, ctx2d);
         ctx2d.putImageData(imgData, 0, 0);
         try {
@@ -2191,65 +1663,26 @@
     function renderPortsList() {
       const el = document.getElementById('portsListContainer');
       if (!el) return;
-<<<<<<< HEAD
-      const hostIp = detectedServerIp || window.location.hostname || '0.0.0.0';
-      const baseRow = `
-        <div class="kv-row">
-          <span class="kv-lbl">Primary MITM Upstream (Zero Extra Ports &bull; 100% Path Routing)</span>
-          <span class="kv-val" style="color:var(--green);">http://${escapeHtml(hostIp)}:8080 &harr; https://version.ggwhitehawk.com/ (PK #1 Priority)</span>
-=======
       const baseRow = `
         <div class="kv-row">
           <span class="kv-lbl">Port :8080 (Master Entry &bull; HTTP + TLS SNI + SOCKS5 + TCP/UDP)</span>
           <span class="kv-val" style="color:var(--green);">Captures /live/ver.php + Transparent TLS SNI Passthrough + Raw Game TCP/UDP</span>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         </div>
       `;
       const dynRows = allocatedPorts.map((p) => `
         <div class="kv-row">
-<<<<<<< HEAD
-          <span class="kv-lbl">${escapeHtml(p.pathRoute || p.port)} &mdash; ${escapeHtml(p.label)} (${p.packetCount || 0} hits)</span>
-          <span class="kv-val" style="color:var(--accent);">${escapeHtml(p.proxyUrl || "")} &rarr; ${escapeHtml(p.targetUrl || p.origin)}</span>
-=======
           <span class="kv-lbl">Port :${p.port} &mdash; ${escapeHtml(p.label)} (${p.packetCount || 0} pkts)</span>
           <span class="kv-val" style="color:var(--accent);">127.0.0.1:${p.port} &rarr; ${escapeHtml(p.origin)}</span>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         </div>
       `).join('');
       el.innerHTML = baseRow + dynRows;
     }
 
     function syncModifierUi() {
-<<<<<<< HEAD
-      const isOn = Boolean(modifierConfig.modifierEnabled);
-      const chkMaster = document.getElementById('chkMasterModEnabled');
-      if (chkMaster) chkMaster.checked = isOn;
-      const chkCdn = document.getElementById('chkRedirectCdn');
-      if (chkCdn) chkCdn.checked = Boolean(modifierConfig.redirectCdnUrlsToPorts);
-      const chkPk = document.getElementById('chkForcePakistanRegion');
-      if (chkPk) chkPk.checked = modifierConfig.forcePakistanCountryCode !== false;
-      const chkVer = document.getElementById('chkSyncRemoteVer');
-      if (chkVer) chkVer.checked = modifierConfig.syncRemoteVersionToClient !== false;
-      const chkTrack = document.getElementById('chkDisableTrackHotupdate');
-      if (chkTrack) chkTrack.checked = Boolean(modifierConfig.disableHotupdateTracking);
-
-      const btnToggle = document.getElementById('btnMasterModeToggle');
-      const lblToggle = document.getElementById('lblMasterMode');
-      if (btnToggle && lblToggle) {
-        if (isOn) {
-          btnToggle.className = 'btn btn-success';
-          lblToggle.textContent = 'MODE: --on (MODIFY ON)';
-        } else {
-          btnToggle.className = 'btn btn-amber';
-          lblToggle.textContent = 'MODE: --off (NORMAL)';
-        }
-      }
-=======
       const chkCdn = document.getElementById('chkRedirectCdn');
       if (chkCdn) chkCdn.checked = Boolean(modifierConfig.redirectCdnUrlsToPorts);
       const chkLoop = document.getElementById('chkUseLoopback');
       if (chkLoop) chkLoop.checked = modifierConfig.useLoopbackForCdn !== false;
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
 
       const list = document.getElementById('activeRulesList');
       if (!list) return;
@@ -2257,55 +1690,17 @@
       list.innerHTML = rules.map((r, idx) => `
         <div style="background:var(--bg-2); padding:8px 10px; border-radius:8px; display:flex; justify-content:space-between; align-items:center;">
           <div style="font-family:var(--font-mono); font-size:11px;">
-<<<<<<< HEAD
-            <b style="color:var(--amber);">[${escapeHtml(r.type)}]</b> ${escapeHtml(r.urlPattern)} : <code>${escapeHtml(r.search || '')}</code> &rarr; <code>${escapeHtml(String(r.replace).slice(0, 60))}</code>
-=======
             <b style="color:var(--amber);">[${escapeHtml(r.type)}]</b> ${escapeHtml(r.urlPattern)} : <code>${escapeHtml(r.search || '')}</code> &rarr; <code>${escapeHtml(String(r.replace).slice(0, 45))}</code>
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
           </div>
           <button class="btn" onclick="removeResponseRule(${idx})"><i class="ri-close-line"></i></button>
         </div>
       `).join('');
     }
 
-<<<<<<< HEAD
-    async function toggleMasterModifierMode() {
-      modifierConfig.modifierEnabled = !modifierConfig.modifierEnabled;
-      modifierConfig.redirectCdnUrlsToPorts = modifierConfig.modifierEnabled;
-      await pushModifierConfig();
-    }
-
-    async function pushModifierConfig() {
-      try {
-        const res = await fetch('/api/modifier', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(modifierConfig)
-        });
-        const data = await res.json();
-        if (data.modifier) {
-          modifierConfig = data.modifier;
-          syncModifierUi();
-          showToast(modifierConfig.modifierEnabled ? 'Switched to --on (MODIFY ON)!' : 'Switched to --off (NORMAL MODE)!');
-        }
-      } catch (e) {
-        showToast('Failed to save settings');
-      }
-    }
-
-    function saveModifierSettings() {
-      modifierConfig.modifierEnabled = document.getElementById('chkMasterModEnabled').checked;
-      modifierConfig.redirectCdnUrlsToPorts = document.getElementById('chkRedirectCdn').checked;
-      modifierConfig.forcePakistanCountryCode = document.getElementById('chkForcePakistanRegion').checked;
-      modifierConfig.syncRemoteVersionToClient = document.getElementById('chkSyncRemoteVer').checked;
-      modifierConfig.disableHotupdateTracking = document.getElementById('chkDisableTrackHotupdate').checked;
-      pushModifierConfig();
-=======
     function saveModifierSettings() {
       modifierConfig.redirectCdnUrlsToPorts = document.getElementById('chkRedirectCdn').checked;
       modifierConfig.useLoopbackForCdn = document.getElementById('chkUseLoopback').checked;
       socket.emit('modifier:update', modifierConfig);
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     }
 
     function addResponseRule() {
@@ -2314,11 +1709,7 @@
       const search = document.getElementById('ruleSearch').value;
       const replace = document.getElementById('ruleReplace').value;
       if (!urlPattern || !replace) {
-<<<<<<< HEAD
-        showToast('Enter target URL pattern & replacement!');
-=======
         showToast('Enter target Clothes URL pattern & replacement!');
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         return;
       }
       if (!Array.isArray(modifierConfig.customRules)) modifierConfig.customRules = [];
@@ -2329,96 +1720,14 @@
         type,
         search,
         replace,
-<<<<<<< HEAD
-        schema: type === 'PROTOBUF_OVERRIDE' ? (search || 'GetPlayerPersonalShow') : undefined,
-        description: `${type} on ${urlPattern}`
-      });
-      pushModifierConfig();
-    }
-
-    function addPresetClothesRule() {
-      document.getElementById('ruleUrlPattern').value = 'GetPlayerPersonalShow';
-      document.getElementById('ruleType').value = 'PROTOBUF_OVERRIDE';
-      document.getElementById('ruleSearch').value = 'GetPlayerPersonalShow';
-      document.getElementById('ruleReplace').value = JSON.stringify({
-        "3": {
-          "1": 102000001,
-          "2": 1,
-          "3": [203000001, 204000001, 205000001, 211000001]
-        }
-      });
-      addResponseRule();
-=======
         description: `${type} on ${urlPattern}`
       });
       socket.emit('modifier:update', modifierConfig);
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     }
 
     function removeResponseRule(idx) {
       modifierConfig.customRules.splice(idx, 1);
-<<<<<<< HEAD
-      pushModifierConfig();
-    }
-
-    async function runProtoDecodeLab() {
-      const schema = document.getElementById('protoLabSchema').value;
-      const hex = document.getElementById('protoLabInput').value.trim();
-      const out = document.getElementById('protoLabOutput');
-      if (!hex) {
-        showToast('Paste Hex string to decode!');
-        return;
-      }
-      out.textContent = 'Decoding via /api/decode...';
-      try {
-        const res = await fetch('/api/decode', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ hex, schema })
-        });
-        const data = await res.json();
-        out.textContent = JSON.stringify(data, null, 2);
-      } catch (e) {
-        out.textContent = 'Error: ' + e.message;
-      }
-    }
-
-    async function runProtoEncodeLab() {
-      const schema = document.getElementById('protoLabSchema').value;
-      const raw = document.getElementById('protoLabInput').value.trim() || '{"avatar_id":102000001,"skin_color":1,"clothes":[203000001,204000001,205000001]}';
-      const out = document.getElementById('protoLabOutput');
-      try {
-        const parsed = JSON.parse(raw);
-        out.textContent = 'Encoding via /api/encode...';
-        const res = await fetch('/api/encode', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ schema, data: parsed })
-        });
-        const data = await res.json();
-        out.textContent = JSON.stringify(data, null, 2);
-      } catch (e) {
-        out.textContent = 'Invalid JSON input: ' + e.message;
-      }
-    }
-
-    async function runJwtGeneratorLab() {
-      const out = document.getElementById('protoLabOutput');
-      out.textContent = 'Generating JWT + AES-CBC Token via /api/generate-jwt...';
-      try {
-        const res = await fetch('/api/generate-jwt', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ uid: 987654321, nickname: 'FF_OMNI_V4' })
-        });
-        const data = await res.json();
-        out.textContent = JSON.stringify(data, null, 2);
-      } catch (e) {
-        out.textContent = 'Error: ' + e.message;
-      }
-=======
       socket.emit('modifier:update', modifierConfig);
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     }
 
     function renderMediaGallery() {
@@ -2426,11 +1735,7 @@
       if (!grid) return;
       const items = packets.filter((p) => p.hasMediaPreview || p.urlMeta?.isClothesOrSkin);
       if (items.length === 0) {
-<<<<<<< HEAD
-        grid.innerHTML = '<div class="card" style="grid-column:1/-1;"><div class="card-body" style="text-align:center; color:var(--text-1);">No Clothes / Skins / Media packets captured yet. Start the game in <code>--on</code> mode!</div></div>';
-=======
         grid.innerHTML = '<div class="card" style="grid-column:1/-1;"><div class="card-body" style="text-align:center; color:var(--text-1);">No Clothes / Skins / Media packets captured yet.</div></div>';
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
         return;
       }
       grid.innerHTML = items.slice(0, 100).map((p) => {
@@ -2465,27 +1770,8 @@
       }, 40);
     }
 
-<<<<<<< HEAD
-    async function clearPackets() {
-      await fetch('/api/action', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ action: 'clear' })
-      });
-      packets = [];
-      selectedPacketId = null;
-      lastKnownTopPacketId = null;
-      astcPngDataUrlCache.clear();
-      renderPacketList();
-      renderBillboardsTab();
-      renderMediaGallery();
-      document.getElementById('inspectorBody').innerHTML = '';
-      showToast('Stream Cleared!');
-    }
-=======
     function triggerSimulation() { socket.emit('simulate:suite', {}); }
     function clearPackets() { socket.emit('packets:clear', {}); }
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
 
     function escapeHtml(str) {
       return String(str ?? '')

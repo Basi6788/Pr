@@ -1,9 +1,8 @@
 /**
- * ============================================================================
-<<<<<<< HEAD
- * FF-OMNI-PROXY v6.0: Astutech (`https://version.ggwhitehawk.com/`) MITM Proxy +
+ * ----------------------------------------------------------------------------
+ * FF-OMNI-PROXY v6.0: Pakistan (PK) #1 Priority Proxy +
  * Path-Based Routing (`/px/...`) + Redirect Chain Inspector (Zero Extra Ports!)
- * ============================================================================
+ * ----------------------------------------------------------------------------
  * CLI Usage:
  *   node server.js --on         -> MITM Path-Rewriting ON (Rewrites CDN URLs in ver.php to http://<ip>:8080/px/...)
  *   node server.js --off        -> 100% Pure Untouched MITM Passthrough to https://version.ggwhitehawk.com/
@@ -15,19 +14,6 @@ const https = require('https');
 const fs = require('fs');
 const path = require('path');
 const { URL } = require('url');
-=======
- * FF-OMNI-PROXY v3.2 (Railway & Termux Single-Port Edition)
- * Path-Based Dynamic Routing + Dashboard @ /ds + Anti-Ban Fix
- * ============================================================================
- */
-
-const http = require('http');
-const crypto = require('crypto');
-const fs = require('fs');
-const path = require('path');
-const os = require('os');
-const zlib = require('zlib');
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
 
 const KEYS = require('./config/keys');
 const {
@@ -37,7 +23,6 @@ const {
   parseUdpDatagram,
   parseTcpFrame
 } = require('./crypto/cipherEngine');
-<<<<<<< HEAD
 const {
   SCHEMAS,
   decodeProtobuf,
@@ -51,32 +36,19 @@ const {
   buildProxyPathUrl,
   getAllocatedPortsList,
   getDiscoveredRedirectsList,
-=======
-const { SCHEMAS, decodeProtobuf, encodeProtobuf } = require('./proto/protoEngine');
-const { MESSAGE_ID_TO_NAME } = require('./proto/messageIds');
-const {
-  inspectHttpBody,
-  classifyUrlPurpose,
-  ensureDedicatedPortForOrigin,
-  getAllocatedPortsList,
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   getMediaFromCache,
   getMediaByUrl,
   cacheMediaBuffer,
   getDiscoveredBillboardsList,
   registerBillboardEntry,
   fetchRemoteUrlDirectly,
-<<<<<<< HEAD
   getPrimaryDeviceIp,
   setModifierMode,
-=======
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   responseModConfig
 } = require('./proxy/httpInterceptor');
 const { createUnifiedPort8080Server } = require('./proxy/tcpInterceptor');
 const { createUdpInterceptor } = require('./proxy/udpInterceptor');
 
-<<<<<<< HEAD
 const DASHBOARD_PORT = Number(process.env.PORT || 3000);
 const UNIFIED_PROXY_PORT = Number(process.env.PROXY_PORT || 8080);
 const IS_VERCEL = Boolean(process.env.VERCEL || process.env.NOW_REGION);
@@ -104,15 +76,6 @@ const TXT_LOG_ON_FILE = path.join(BASE_LOG_DIR, 'ff_log_on.txt');
 const TXT_LOG_OFF_FILE = path.join(BASE_LOG_DIR, 'ff_log_off.txt');
 const JSONL_ON_FILE = path.join(BASE_LOG_DIR, 'ff_packets_on.jsonl');
 const JSONL_OFF_FILE = path.join(BASE_LOG_DIR, 'ff_packets_off.jsonl');
-=======
-// Single Master Port for Railway & Termux Compatibility
-const DASHBOARD_PORT = Number(process.env.PORT || 3000);
-const UNIFIED_PROXY_PORT = Number(process.env.PROXY_PORT || 8080);
-
-const packetHistory = [];
-const MAX_HISTORY = 1000;
-const TXT_LOG_FILE = path.join(__dirname, 'ff_all_requests_log.txt');
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
 
 const C = {
   reset: '\x1b[0m',
@@ -127,7 +90,6 @@ const C = {
   white: '\x1b[37m'
 };
 
-<<<<<<< HEAD
 function loadPersistedModePackets() {
   for (const [filePath, targetArr] of [
     [JSONL_ON_FILE, packetsModOn],
@@ -171,7 +133,7 @@ function formatPacketForTxtFile(pkt, indexNum = 1) {
     : 'NO (100% Untouched Original Bytes)';
 
   const lines = [
-    `================================================================================`,
+    `--------------------------------------------------------------------------------`,
     `PACKET #${indexNum} | [MITM :${pkt.capturedPort || 8080}] | MODE: --${modState.toLowerCase()} | STATUS: ${status} (${pkt.durationMs || 0}ms) | TIME: ${pkt.timestamp}`,
     `PURPOSE / ROLE : ${purposeBadge} — ${purposeDesc}`,
     `CLIENT PATH    : ${pkt.incomingClientPath || pkt.path || '/'}`,
@@ -180,128 +142,10 @@ function formatPacketForTxtFile(pkt, indexNum = 1) {
     `MODIFIED BYTES : ${wasModStr}`,
     `SIZE & SHA256  : Original=${pkt.originalSize ?? pkt.response?.size ?? 0}B (SHA256:${pkt.originalSha256 || 'N/A'}) -> SentWire=${pkt.sentWireSize ?? pkt.response?.size ?? 0}B (SHA256:${pkt.sentWireSha256 || 'N/A'})`,
     `WIRE MODE      : ${pkt.passthroughMode || 'ZERO_LATENCY_MITM_PASSTHROUGH'}`,
-=======
-function getLocalLanIp() {
-  const nets = os.networkInterfaces();
-  for (const name of Object.keys(nets)) {
-    for (const netInfo of nets[name] || []) {
-      if (netInfo.family === 'IPv4' && !netInfo.internal) {
-        return netInfo.address;
-      }
-    }
-  }
-  return '127.0.0.1';
-}
-
-/**
- * Dynamic Host Resolver for Railway, Cloudflare Tunnels, and Local LAN
- */
-function getPublicBaseUrl(req = null) {
-  if (process.env.PUBLIC_URL) {
-    return process.env.PUBLIC_URL.replace(/\/$/, '');
-  }
-  if (process.env.RAILWAY_STATIC_URL) {
-    return `https://${process.env.RAILWAY_STATIC_URL}`.replace(/\/$/, '');
-  }
-  if (req && req.headers && req.headers.host) {
-    const proto = req.headers['x-forwarded-proto'] || 'http';
-    return `${proto}://${req.headers.host}`.replace(/\/$/, '');
-  }
-  const lanIp = getLocalLanIp();
-  return `http://${lanIp}:${DASHBOARD_PORT}`;
-}
-
-/**
- * Generate a clean vibrant 320x160 PNG buffer for the seeded Billboard (`Patch_Bg.png`) preview
- */
-function createSampleBillboardPngBuffer(width = 320, height = 160) {
-  const signature = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
-
-  function crc32(buf) {
-    let c = 0xffffffff;
-    for (let i = 0; i < buf.length; i++) {
-      c ^= buf[i];
-      for (let k = 0; k < 8; k++) {
-        c = (c >>> 1) ^ (c & 1 ? 0xedb88320 : 0);
-      }
-    }
-    return (c ^ 0xffffffff) >>> 0;
-  }
-
-  function makeChunk(typeStr, dataBuf) {
-    const lenBuf = Buffer.alloc(4);
-    lenBuf.writeUInt32BE(dataBuf.length, 0);
-    const typeBuf = Buffer.from(typeStr, 'ascii');
-    const crcBuf = Buffer.alloc(4);
-    crcBuf.writeUInt32BE(crc32(Buffer.concat([typeBuf, dataBuf])), 0);
-    return Buffer.concat([lenBuf, typeBuf, dataBuf, crcBuf]);
-  }
-
-  const ihdr = Buffer.alloc(13);
-  ihdr.writeUInt32BE(width, 0);
-  ihdr.writeUInt32BE(height, 4);
-  ihdr[8] = 8; // bit depth
-  ihdr[9] = 6; // RGBA
-  ihdr[10] = 0;
-  ihdr[11] = 0;
-  ihdr[12] = 0;
-
-  const rawScanlines = Buffer.alloc(height * (1 + width * 4));
-  for (let y = 0; y < height; y++) {
-    const rowOff = y * (1 + width * 4);
-    rawScanlines[rowOff] = 0; // filter type 0
-    for (let x = 0; x < width; x++) {
-      const p = rowOff + 1 + x * 4;
-      const nx = x / width;
-      const ny = y / height;
-      let r = Math.floor(25 + 195 * nx + 35 * Math.sin(ny * 6.28));
-      let g = Math.floor(20 + 110 * (1 - ny) + 60 * nx);
-      let b = Math.floor(70 + 170 * (1 - nx) * ny + 40);
-      if (x < 4 || x >= width - 4 || y < 4 || y >= height - 4) {
-        r = 245;
-        g = 158;
-        b = 11;
-      } else if (Math.abs(x - width / 2) < 90 && Math.abs(y - height / 2) < 28) {
-        r = Math.min(255, r + 45);
-        g = Math.min(255, g + 35);
-      }
-      rawScanlines[p] = Math.max(0, Math.min(255, r));
-      rawScanlines[p + 1] = Math.max(0, Math.min(255, g));
-      rawScanlines[p + 2] = Math.max(0, Math.min(255, b));
-      rawScanlines[p + 3] = 255;
-    }
-  }
-
-  const idat = zlib.deflateSync(rawScanlines);
-  return Buffer.concat([
-    signature,
-    makeChunk('IHDR', ihdr),
-    makeChunk('IDAT', idat),
-    makeChunk('IEND', Buffer.alloc(0))
-  ]);
-}
-
-/**
- * Format a single packet as plain text for .TXT download & live file logging
- */
-function formatPacketForTxtFile(pkt, indexNum = 1) {
-  const status = pkt.statusCode || 200;
-  const portNum = pkt.capturedPort || 8080;
-  const purposeBadge = pkt.urlMeta?.badge || pkt.protocol;
-  const purposeDesc = pkt.urlMeta?.purpose || pkt.packetType || pkt.cmdName || '';
-
-  const lines = [
-    `================================================================================`,
-    `PACKET #${indexNum} | [${pkt.protocol} :${portNum}] | STATUS: ${status} | TIME: ${pkt.timestamp}`,
-    `PURPOSE / ROLE : ${purposeBadge} — ${purposeDesc}`,
-    `FULL URL / OP  : ${pkt.fullUrl || pkt.requestTitle || pkt.cmdName}`,
-    `WIRE MODE      : ${pkt.passthroughMode || 'EXACT_ENCRYPTED_WIRE_PASSTHROUGH'}`,
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     `REQ CIPHER     : ${pkt.request?.encryption || 'NONE'} (${pkt.request?.size || 0} B)`,
     `RES CIPHER     : ${pkt.response?.encryption || pkt.encryptionStatus || 'RAW'} (${pkt.response?.size || pkt.size || 0} B)`
   ];
 
-<<<<<<< HEAD
   if (Array.isArray(pkt.redirectChain) && pkt.redirectChain.length > 0) {
     lines.push(`--- REDIRECT CHAIN DETECTED (${pkt.redirectChain.length} HOP(S)) ---`);
     for (const r of pkt.redirectChain) {
@@ -317,12 +161,6 @@ function formatPacketForTxtFile(pkt, indexNum = 1) {
       lines.push(`      Original Upstream : ${info.originalUrl}`);
       lines.push(`      Sent To Game Wire : ${info.rewrittenUrl} [${info.status}]`);
       lines.push(`      Proxy Path Route  : ${info.proxyPathUrl || info.rewrittenUrl}`);
-=======
-  if (pkt.discoveredPortMappings && Object.keys(pkt.discoveredPortMappings).length > 0) {
-    lines.push(`--- PORT ROUTING & PROTECTED ANTI-BAN URLS ---`);
-    for (const [k, info] of Object.entries(pkt.discoveredPortMappings)) {
-      lines.push(`  • ${k}: ${info.originalUrl} ==> ${info.rewrittenUrl} [${info.status}]`);
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     }
   }
 
@@ -346,7 +184,6 @@ function formatPacketForTxtFile(pkt, indexNum = 1) {
     lines.push(JSON.stringify(pkt.response.headers, null, 2));
   }
 
-<<<<<<< HEAD
   if (pkt.originalDecoded && pkt.wasModified) {
     lines.push(`--- ORIGINAL UNMODIFIED RESPONSE FROM UPSTREAM (Before /px/ Path Rewrite) ---`);
     lines.push(JSON.stringify(pkt.originalDecoded, null, 2));
@@ -354,10 +191,6 @@ function formatPacketForTxtFile(pkt, indexNum = 1) {
 
   if (pkt.response?.decoded || pkt.decodedPayload) {
     lines.push(`--- SENT RESPONSE DECODED PAYLOAD (Status ${status}) ---`);
-=======
-  if (pkt.response?.decoded || pkt.decodedPayload) {
-    lines.push(`--- INCOMING RESPONSE DECODED PAYLOAD (Status ${status}) ---`);
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     lines.push(JSON.stringify(pkt.response?.decoded || pkt.decodedPayload, null, 2));
   }
 
@@ -366,11 +199,10 @@ function formatPacketForTxtFile(pkt, indexNum = 1) {
     lines.push(pkt.response?.rawHex || pkt.rawHex);
   }
 
-  lines.push(`================================================================================\n`);
+  lines.push(`--------------------------------------------------------------------------------\n`);
   return lines.join('\n');
 }
 
-<<<<<<< HEAD
 function buildOnVsOffComparisonReport() {
   const onList = packetsModOn;
   const offList = packetsModOff;
@@ -448,7 +280,7 @@ function buildOnVsOffComparisonReport() {
 
   const lines = [
     `################################################################################`,
-    `# FF-OMNI-PROXY v6.0 — ASTUTECH MITM LOG COMPARISON (--on vs --off)            #`,
+    `# FF-OMNI-PROXY v6.0 — PAKISTAN (PK) LOG COMPARISON (--on vs --off)            #`,
     `# Generated At       : ${new Date().toISOString()}                             #`,
     `# Primary Upstream   : https://version.ggwhitehawk.com/                        #`,
     `# Total --on Packets : ${onList.length}                                        #`,
@@ -489,20 +321,11 @@ function buildFullTxtExport(filterMode = 'ALL') {
   } else if (filterMode === 'OFF') {
     list = packetsModOff;
   } else if (filterMode === 'CLOTHES') {
-=======
-/**
- * Generate full .TXT report for all captured requests
- */
-function buildFullTxtExport(filterMode = 'ALL') {
-  let list = packetHistory;
-  if (filterMode === 'CLOTHES') {
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     list = packetHistory.filter((p) => p.urlMeta?.isClothesOrSkin);
   } else if (filterMode === 'BILLBOARDS') {
     list = packetHistory.filter((p) => p.urlMeta?.isBillboard || p.urlMeta?.category === 'BILLBOARD');
   }
 
-<<<<<<< HEAD
   const activeMode = responseModConfig.modifierEnabled ? '--on (PATH ROUTING ON)' : '--off (PURE NORMAL - 0 MOD)';
   const header = [
     `################################################################################`,
@@ -512,14 +335,6 @@ function buildFullTxtExport(filterMode = 'ALL') {
     `# Active Mode  : ${activeMode}                                                 #`,
     `# Total Packets: ${list.length} (Filter: ${filterMode})                        #`,
     `# Device IP    : ${getPrimaryDeviceIp()}                                       #`,
-=======
-  const header = [
-    `################################################################################`,
-    `# FF-OMNI-PROXY v3.2 — COMPLETE CAPTURED TRAFFIC REPORT (.TXT)                 #`,
-    `# Generated At : ${new Date().toISOString()}                                   #`,
-    `# Total Packets: ${list.length} (Filter: ${filterMode})                        #`,
-    `# Dedicated Prts: ${getAllocatedPortsList().map((p) => ':' + p.port + '=' + p.host).join(', ')}`,
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     `################################################################################\n`
   ].join('\n');
 
@@ -532,17 +347,13 @@ function logPacketToTerminal(pkt) {
   const statusColor = status >= 200 && status < 300 ? C.green : status >= 400 ? C.red : C.yellow;
   const protoColor = pkt.protocol === 'HTTP' ? C.cyan : pkt.protocol === 'TCP' ? C.magenta : C.green;
   const portNum = pkt.capturedPort || 8080;
-<<<<<<< HEAD
   const modBadge = pkt.modifierMode === 'OFF' ? `${C.yellow}[--off PASSTHROUGH]${C.reset}` : `${C.green}[--on PATH-MITM]${C.reset}`;
-=======
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   const timeStr = (pkt.timestamp || new Date().toISOString()).split('T')[1]?.replace('Z', '') || '';
 
   const line = `${protoColor}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${C.reset}`;
   console.log(`\n${line}`);
 
   if (pkt.protocol === 'HTTP') {
-<<<<<<< HEAD
     const purposeBadge = pkt.urlMeta?.badge || '🌐 PK PATH ROUTER URL';
     const purposeDesc = pkt.urlMeta?.purpose || '';
 
@@ -577,31 +388,6 @@ function logPacketToTerminal(pkt) {
         console.log(`    • ${k}: ${stCol}[${info.status}]${C.reset}`);
         console.log(`      Upstream : ${info.originalUrl}`);
         console.log(`      Wire URL : ${info.rewrittenUrl}`);
-=======
-    const reqTitle = pkt.requestTitle || `[Port :${portNum}] ${pkt.method} ${pkt.fullUrl}`;
-    const resTitle = pkt.responseTitle || `${status} <- ${pkt.host}${pkt.path}`;
-    const purposeBadge = pkt.urlMeta?.badge || '🌐 GAME URL';
-    const purposeDesc = pkt.urlMeta?.purpose || '';
-
-    console.log(
-      `${C.bold}${protoColor}[HTTP :${portNum}]${C.reset} ${C.bold}${C.magenta}${purposeBadge}${C.reset} ${C.dim}(${purposeDesc})${C.reset}`
-    );
-    console.log(
-      `${C.bold}${protoColor}[HTTP :${portNum}]${C.reset} ${C.bold}${C.yellow}REQUEST TITLE :${C.reset} ${C.white}${reqTitle}${C.reset}`
-    );
-    console.log(
-      `${C.bold}${protoColor}[HTTP :${portNum}]${C.reset} ${C.bold}${statusColor}RESPONSE TITLE:${C.reset} ${statusColor}Status ${status}${C.reset} (${pkt.durationMs || 0}ms) | ${resTitle}`
-    );
-    console.log(
-      `${C.dim}[TIME: ${timeStr}] [MODE: ${pkt.passthroughMode || 'EXACT_PASSTHROUGH'}] [REQ: ${pkt.request?.encryption || 'NONE'}] [RES: ${pkt.response?.encryption || 'NONE'}]${C.reset}`
-    );
-
-    if (pkt.discoveredPortMappings && Object.keys(pkt.discoveredPortMappings).length > 0) {
-      console.log(`${C.magenta}  ★ [ANTI-BAN PROTECTED & DEDICATED PORT URL ROUTING]:${C.reset}`);
-      for (const [k, info] of Object.entries(pkt.discoveredPortMappings)) {
-        const stCol = info.status.includes('PROTECTED') ? C.green : C.yellow;
-        console.log(`    • ${k}: ${stCol}[${info.status}]${C.reset} ==> ${info.rewrittenUrl}`);
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       }
     }
 
@@ -613,39 +399,10 @@ function logPacketToTerminal(pkt) {
       console.log(`${C.green}  ◂ [INCOMING RESPONSE DECODED (Status ${status})]:${C.reset}`);
       console.log(formatJsonForTerminal(pkt.response.decoded));
     }
-<<<<<<< HEAD
   } else {
     console.log(
       `${C.bold}${protoColor}[${pkt.protocol} :${portNum}]${C.reset} ${modBadge} ${C.white}${pkt.requestTitle || pkt.cmdName}${C.reset} | ${statusColor}Status ${status}${C.reset}`
     );
-=======
-  } else if (pkt.protocol === 'TCP') {
-    const reqTitle = pkt.requestTitle || `[TCP :${portNum}] ${pkt.packetType} (${pkt.source} -> ${pkt.destination})`;
-    const resTitle = pkt.responseTitle || `Status ${status} | ${pkt.packetType}`;
-    console.log(
-      `${C.bold}${protoColor}[TCP :${portNum}]${C.reset} ${C.bold}${C.yellow}REQUEST TITLE :${C.reset} ${C.white}${reqTitle}${C.reset}`
-    );
-    console.log(
-      `${C.bold}${protoColor}[TCP :${portNum}]${C.reset} ${C.bold}${statusColor}RESPONSE TITLE:${C.reset} ${statusColor}Status ${status}${C.reset} | ${resTitle}`
-    );
-    if (pkt.decodedPayload) {
-      console.log(`${C.magenta}  ▸ [DECRYPTED TCP PAYLOAD]:${C.reset}`);
-      console.log(formatJsonForTerminal(pkt.decodedPayload));
-    }
-  } else if (pkt.protocol === 'UDP') {
-    const reqTitle = pkt.requestTitle || `[UDP :${portNum}] ${pkt.cmdName} (cmd=${pkt.cmdId})`;
-    const resTitle = pkt.responseTitle || `Status ${status} | ${pkt.cmdName}`;
-    console.log(
-      `${C.bold}${protoColor}[UDP :${portNum}]${C.reset} ${C.bold}${C.yellow}REQUEST TITLE :${C.reset} ${C.white}${reqTitle}${C.reset}`
-    );
-    console.log(
-      `${C.bold}${protoColor}[UDP :${portNum}]${C.reset} ${C.bold}${statusColor}RESPONSE TITLE:${C.reset} ${statusColor}Status ${status}${C.reset} | ${resTitle}`
-    );
-    if (pkt.decodedPayload) {
-      console.log(`${C.green}  ▸ [DECRYPTED UDP PAYLOAD]:${C.reset}`);
-      console.log(formatJsonForTerminal(pkt.decodedPayload));
-    }
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
   }
 }
 
@@ -653,17 +410,10 @@ function formatJsonForTerminal(obj) {
   try {
     const str = JSON.stringify(obj, null, 2);
     const lines = str.split('\n');
-<<<<<<< HEAD
     const maxLines = 45;
     const clipped = lines.slice(0, maxLines).map((l) => `    ${l}`);
     if (lines.length > maxLines) {
       clipped.push(`    ... (${lines.length - maxLines} more lines — view on /ds Dashboard)`);
-=======
-    const maxLines = 80;
-    const clipped = lines.slice(0, maxLines).map((l) => `    ${l}`);
-    if (lines.length > maxLines) {
-      clipped.push(`    ... (${lines.length - maxLines} more lines — download .TXT on Dashboard /ds)`);
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     }
     return clipped.join('\n');
   } catch (_) {
@@ -671,7 +421,6 @@ function formatJsonForTerminal(obj) {
   }
 }
 
-<<<<<<< HEAD
 function recordPacketAsync(packetEvent, printToTerminal = true) {
   const modState = packetEvent.modifierMode || (responseModConfig.modifierEnabled ? 'ON' : 'OFF');
   packetEvent.modifierMode = modState;
@@ -751,955 +500,6 @@ function readJsonBody(req) {
       }
     });
   });
-=======
-const BUILTIN_SOCKET_IO_CLIENT_JS = `
-(function(window) {
-  function io(url) {
-    const listeners = {};
-    const proto = location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const wsUrl = (url ? url.replace(/^http/, 'ws') : (proto + '//' + location.host)) + '/socket.io/?EIO=4&transport=websocket';
-    let ws = null;
-    let reconnectTimer = null;
-
-    const socket = {
-      connected: false,
-      on(event, fn) {
-        if (!listeners[event]) listeners[event] = [];
-        listeners[event].push(fn);
-        return socket;
-      },
-      emit(event, data) {
-        if (ws && ws.readyState === 1) {
-          ws.send(JSON.stringify({ event, data }));
-        }
-        return socket;
-      }
-    };
-
-    function trigger(event, payload) {
-      (listeners[event] || []).forEach(fn => {
-        try { fn(payload); } catch (e) { console.error(e); }
-      });
-    }
-
-    function connect() {
-      ws = new WebSocket(wsUrl);
-      ws.onopen = () => {
-        socket.connected = true;
-        trigger('connect');
-      };
-      ws.onmessage = (msg) => {
-        try {
-          const parsed = JSON.parse(msg.data);
-          if (parsed && parsed.event) {
-            trigger(parsed.event, parsed.data);
-          }
-        } catch (e) {}
-      };
-      ws.onclose = () => {
-        socket.connected = false;
-        trigger('disconnect');
-        clearTimeout(reconnectTimer);
-        reconnectTimer = setTimeout(connect, 2000);
-      };
-    }
-
-    connect();
-    return socket;
-  }
-  window.io = io;
-})(window);
-`;
-
-function attachSocketIoServer(httpServer, onClientConnection) {
-  try {
-    const { Server } = require('socket.io');
-    const io = new Server(httpServer, { cors: { origin: '*' } });
-    io.on('connection', (socket) => onClientConnection(socket, io));
-    return {
-      mode: 'socket.io (npm)',
-      emit: (event, data) => io.emit(event, data)
-    };
-  } catch (_) {
-    const clients = new Set();
-
-    const broadcast = (event, data) => {
-      const payload = Buffer.from(JSON.stringify({ event, data }), 'utf8');
-      const frame = encodeWsFrame(payload);
-      for (const sock of clients) {
-        if (!sock.destroyed) sock.write(frame);
-      }
-    };
-
-    httpServer.on('upgrade', (req, socket) => {
-      const key = req.headers['sec-websocket-key'];
-      if (!key) {
-        socket.destroy();
-        return;
-      }
-      const accept = crypto
-        .createHash('sha1')
-        .update(key + '258EAFA5-E914-47DA-95CA-C5AB0DC85B11')
-        .digest('base64');
-
-      socket.write(
-        'HTTP/1.1 101 Switching Protocols\r\n' +
-          'Upgrade: websocket\r\n' +
-          'Connection: Upgrade\r\n' +
-          `Sec-WebSocket-Accept: ${accept}\r\n\r\n`
-      );
-
-      clients.add(socket);
-      const clientListeners = {};
-
-      const clientWrapper = {
-        emit: (event, data) => {
-          if (!socket.destroyed) {
-            const buf = Buffer.from(JSON.stringify({ event, data }), 'utf8');
-            socket.write(encodeWsFrame(buf));
-          }
-        },
-        on: (event, fn) => {
-          if (!clientListeners[event]) clientListeners[event] = [];
-          clientListeners[event].push(fn);
-        }
-      };
-
-      onClientConnection(clientWrapper, { emit: broadcast });
-
-      socket.on('data', (buf) => {
-        const msgStr = decodeWsFrame(buf);
-        if (!msgStr) return;
-        try {
-          const parsed = JSON.parse(msgStr);
-          if (parsed && parsed.event && clientListeners[parsed.event]) {
-            clientListeners[parsed.event].forEach((fn) => fn(parsed.data));
-          }
-        } catch (_) {}
-      });
-
-      socket.on('close', () => clients.delete(socket));
-      socket.on('error', () => clients.delete(socket));
-    });
-
-    return {
-      mode: 'socket.io (built-in RFC6455 engine)',
-      emit: broadcast
-    };
-  }
-}
-
-function encodeWsFrame(dataBuf) {
-  const len = dataBuf.length;
-  let header;
-  if (len < 126) {
-    header = Buffer.from([0x81, len]);
-  } else if (len < 65536) {
-    header = Buffer.alloc(4);
-    header[0] = 0x81;
-    header[1] = 126;
-    header.writeUInt16BE(len, 2);
-  } else {
-    header = Buffer.alloc(10);
-    header[0] = 0x81;
-    header[1] = 127;
-    header.writeBigUInt64BE(BigInt(len), 2);
-  }
-  return Buffer.concat([header, dataBuf]);
-}
-
-function decodeWsFrame(buf) {
-  if (buf.length < 2) return null;
-  const opcode = buf[0] & 0x0f;
-  if (opcode === 0x08) return null;
-  const masked = (buf[1] & 0x80) !== 0;
-  let len = buf[1] & 0x7f;
-  let offset = 2;
-  if (len === 126) {
-    if (buf.length < 4) return null;
-    len = buf.readUInt16BE(2);
-    offset = 4;
-  } else if (len === 127) {
-    if (buf.length < 10) return null;
-    len = Number(buf.readBigUInt64BE(2));
-    offset = 10;
-  }
-  let maskKey = null;
-  if (masked) {
-    if (buf.length < offset + 4) return null;
-    maskKey = buf.subarray(offset, offset + 4);
-    offset += 4;
-  }
-  if (buf.length < offset + len) return null;
-  const payload = Buffer.from(buf.subarray(offset, offset + len));
-  if (masked && maskKey) {
-    for (let i = 0; i < payload.length; i++) {
-      payload[i] ^= maskKey[i % 4];
-    }
-  }
-  return payload.toString('utf8');
-}
-
-function generateVerificationPackets(baseUrl = '') {
-  const base = baseUrl || `http://${getLocalLanIp()}:${DASHBOARD_PORT}`;
-  const events = [];
-
-  // Single-Port URL Extension: `cdn_url` points to `${base}/p/8083/live/ABHotUpdates/`
-  const verQuery = {
-    version: '1.132.16',
-    lang: 'en',
-    device: 'android',
-    channel: 'android',
-    appstore: 'googleplay',
-    region: 'PK',
-    release_version: 'OB55',
-    whitelist_version: '1.8.1',
-    whitelist_sp_version: '1.0.0',
-    device_name: 'samsung SM-N986U1'
-  };
-  const verUrl = 'https://version.ggwhitehawk.com/live/ver.php?' + new URLSearchParams(verQuery).toString();
-  const verResObj = {
-    code: 0,
-    is_server_open: true,
-    is_firewall_open: false,
-    cdn_url: `${base}/p/8083/live/ABHotUpdates/`,
-    backup_cdn_url: 'https://dl.gmc.freefiremobile.com/live/ABHotUpdates/',
-    abhotupdate_cdn_url: 'https://core-gmc.freefiremobile.com/live/ABHotUpdates/',
-    img_cdn_url: 'https://dl.gmc.freefiremobile.com/common/',
-    server_url: 'https://loginbp.ppmainecoonghj.com/',
-    network_log_server: 'https://sgnetwork.ggblueshark.com/',
-    web_log_server: 'https://networkselftest.ff.garena.com/api/',
-    billboard_bg_url: 'https://dl.cdn.freefiremobile.com/common/OB23/version/Patch_Bg.png',
-    patchnote_url: 'https://cdn.wildflamestudio.com/common/web_event/aswqooiwd/TsHBYLel.html?lang=en',
-    billboard_cdn_url:
-      'https://cdn.wildflamestudio.com/common/OB55/CSH/patchupdate/pkennbgiuabA101.ff_extend;https://cdn.wildflamestudio.com/common/OB55/CSH/patchupdate/pkennbgiuabA102.ff_extend',
-    ggp_url: 'gin.freefiremobile.com',
-    core_url: 'csoversea.castle.freefiremobile.com',
-    latest_release_version: 'OB55',
-    remote_version: '1.132.16',
-    vercfg_sign: '1.16032533697c9e9e'
-  };
-  const verResBody = Buffer.from(JSON.stringify(verResObj), 'utf8');
-  events.push({
-    id: `HTTP-${Date.now()}-ver0`,
-    protocol: 'HTTP',
-    capturedPort: 8080,
-    direction: 'CLIENT <-> SERVER',
-    timestamp: new Date().toISOString(),
-    durationMs: 36,
-    method: 'GET',
-    fullUrl: verUrl,
-    host: 'version.ggwhitehawk.com',
-    path: '/live/ver.php',
-    queryParams: verQuery,
-    statusCode: 200,
-    urlMeta: classifyUrlPurpose(verUrl, '/live/ver.php', 'application/json'),
-    passthroughMode:
-      `RESPONSE_MODIFIED (ONLY cdn_url -> ${base}/p/8083/ | abhotupdate_cdn_url [SH-Gpp], Auth & CSH Protected)`,
-    discoveredPortMappings: {
-      cdn_url: {
-        originalUrl: 'https://dl.gmc.freefiremobile.com/live/ABHotUpdates/',
-        rewrittenUrl: `${base}/p/8083/live/ABHotUpdates/`,
-        port: 8083,
-        status: 'EXTENDED_PATH_ROUTE_8083'
-      },
-      abhotupdate_cdn_url: {
-        originalUrl: 'https://core-gmc.freefiremobile.com/live/ABHotUpdates/',
-        rewrittenUrl: 'https://core-gmc.freefiremobile.com/live/ABHotUpdates/',
-        port: 'DIRECT (Protected SH-Gpp / GGP Anti-Cheat)',
-        status: 'PROTECTED_UNTOUCHED'
-      },
-      backup_cdn_url: {
-        originalUrl: 'https://dl.gmc.freefiremobile.com/live/ABHotUpdates/',
-        rewrittenUrl: 'https://dl.gmc.freefiremobile.com/live/ABHotUpdates/',
-        port: 'DIRECT',
-        status: 'PROTECTED_UNTOUCHED'
-      },
-      server_url: {
-        originalUrl: 'https://loginbp.ppmainecoonghj.com/',
-        rewrittenUrl: 'https://loginbp.ppmainecoonghj.com/',
-        port: 'DIRECT',
-        status: 'PROTECTED_UNTOUCHED'
-      },
-      billboard_bg_url: {
-        originalUrl: 'https://dl.cdn.freefiremobile.com/common/OB23/version/Patch_Bg.png',
-        rewrittenUrl: 'https://dl.cdn.freefiremobile.com/common/OB23/version/Patch_Bg.png',
-        port: 'DIRECT (Auto-Previewed on Billboards Tab)',
-        status: 'PROTECTED_UNTOUCHED'
-      },
-      patchnote_url: {
-        originalUrl: 'https://cdn.wildflamestudio.com/common/web_event/aswqooiwd/TsHBYLel.html?lang=en',
-        rewrittenUrl: 'https://cdn.wildflamestudio.com/common/web_event/aswqooiwd/TsHBYLel.html?lang=en',
-        port: 'DIRECT (Auto-Previewed on Billboards Tab)',
-        status: 'PROTECTED_UNTOUCHED'
-      }
-    },
-    requestTitle: `[Port :8080] GET ${verUrl}`,
-    responseTitle: `200 OK <- version.ggwhitehawk.com/live/ver.php`,
-    request: {
-      headers: {
-        Host: 'version.ggwhitehawk.com',
-        'User-Agent': KEYS.GARENA_OAUTH.UNITY_USER_AGENT_2018,
-        'X-Unity-Version': '2018.4.12f1'
-      },
-      ...inspectHttpBody(Buffer.alloc(0), {}, '/live/ver.php', 'REQUEST', verQuery)
-    },
-    response: {
-      headers: { 'Content-Type': 'application/json; charset=utf-8' },
-      ...inspectHttpBody(verResBody, { 'content-type': 'application/json' }, '/live/ver.php', 'RESPONSE')
-    }
-  });
-
-  // 2. Billboard Background Image
-  const billboardPngBuf = createSampleBillboardPngBuffer(320, 160);
-  const billImgUrl = 'https://dl.cdn.freefiremobile.com/common/OB23/version/Patch_Bg.png';
-  const billImgPath = '/common/OB23/version/Patch_Bg.png';
-  const billImgInspect = inspectHttpBody(billboardPngBuf, { 'content-type': 'image/png' }, billImgPath, 'RESPONSE');
-  delete billImgInspect.decompressedBuffer;
-  const billPktId = `HTTP-${Date.now()}-billbg1`;
-
-  registerBillboardEntry({
-    key: 'billboard_bg_url',
-    url: billImgUrl,
-    packetId: billPktId,
-    type: 'BILLBOARD_BACKGROUND_IMAGE',
-    badge: '🪧 BILLBOARD IMAGE URL',
-    purpose: 'Billboard Background / Lobby Event Banner Image (billboard_bg_url)',
-    statusCode: 200,
-    size: billboardPngBuf.length,
-    isImage: true,
-    hasMediaPreview: true,
-    mediaFormat: 'image/png'
-  });
-
-  registerBillboardEntry({
-    key: 'patchnote_url',
-    url: 'https://cdn.wildflamestudio.com/common/web_event/aswqooiwd/TsHBYLel.html?lang=en',
-    type: 'BILLBOARD_PATCHNOTE_WEB_EVENT',
-    badge: '🪧 BILLBOARD WEB EVENT URL',
-    purpose: 'Interactive Lobby Billboard / Patchnote Web Event Page (patchnote_url)',
-    statusCode: 200,
-    isImage: false
-  });
-
-  registerBillboardEntry({
-    key: 'billboard_cdn_url[0]',
-    url: 'https://cdn.wildflamestudio.com/common/OB55/CSH/patchupdate/pkennbgiuabA101.ff_extend',
-    type: 'BILLBOARD_CDN_EXTEND',
-    badge: '🪧 BILLBOARD CSH / EXTEND URL',
-    purpose: 'Billboard Patchupdate & CSH Config URL (billboard_cdn_url)',
-    statusCode: 200,
-    isImage: false
-  });
-
-  events.push({
-    id: billPktId,
-    protocol: 'HTTP',
-    capturedPort: 8080,
-    direction: 'PROXY AUTO-FETCH (BILLBOARD)',
-    timestamp: new Date().toISOString(),
-    durationMs: 24,
-    method: 'GET',
-    fullUrl: billImgUrl,
-    host: 'dl.cdn.freefiremobile.com',
-    path: billImgPath,
-    queryParams: {},
-    statusCode: 200,
-    urlMeta: classifyUrlPurpose(billImgUrl, billImgPath, 'image/png'),
-    hasMediaPreview: true,
-    mediaFormat: 'image/png',
-    passthroughMode: 'PASSIVE_SERVER_PREVIEW_FETCH (Client Untouched)',
-    requestTitle: `[🪧 BILLBOARD] GET ${billImgUrl}`,
-    responseTitle: `200 OK <- dl.cdn.freefiremobile.com${billImgPath}`,
-    request: {
-      headers: { Host: 'dl.cdn.freefiremobile.com', 'User-Agent': KEYS.GARENA_OAUTH.UNITY_USER_AGENT_2018 },
-      size: 0,
-      encryption: 'NONE (Empty Body)',
-      rawHex: '',
-      decryptedHex: '',
-      decoded: { billboard_key: 'billboard_bg_url', note: 'Auto-fetched Billboard Image Preview' }
-    },
-    response: {
-      headers: { 'Content-Type': 'image/png', 'Content-Length': String(billboardPngBuf.length) },
-      ...billImgInspect
-    },
-    _seedMediaBuffer: billboardPngBuf,
-    _seedMediaType: 'image/png'
-  });
-
-  // 3. Default Guest Avatar & Clothes Bundle Manifest
-  const fileInfoText =
-    'optionalab_avatar_01,7qxOw9WAx0SE5TicAye2qDIVaBM=,1242818,0,h382/Vl8AGYUrciC6AEKpmclhsE=,1114381,True,15\n' +
-    'optionalab_avatar_03,9KvLbSTph6nIF0+mWlN/YIxiCWA=,815666,0,ykyp+XoFBMFliV4B74JD5rADI4s=,741704,True,15\n' +
-    'optionalab_avatar_04,OcP5mKh4kodOHM2cxfeyx3cnfWY=,1438037,0,DogESg07WATtIMsWGymGjy/ncSA=,1310920,True,15';
-  const fileInfoBuf = Buffer.from(fileInfoText, 'utf8');
-  const fileInfoUrl = 'https://dl.gmc.freefiremobile.com/live/ABHotUpdates/android_astc/optional/optionalavatarres/794/fileinfo';
-  const fileInfoPath = '/live/ABHotUpdates/android_astc/optional/optionalavatarres/794/fileinfo';
-  const fileInfoRes = inspectHttpBody(fileInfoBuf, { 'content-type': 'application/octet-stream' }, fileInfoPath, 'RESPONSE');
-  delete fileInfoRes.decompressedBuffer;
-  events.push({
-    id: `HTTP-${Date.now()}-finfo1`,
-    protocol: 'HTTP',
-    capturedPort: 8083,
-    direction: 'CLIENT <-> SERVER',
-    timestamp: new Date().toISOString(),
-    durationMs: 41,
-    method: 'GET',
-    fullUrl: fileInfoUrl,
-    host: 'dl.gmc.freefiremobile.com',
-    path: fileInfoPath,
-    queryParams: {},
-    statusCode: 200,
-    urlMeta: classifyUrlPurpose(fileInfoUrl, fileInfoPath, 'application/octet-stream'),
-    passthroughMode: 'EXACT_ENCRYPTED_WIRE_PASSTHROUGH',
-    requestTitle: `[Port :8083] GET ${fileInfoUrl}`,
-    responseTitle: `200 OK <- dl.gmc.freefiremobile.com${fileInfoPath}`,
-    request: {
-      headers: { Host: 'dl.gmc.freefiremobile.com', 'User-Agent': KEYS.GARENA_OAUTH.UNITY_USER_AGENT_2018 },
-      size: 0,
-      encryption: 'NONE (Empty Body)',
-      rawHex: '',
-      decryptedHex: '',
-      decoded: null
-    },
-    response: {
-      headers: { 'Content-Type': 'application/octet-stream', 'Content-Length': String(fileInfoBuf.length) },
-      ...fileInfoRes
-    }
-  });
-
-  // 4. Default Guest Bundle Icon ASTC
-  const astcHeader = Buffer.from([
-    0x13, 0xab, 0xa1, 0x5c,
-    0x08, 0x08, 0x01,
-    0x70, 0x00, 0x00,
-    0x70, 0x00, 0x00,
-    0x01, 0x00, 0x00
-  ]);
-  const blocksCount = 14 * 14;
-  const astcBlocks = Buffer.alloc(blocksCount * 16);
-  for (let i = 0; i < blocksCount; i++) {
-    const offset = i * 16;
-    const bx = i % 14;
-    const by = Math.floor(i / 14);
-    const cx = bx - 6.5;
-    const cy = by - 6.5;
-    const dist = Math.sqrt(cx * cx + cy * cy);
-    let r = Math.min(255, Math.floor((bx / 14) * 230) + 25);
-    let g = Math.min(255, Math.floor((by / 14) * 190) + 40);
-    let b = 240;
-    if (dist < 4.2) {
-      r = 250;
-      g = 190;
-      b = 45;
-    }
-    astcBlocks[offset + 0] = 0xfc;
-    astcBlocks[offset + 1] = 0xfd;
-    astcBlocks[offset + 2] = 0xff;
-    astcBlocks[offset + 3] = 0xff;
-    astcBlocks[offset + 4] = 0xff;
-    astcBlocks[offset + 5] = 0xff;
-    astcBlocks[offset + 6] = 0xff;
-    astcBlocks[offset + 7] = 0xff;
-    astcBlocks.writeUInt16LE((r << 8) | r, offset + 8);
-    astcBlocks.writeUInt16LE((g << 8) | g, offset + 10);
-    astcBlocks.writeUInt16LE((b << 8) | b, offset + 12);
-    astcBlocks.writeUInt16LE(0xffff, offset + 14);
-  }
-  const garenaFooter8B = Buffer.from([0x00, 0x00, 0x00, 0x70, 0x00, 0x00, 0x00, 0x70]);
-  const sampleAstcBuf = Buffer.concat([astcHeader, astcBlocks, garenaFooter8B]);
-  const astcUrl = 'https://dl.gmc.freefiremobile.com/live/ABHotUpdates/IconCDN/android/901000284_rgb.astc';
-  const astcPath = '/live/ABHotUpdates/IconCDN/android/901000284_rgb.astc';
-  const astcResInspect = inspectHttpBody(sampleAstcBuf, { 'content-type': 'application/octet-stream' }, astcPath, 'RESPONSE');
-  delete astcResInspect.decompressedBuffer;
-
-  events.push({
-    id: `HTTP-${Date.now()}-astc2`,
-    protocol: 'HTTP',
-    capturedPort: 8083,
-    direction: 'CLIENT <-> SERVER',
-    timestamp: new Date().toISOString(),
-    durationMs: 28,
-    method: 'GET',
-    fullUrl: astcUrl,
-    host: 'dl.gmc.freefiremobile.com',
-    path: astcPath,
-    queryParams: {},
-    statusCode: 200,
-    urlMeta: classifyUrlPurpose(astcUrl, astcPath, 'application/octet-stream'),
-    hasMediaPreview: true,
-    mediaFormat: 'ASTC_GPU_TEXTURE',
-    astcMeta: astcResInspect.mediaInfo?.astcMeta || {
-      blockX: 8,
-      blockY: 8,
-      blockZ: 1,
-      width: 112,
-      height: 112,
-      depth: 1,
-      blocksWide: 14,
-      blocksHigh: 14,
-      expectedAstcBytes: 3136,
-      extraFooterBytes: 8,
-      fileName: '901000284_rgb.astc'
-    },
-    passthroughMode: 'EXACT_ENCRYPTED_WIRE_PASSTHROUGH',
-    requestTitle: `[Port :8083] GET ${astcUrl}`,
-    responseTitle: `200 OK <- dl.gmc.freefiremobile.com${astcPath}`,
-    request: {
-      headers: { Host: 'dl.gmc.freefiremobile.com', 'User-Agent': KEYS.GARENA_OAUTH.UNITY_USER_AGENT_2018 },
-      size: 0,
-      encryption: 'NONE (Empty Body)',
-      rawHex: '',
-      decryptedHex: '',
-      decoded: null
-    },
-    response: {
-      headers: { 'Content-Type': 'application/octet-stream', 'Content-Length': String(sampleAstcBuf.length) },
-      ...astcResInspect
-    },
-    _seedMediaBuffer: sampleAstcBuf,
-    _seedMediaType: 'application/octet-stream'
-  });
-
-  return events;
-}
-
-async function startAllServers() {
-  const publicDir = path.join(__dirname, 'public');
-  const indexHtmlPath = path.join(publicDir, 'index.html');
-
-  let ioHub = null;
-  const seededMedia = new Map();
-
-  function recordAndBroadcastPacket(packetEvent, printToTerminal = true) {
-    if (packetEvent._seedMediaBuffer) {
-      const mType = packetEvent._seedMediaType || 'application/octet-stream';
-      seededMedia.set(packetEvent.id, { buffer: packetEvent._seedMediaBuffer, contentType: mType });
-      cacheMediaBuffer(packetEvent.id, packetEvent._seedMediaBuffer, mType, packetEvent.astcMeta, packetEvent.fullUrl);
-      delete packetEvent._seedMediaBuffer;
-      delete packetEvent._seedMediaType;
-    }
-    packetHistory.unshift(packetEvent);
-    if (packetHistory.length > MAX_HISTORY) packetHistory.pop();
-
-    try {
-      fs.appendFileSync(TXT_LOG_FILE, formatPacketForTxtFile(packetEvent, packetHistory.length), 'utf8');
-    } catch (_) {}
-
-    if (printToTerminal) {
-      logPacketToTerminal(packetEvent);
-    }
-    if (ioHub) {
-      ioHub.emit('packet:new', packetEvent);
-      ioHub.emit('ports:update', getAllocatedPortsList());
-      ioHub.emit('billboards:update', getDiscoveredBillboardsList());
-    }
-  }
-
-  ensureDedicatedPortForOrigin(
-    'https://dl.bs.freefiremobile.com',
-    'HotUpdate & Banner CDN (dl.bs.freefiremobile.com)',
-    (pkt) => recordAndBroadcastPacket(pkt, true)
-  );
-  ensureDedicatedPortForOrigin(
-    'https://core-bs.freefiremobile.com',
-    'Core HotUpdate CDN (core-bs.freefiremobile.com)',
-    (pkt) => recordAndBroadcastPacket(pkt, true)
-  );
-  ensureDedicatedPortForOrigin(
-    'https://dl.gmc.freefiremobile.com',
-    'Main Clothes, Default Bundles & ASTC Icon CDN (dl.gmc.freefiremobile.com)',
-    (pkt) => recordAndBroadcastPacket(pkt, true)
-  );
-  ensureDedicatedPortForOrigin(
-    'https://clientbp.ppmainecoonghj.com',
-    'Post-Login Lobby & Outfit API (clientbp.ppmainecoonghj.com)',
-    (pkt) => recordAndBroadcastPacket(pkt, true)
-  );
-  ensureDedicatedPortForOrigin(
-    'https://core-gmc.freefiremobile.com',
-    'Core GMC HotUpdate Manifest CDN (core-gmc.freefiremobile.com — Protected)',
-    (pkt) => recordAndBroadcastPacket(pkt, true)
-  );
-
-  function serializeSessionState() {
-    return {
-      accountId: sessionState.accountId,
-      nickname: sessionState.nickname,
-      region: sessionState.region,
-      serverUrl: sessionState.serverUrl,
-      loginServerUrl: sessionState.loginServerUrl,
-      staticAesKeyHex: KEYS.AES_CBC.KEY_HEX,
-      staticAesKeyStr: KEYS.AES_CBC.KEY_STR,
-      staticAesIvHex: KEYS.AES_CBC.IV_HEX,
-      staticAesIvStr: KEYS.AES_CBC.IV_STR,
-      dynamicAesKeyHex: sessionState.aesKey ? sessionState.aesKey.toString('hex') : null,
-      dynamicAesIvHex: sessionState.aesIv ? sessionState.aesIv.toString('hex') : null,
-      udpKeyHex: sessionState.udpKey ? sessionState.udpKey.toString('hex') : null,
-      matchCode: sessionState.matchCode,
-      allocatedPorts: getAllocatedPortsList(),
-      billboards: getDiscoveredBillboardsList(),
-      responseModConfig
-    };
-  }
-
-  // Unified Single-Port HTTP Server
-  const dashboardServer = http.createServer(async (req, res) => {
-    const currentBaseUrl = getPublicBaseUrl(req);
-    const parsedReqUrl = new URL(req.url, currentBaseUrl);
-    const reqUrl = parsedReqUrl.pathname;
-
-    // 1. Single-Port Dynamic Path Gateway: `/p/:port/*`
-    if (reqUrl.startsWith('/p/')) {
-      const parts = reqUrl.split('/');
-      const targetPort = parts[2];
-      const subPath = '/' + parts.slice(3).join('/');
-
-      recordAndBroadcastPacket({
-        id: `HTTP-PATH-${Date.now()}-${targetPort}`,
-        protocol: 'HTTP',
-        capturedPort: Number(targetPort),
-        direction: 'CLIENT <-> EXTENDED PATH ROUTE',
-        timestamp: new Date().toISOString(),
-        durationMs: 12,
-        method: req.method,
-        fullUrl: `${currentBaseUrl}${req.url}`,
-        host: req.headers.host || 'railway-gateway',
-        path: subPath,
-        queryParams: Object.fromEntries(parsedReqUrl.searchParams.entries()),
-        statusCode: 200,
-        urlMeta: classifyUrlPurpose(req.url, subPath, req.headers['content-type']),
-        passthroughMode: `SINGLE_PORT_PATH_ROUTER (:Port ${targetPort})`,
-        requestTitle: `[Single-Port Route :${targetPort}] ${req.method} ${subPath}`,
-        responseTitle: `200 OK <- Extended Path /p/${targetPort}`,
-        request: {
-          headers: req.headers,
-          size: 0,
-          encryption: 'NONE',
-          rawHex: '',
-          decryptedHex: '',
-          decoded: null
-        },
-        response: {
-          headers: { 'Content-Type': 'application/json; charset=utf-8' },
-          size: 0,
-          encryption: 'NONE',
-          rawHex: '',
-          decryptedHex: '',
-          decoded: { status: 'OK', targetPort, path: subPath }
-        }
-      });
-
-      res.writeHead(200, {
-        'Content-Type': 'application/json; charset=utf-8',
-        'Access-Control-Allow-Origin': '*'
-      });
-      res.end(JSON.stringify({ ok: true, port: targetPort, path: subPath }));
-      return;
-    }
-
-    if (reqUrl === '/socket.io/socket.io.js') {
-      res.writeHead(200, { 'Content-Type': 'application/javascript; charset=utf-8' });
-      res.end(BUILTIN_SOCKET_IO_CLIENT_JS);
-      return;
-    }
-
-    // 2. Download Captured Traffic .TXT Report
-    if (reqUrl === '/api/export.txt') {
-      const filterMode = (parsedReqUrl.searchParams.get('filter') || 'ALL').toUpperCase();
-      const txtContent = buildFullTxtExport(filterMode);
-      const fileName =
-        filterMode === 'CLOTHES'
-          ? `ff_clothes_skins_log_${Date.now()}.txt`
-          : filterMode === 'BILLBOARDS'
-            ? `ff_billboards_log_${Date.now()}.txt`
-            : `ff_all_requests_log_${Date.now()}.txt`;
-      res.writeHead(200, {
-        'Content-Type': 'text/plain; charset=utf-8',
-        'Content-Disposition': `attachment; filename="${fileName}"`,
-        'Content-Length': String(Buffer.byteLength(txtContent, 'utf8'))
-      });
-      res.end(txtContent);
-      return;
-    }
-
-    // 3. Serve Cached Media or ASTC Binary
-    if (reqUrl.startsWith('/api/media/')) {
-      const pktId = decodeURIComponent(reqUrl.slice('/api/media/'.length));
-      const item = getMediaFromCache(pktId) || seededMedia.get(pktId);
-      if (!item) {
-        res.writeHead(404, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ error: 'Media not found in cache' }));
-        return;
-      }
-      res.writeHead(200, {
-        'Content-Type': item.contentType || 'application/octet-stream',
-        'Content-Length': String(item.buffer.length),
-        'Access-Control-Allow-Origin': '*'
-      });
-      res.end(item.buffer);
-      return;
-    }
-
-    // 4. Live Fetch & Preview Remote Asset
-    if (reqUrl === '/api/fetch-preview') {
-      const targetUrl = parsedReqUrl.searchParams.get('url') || '';
-      const mode = (parsedReqUrl.searchParams.get('mode') || 'raw').toLowerCase();
-      if (!targetUrl || !/^https?:\/\//i.test(targetUrl)) {
-        res.writeHead(400, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ ok: false, error: 'Provide a valid http/https URL' }));
-        return;
-      }
-
-      const cached = getMediaByUrl(targetUrl);
-      if (cached && cached.buffer && mode === 'raw') {
-        res.writeHead(200, {
-          'Content-Type': cached.contentType || 'application/octet-stream',
-          'Content-Length': String(cached.buffer.length),
-          'Access-Control-Allow-Origin': '*'
-        });
-        res.end(cached.buffer);
-        return;
-      }
-
-      const fetched = await fetchRemoteUrlDirectly(targetUrl);
-      if (!fetched.ok || !fetched.buffer) {
-        res.writeHead(502, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ ok: false, error: fetched.error || `HTTP ${fetched.statusCode}` }));
-        return;
-      }
-
-      const pktId = `HTTP-FETCH-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
-      const analysis = inspectHttpBody(fetched.buffer, fetched.headers, fetched.parsedUrl.pathname, 'RESPONSE');
-      const urlMeta = classifyUrlPurpose(targetUrl, fetched.parsedUrl.pathname, fetched.headers['content-type']);
-      const cType = analysis.mediaInfo?.isImage
-        ? analysis.mediaInfo.mediaFormat
-        : fetched.headers['content-type'] || 'application/octet-stream';
-
-      cacheMediaBuffer(pktId, fetched.buffer, cType, analysis.mediaInfo, targetUrl);
-
-      if (urlMeta.isBillboard || analysis.mediaInfo?.isImage) {
-        registerBillboardEntry({
-          key: fetched.parsedUrl.pathname.split('/').pop() || 'fetched_asset',
-          url: targetUrl,
-          packetId: pktId,
-          type: urlMeta.badge,
-          badge: urlMeta.badge,
-          purpose: urlMeta.purpose,
-          statusCode: fetched.statusCode,
-          size: fetched.buffer.length,
-          isImage: Boolean(analysis.mediaInfo?.isImage),
-          hasMediaPreview: Boolean(analysis.mediaInfo && (analysis.mediaInfo.isImage || analysis.mediaInfo.isAstc)),
-          mediaFormat: analysis.mediaInfo ? analysis.mediaInfo.mediaFormat : cType
-        });
-      }
-
-      delete analysis.decompressedBuffer;
-
-      recordAndBroadcastPacket(
-        {
-          id: pktId,
-          protocol: 'HTTP',
-          capturedPort: 8080,
-          direction: 'DASHBOARD LIVE URL FETCH',
-          timestamp: new Date().toISOString(),
-          durationMs: 40,
-          method: 'GET',
-          fullUrl: targetUrl,
-          host: fetched.parsedUrl.host,
-          path: fetched.parsedUrl.pathname,
-          queryParams: Object.fromEntries(fetched.parsedUrl.searchParams.entries()),
-          statusCode: fetched.statusCode,
-          urlMeta,
-          hasMediaPreview: Boolean(analysis.mediaInfo && (analysis.mediaInfo.isAstc || analysis.mediaInfo.isImage)),
-          mediaFormat: analysis.mediaInfo ? analysis.mediaInfo.mediaFormat : cType,
-          astcMeta: analysis.mediaInfo ? analysis.mediaInfo.astcMeta : null,
-          passthroughMode: 'DASHBOARD_DIRECT_IMAGE_FETCH',
-          requestTitle: `[LIVE FETCH] GET ${targetUrl}`,
-          responseTitle: `${fetched.statusCode} OK <- ${fetched.parsedUrl.host}${fetched.parsedUrl.pathname}`,
-          request: {
-            headers: { Host: fetched.parsedUrl.host, 'User-Agent': KEYS.GARENA_OAUTH.UNITY_USER_AGENT_2018 },
-            size: 0,
-            encryption: 'NONE',
-            rawHex: '',
-            decryptedHex: '',
-            decoded: { fetchedUrl: targetUrl }
-          },
-          response: {
-            headers: fetched.headers,
-            ...analysis
-          }
-        },
-        true
-      );
-
-      if (mode === 'json') {
-        res.writeHead(200, { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' });
-        res.end(
-          JSON.stringify({
-            ok: true,
-            packetId: pktId,
-            url: targetUrl,
-            statusCode: fetched.statusCode,
-            size: fetched.buffer.length,
-            urlMeta,
-            hasMediaPreview: Boolean(analysis.mediaInfo && (analysis.mediaInfo.isAstc || analysis.mediaInfo.isImage)),
-            mediaFormat: analysis.mediaInfo ? analysis.mediaInfo.mediaFormat : cType,
-            astcMeta: analysis.mediaInfo ? analysis.mediaInfo.astcMeta : null,
-            decoded: analysis.decoded
-          })
-        );
-        return;
-      }
-
-      res.writeHead(200, {
-        'Content-Type': cType,
-        'Content-Length': String(fetched.buffer.length),
-        'Access-Control-Allow-Origin': '*'
-      });
-      res.end(fetched.buffer);
-      return;
-    }
-
-    if (reqUrl === '/api/state' && req.method === 'GET') {
-      res.writeHead(200, { 'Content-Type': 'application/json' });
-      res.end(
-        JSON.stringify({
-          session: serializeSessionState(),
-          ports: getAllocatedPortsList(),
-          billboards: getDiscoveredBillboardsList(),
-          modifier: responseModConfig,
-          packets: packetHistory.slice(0, 150)
-        })
-      );
-      return;
-    }
-
-    // 5. Dashboard UI Route shifted to `/ds`
-    if (reqUrl === '/ds' || reqUrl === '/ds/' || reqUrl === '/ds/index.html') {
-      if (fs.existsSync(indexHtmlPath)) {
-        const html = fs.readFileSync(indexHtmlPath, 'utf8');
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(html);
-      } else {
-        res.writeHead(200, { 'Content-Type': 'text/html; charset=utf-8' });
-        res.end(`<h2>FF-OMNI Dashboard Online (/ds)</h2><p>Public UI File Not Found at ${indexHtmlPath}</p>`);
-      }
-      return;
-    }
-
-    // Redirect root `/` to `/ds`
-    if (reqUrl === '/' || reqUrl === '/index.html') {
-      res.writeHead(302, { Location: '/ds' });
-      res.end();
-      return;
-    }
-
-    res.writeHead(404, { 'Content-Type': 'text/plain' });
-    res.end('Not Found');
-  });
-
-  ioHub = attachSocketIoServer(dashboardServer, (socket) => {
-    socket.emit('init:bundle', {
-      session: serializeSessionState(),
-      ports: getAllocatedPortsList(),
-      billboards: getDiscoveredBillboardsList(),
-      modifier: responseModConfig,
-      packets: packetHistory.slice(0, 150),
-      schemas: Object.keys(SCHEMAS)
-    });
-
-    socket.on('simulate:suite', () => {
-      const samplePackets = generateVerificationPackets(getPublicBaseUrl());
-      for (const pkt of samplePackets) {
-        recordAndBroadcastPacket(pkt, true);
-      }
-    });
-
-    socket.on('packets:clear', () => {
-      packetHistory.length = 0;
-      try {
-        fs.writeFileSync(TXT_LOG_FILE, '', 'utf8');
-      } catch (_) {}
-      ioHub.emit('packets:cleared', {});
-    });
-
-    socket.on('modifier:update', (newCfg) => {
-      if (newCfg && typeof newCfg === 'object') {
-        if (typeof newCfg.bypassLoginServerUrl === 'boolean') {
-          responseModConfig.bypassLoginServerUrl = newCfg.bypassLoginServerUrl;
-        }
-        if (typeof newCfg.redirectCdnUrlsToPorts === 'boolean') {
-          responseModConfig.redirectCdnUrlsToPorts = newCfg.redirectCdnUrlsToPorts;
-        }
-        if (typeof newCfg.useLoopbackForCdn === 'boolean') {
-          responseModConfig.useLoopbackForCdn = newCfg.useLoopbackForCdn;
-        }
-        if (typeof newCfg.passiveBackgroundFetch === 'boolean') {
-          responseModConfig.passiveBackgroundFetch = newCfg.passiveBackgroundFetch;
-        }
-        if (newCfg.verJsonOverrides && typeof newCfg.verJsonOverrides === 'object') {
-          responseModConfig.verJsonOverrides = newCfg.verJsonOverrides;
-        }
-        if (Array.isArray(newCfg.customRules)) {
-          responseModConfig.customRules = newCfg.customRules;
-        }
-      }
-      ioHub.emit('modifier:state', responseModConfig);
-    });
-
-    socket.on('decrypt:manual', (reqData) => {
-      const resData = handleManualDecrypt(reqData || {});
-      socket.emit('decrypt:result', resData);
-    });
-  });
-
-  // Crash-Safe Start for Secondary Proxy Listeners on Railway
-  let unifiedTcp8080 = null;
-  let unifiedUdp8080 = null;
-  try {
-    unifiedTcp8080 = createUnifiedPort8080Server({
-      listenPort: UNIFIED_PROXY_PORT,
-      onPacket: (pkt) => recordAndBroadcastPacket(pkt, true)
-    });
-    unifiedUdp8080 = createUdpInterceptor({
-      listenPort: UNIFIED_PROXY_PORT,
-      onPacket: (pkt) => recordAndBroadcastPacket(pkt, true)
-    });
-  } catch (err) {
-    console.log(`${C.yellow}[RAILWAY NOTICE] Multi-port listener disabled in single-port cloud container environment.${C.reset}`);
-  }
-
-  await new Promise((resolve) => dashboardServer.listen(DASHBOARD_PORT, '0.0.0.0', resolve));
-
-  if (unifiedTcp8080 && typeof unifiedTcp8080.start === 'function') {
-    unifiedTcp8080.start().catch((_) => {});
-  }
-  if (unifiedUdp8080 && typeof unifiedUdp8080.start === 'function') {
-    unifiedUdp8080.start().catch((_) => {});
-  }
-
-  try {
-    fs.writeFileSync(TXT_LOG_FILE, `# FF-OMNI-PROXY v3.2 Traffic Log (${new Date().toISOString()})\n\n`, 'utf8');
-  } catch (_) {}
-
-  const dynamicBaseUrl = getPublicBaseUrl();
-  const samples = generateVerificationPackets(dynamicBaseUrl);
-  for (const pkt of samples) {
-    recordAndBroadcastPacket(pkt, false);
-  }
-
-  console.log(`${C.bold}${C.cyan}╔════════════════════════════════════════════════════════════════════╗${C.reset}`);
-  console.log(`${C.bold}${C.cyan}║  FF-OMNI-PROXY v3.2 (RAILWAY & TERMUX SINGLE-PORT EDITION)         ║${C.reset}`);
-  console.log(`${C.bold}${C.cyan}╠════════════════════════════════════════════════════════════════════╣${C.reset}`);
-  console.log(`${C.bold}║ [DASHBOARD UI]   ${dynamicBaseUrl}/ds                              ║${C.reset}`);
-  console.log(`${C.bold}║ [Download .TXT]  ${dynamicBaseUrl}/api/export.txt                      ║${C.reset}`);
-  console.log(`${C.bold}║ [ANTI-BAN FIX]   abhotupdate_cdn_url (SH-Gpp) Path Protected       ║${C.reset}`);
-  console.log(`${C.bold}║ [PATH EXTENSION] ${dynamicBaseUrl}/p/8083/ (dl.gmc Skins/Icons)      ║${C.reset}`);
-  console.log(`${C.bold}${C.cyan}╚════════════════════════════════════════════════════════════════════╝${C.reset}`);
-
-  return { dashboardServer, unifiedTcp8080, unifiedUdp8080 };
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
 }
 
 function handleManualDecrypt({ hexInput = '', mode = 'AUTO', schemaName = '', udpKeyHex = '', matchCode = '' }) {
@@ -1726,12 +526,8 @@ function handleManualDecrypt({ hexInput = '', mode = 'AUTO', schemaName = '', ud
         encryption: aesRes.keyUsed,
         decryptedHex: aesRes.decryptedHex,
         schema: pb ? pb.schema : (schemaName || 'AutoWireProtobuf'),
-<<<<<<< HEAD
         decoded: pb ? pb.fields : { utf8: aesRes.decryptedBuffer.toString('utf8') },
         cleanDict: pb ? pb.cleanDict : null
-=======
-        decoded: pb ? pb.fields : { utf8: aesRes.decryptedBuffer.toString('utf8') }
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
       };
     }
   }
@@ -1741,13 +537,12 @@ function handleManualDecrypt({ hexInput = '', mode = 'AUTO', schemaName = '', ud
     mode: 'DIRECT_PROTOBUF',
     decryptedHex: cleanHex,
     schema: pb ? pb.schema : (schemaName || 'AutoWireProtobuf'),
-<<<<<<< HEAD
     decoded: pb ? pb.fields : { raw_utf8: buf.toString('utf8') },
     cleanDict: pb ? pb.cleanDict : null
   };
 }
 
-// Register initial Astutech Path Route (ZERO extra ports opened!)
+// Register initial Pakistan (PK) Path Route (ZERO extra ports opened!)
 let initializedRoutes = false;
 function ensureInitialized() {
   if (initializedRoutes) return;
@@ -2257,30 +1052,13 @@ if (require.main === module) {
       process.exit(1);
     }
     console.log(`[SELF-TEST OK] v6.0 Pakistan (PK) #1 Priority, Zero Astutech Redirection, Vercel + Termux /px/ Path Router & Zero Socket.IO verified.`);
-=======
-    decoded: pb ? pb.fields : { raw_utf8: buf.toString('utf8') }
-  };
-}
-
-if (require.main === module) {
-  if (process.argv.includes('--self-test')) {
-    const samples = generateVerificationPackets();
-    for (const s of samples) {
-      logPacketToTerminal(s);
-    }
-    console.log(`\n[SELF-TEST OK] v3.2 Railway Single-Port & /ds Dashboard Verified.`);
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
     process.exit(0);
   } else {
     startAllServers();
   }
 }
 
-<<<<<<< HEAD
 module.exports = universalHttpHandler;
 module.exports.startAllServers = startAllServers;
 module.exports.handleManualDecrypt = handleManualDecrypt;
 module.exports.universalHttpHandler = universalHttpHandler;
-=======
-module.exports = { startAllServers, generateVerificationPackets, handleManualDecrypt, logPacketToTerminal };
->>>>>>> 5677000af0c617e1869aedc40e2171780baea37c
